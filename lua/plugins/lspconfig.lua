@@ -9,6 +9,7 @@
         -- pyright will be automatically installed with mason and loaded with lspconfig
         pyright = {***REMOVED***,
         ruff_lsp = {***REMOVED***,
+        jdtls = {***REMOVED***,
     ***REMOVED***
   ***REMOVED***
     setup = {
@@ -19,6 +20,9 @@
             client.server_capabilities.hoverProvider = false
       ***REMOVED***
     ***REMOVED***)
+  ***REMOVED***,
+      jdtls = function()
+        return true
   ***REMOVED***,
   ***REMOVED***
 ***REMOVED***
