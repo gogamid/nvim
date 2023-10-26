@@ -44,8 +44,7 @@ if true then ***REMOVED******REMOVED*** end
     dependencies = { "hrsh7th/cmp-emoji" ***REMOVED***,
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
-      local cmp = require("cmp")
-      opts.sources = cmp.config.sources(vim.list_extend(opts.sources, { { name = "emoji" ***REMOVED*** ***REMOVED***))
+      table.insert(opts.sources, { name = "emoji" ***REMOVED***)
 ***REMOVED***,
 ***REMOVED***
 

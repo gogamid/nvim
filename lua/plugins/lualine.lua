@@ -6,8 +6,8 @@
     opts = function(_, opts)
       local Util = require("lazyvim.util")
       local colors = {
-        [""] = Util.fg("Special"),
-        ["Normal"] = Util.fg("Special"),
+        [""] = Util.ui.fg("Special"),
+        ["Normal"] = Util.ui.fg("Special"),
         ["Warning"] = Util.fg("DiagnosticError"),
         ["InProgress"] = Util.fg("DiagnosticWarn"),
   ***REMOVED***

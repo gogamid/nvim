@@ -6,11 +6,9 @@
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      -- add tsx and treesitter
-      vim.list_extend(opts.ensure_installed, {
-        "scala",
-        "java",
-  ***REMOVED***)
+      if type(opts.ensure_installed) == "table" then
+        vim.list_extend(opts.ensure_installed, { "ninja", "python", "rst", "toml" ***REMOVED***)
+  ***REMOVED***
 ***REMOVED***,
 ***REMOVED***
 ***REMOVED***
