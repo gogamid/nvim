@@ -8,8 +8,8 @@
       local colors = {
         [""] = Util.ui.fg("Special"),
         ["Normal"] = Util.ui.fg("Special"),
-        ["Warning"] = Util.fg("DiagnosticError"),
-        ["InProgress"] = Util.fg("DiagnosticWarn"),
+        ["Warning"] = Util.ui.fg("DiagnosticError"),
+        ["InProgress"] = Util.ui.fg("DiagnosticWarn"),
   ***REMOVED***
       table.insert(opts.sections.lualine_x, 2, {
         function()
