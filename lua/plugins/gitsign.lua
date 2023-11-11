@@ -1,17 +1,8 @@
 ***REMOVED***
   {
     "lewis6991/gitsigns.nvim",
-    event = { "BufReadPre", "BufNewFile" ***REMOVED***,
-    opts = {
-      signs = {
-        add = { text = "▎" ***REMOVED***,
-        change = { text = "▎" ***REMOVED***,
-        delete = { text = "" ***REMOVED***,
-        topdelete = { text = "" ***REMOVED***,
-        changedelete = { text = "▎" ***REMOVED***,
-        untracked = { text = "▎" ***REMOVED***,
-    ***REMOVED***
-      on_attach = function(buffer)
+    opts = function(_, opts)
+      opts.on_attach = function(buffer)
         local gs = package.loaded.gitsigns
 
         local function map(mode, l, r, desc)
@@ -20,14 +11,14 @@
         -- stylua: ignore start
         map("n", "]h",
         function()
-          require("gitsigns").next_hunk({ wrap = false ***REMOVED***)
-          vim.schedule(function() vim.api.nvim_feedkeys("zz", "n", false) end)
-    ***REMOVED***, "Next Hunk1")
+          require("gitsigns").next_hunk()
+          vim.cmd("normal! zz")
+    ***REMOVED***, "Next Hunk")
 
         map("n", "[h",
         function()
-          require("gitsigns").prev_hunk({ wrap = false ***REMOVED***)
-          vim.schedule(function() vim.api.nvim_feedkeys("zz", "n", false) end)
+          require("gitsigns").prev_hunk()
+          vim.cmd("normal! zz")
     ***REMOVED***, "Prev Hunk")
 
         map({ "n", "v" ***REMOVED***, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
@@ -40,7 +31,7 @@
         map("n", "<leader>ghd", gs.diffthis, "Diff This")
         map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff This ~")
         map({ "o", "x" ***REMOVED***, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
-  ***REMOVED***,
   ***REMOVED***
+***REMOVED***,
 ***REMOVED***
 ***REMOVED***
