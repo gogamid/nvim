@@ -1,3 +1,3 @@
-***REMOVED***
-  { "ThePrimeagen/vim-be-good" ***REMOVED***,
-***REMOVED***
+return {
+  { "ThePrimeagen/vim-be-good" },
+}

@@ -1,6 +1,6 @@
-***REMOVED***
+return {
   {
     "williamboman/mason.nvim",
     optional = true,
-***REMOVED***
-***REMOVED***
+  },
+}

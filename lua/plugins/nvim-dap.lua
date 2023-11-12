@@ -1,6 +1,6 @@
-***REMOVED***
+return {
   {
     "mfussenegger/nvim-dap",
     optional = true,
-***REMOVED***
-***REMOVED***
+  },
+}

@@ -1,3 +1,3 @@
-***REMOVED***
-  { "chrisbra/csv.vim" ***REMOVED***,
-***REMOVED***
+return {
+  { "chrisbra/csv.vim" },
+}

@@ -1,4 +1,4 @@
-***REMOVED***
+return {
   -- disable trouble
-  -- { "folke/trouble.nvim", enabled = false ***REMOVED***,
-***REMOVED***
+  -- { "folke/trouble.nvim", enabled = false },
+}

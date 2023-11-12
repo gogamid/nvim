@@ -1,13 +1,13 @@
-***REMOVED***
+return {
   "nvim-telescope/telescope-file-browser.nvim",
-***REMOVED***
+  keys = {
     {
       "<leader>sB",
       ":Telescope file_browser path=%:p:h=%:p:h<cr>",
       desc = "Browse files",
-  ***REMOVED***
-***REMOVED***
-***REMOVED***
+    },
+  },
+  config = function()
     require("telescope").load_extension("file_browser")
-***REMOVED***
-***REMOVED***
+  end,
+}
