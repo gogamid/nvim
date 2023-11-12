@@ -3,40 +3,19 @@ return {
   dependencies = { "nvim-lua/plenary.nvim", "mfussenegger/nvim-dap" },
   ft = { "scala", "sbt" },
   keys = {
-    {
-      "<leader>cW",
-      function()
-        require("metals").hover_worksheet()
-      end,
-      desc = "Metals Worksheet",
-    },
-    {
-      "<leader>cM",
-      function()
-        require("telescope").extensions.metals.commands()
-      end,
-      desc = "Telescope Metals Commands",
-    },
+    { "<leader>cW", function() require("metals").hover_worksheet() end, desc = "Metals Worksheet", },
+    { "<leader>cM", function() require("telescope").extensions.metals.commands() end, desc = "Telescope Metals Commands", },
   },
   event = "BufEnter *.worksheet.sc",
   config = function()
-    local api = vim.api
-    local cmd = vim.cmd
     local map = vim.keymap.set
-    ----------------------------------
-    -- OPTIONS -----------------------
-    ----------------------------------
-    -- global
-    vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
-    vim.opt_global.shortmess:remove("F")
-    vim.opt_global.shortmess:append("c")
+    local og = vim.opt_global
+    og.completeopt = { "menuone", "noinsert", "noselect" }
+    og.opt_global.shortmess:remove("F")
+    og.shortmess:append("c")
 
     map("n", "<leader>cc", vim.lsp.codelens.run)
-    -- LSP Setup ---------------------
-    ----------------------------------
     local metals_config = require("metals").bare_config()
-
-    -- Example of settings
     metals_config.settings = {
       -- useGlobalExecutable = true,
       -- metalsBinaryPath = "C:/Users/dtwj6af/scoop/apps/coursier/current/bin/metals.bat",

@@ -6,7 +6,7 @@ local function augroup(name)
 end
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "scala", "sbt", "java" },
+  pattern = { "scala", "sbt"},
   callback = function()
     require("metals").initialize_or_attach({})
   end,
