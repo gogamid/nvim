@@ -9,10 +9,9 @@ return {
   event = "BufEnter *.worksheet.sc",
   config = function()
     local map = vim.keymap.set
-    local og = vim.opt_global
-    og.completeopt = { "menuone", "noinsert", "noselect" }
-    og.opt_global.shortmess:remove("F")
-    og.shortmess:append("c")
+    vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
+    vim.opt_global.opt_global.shortmess:remove("F")
+    vim.opt_global.shortmess:append("c")
 
     map("n", "<leader>cc", vim.lsp.codelens.run)
     local metals_config = require("metals").bare_config()
