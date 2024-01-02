@@ -19,5 +19,10 @@ return {
     end
   },
   -- syntax highlighting for chezmoi files
-  {'alker0/chezmoi.vim'}
+  {'alker0/chezmoi.vim',
+    lazy = false,
+    init = function()
+       vim.g['chezmoi#use_tmp_buffer'] = true
+    end,
+  }
 }
