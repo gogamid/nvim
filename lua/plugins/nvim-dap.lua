@@ -1,6 +1,6 @@
 return {
   {
     "mfussenegger/nvim-dap",
-    optional = true,
+    optional = false,
   },
 }

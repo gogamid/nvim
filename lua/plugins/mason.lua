@@ -1,6 +1,6 @@
 return {
   {
     "williamboman/mason.nvim",
-    optional = true,
+    optional = false,
   },
 }

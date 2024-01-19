@@ -1,7 +1,7 @@
 return {
   {
     "nvim-neotest/neotest",
-    optional = true,
+    optional = false,
     opts = {
       adapters = {
         ["neotest-python"] = {
