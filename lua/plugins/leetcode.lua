@@ -1,29 +1,27 @@
 return {
   {
-    "ianding1/leetcode.vim",
-    config = function()
-      vim.g.leetcode_solution_filetype = "python"
-      vim.g.leetcode_browser = "chrome"
-      vim.g.leetcode_hide_paid_only = 1
-    end,
-  },
-  {
-    "dhanus3133/leetbuddy.nvim",
+    "kawre/leetcode.nvim",
+    build = ":TSUpdate html",
     dependencies = {
-      "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope.nvim",
+      "nvim-lua/plenary.nvim", -- required by telescope
+      "MunifTanjim/nui.nvim",
+
+      -- optional
+      "nvim-treesitter/nvim-treesitter",
+      "rcarriga/nvim-notify",
+      "nvim-tree/nvim-web-devicons",
     },
-    config = function()
-      require("leetbuddy").setup({
-        language = "py",
-      })
-    end,
     keys = {
-      { "<leader>lq", "<cmd>LBQuestions<cr>", desc = "List Questions" },
-      { "<leader>ll", "<cmd>LBQuestion<cr>", desc = "View Question" },
-      { "<leader>lr", "<cmd>LBReset<cr>", desc = "Reset Code" },
-      { "<leader>lt", "<cmd>LBTest<cr>", desc = "Run Code" },
-      { "<leader>ls", "<cmd>LBSubmit<cr>", desc = "Submit Code" },
+      { "<leader>lq", mode = { "n" }, "<cmd>Leet tabs<cr>" },
+      { "<leader>lm", mode = { "n" }, "<cmd>Leet menu<cr>" },
+      { "<leader>lc", mode = { "n" }, "<cmd>Leet console<cr>" },
+      { "<leader>lh", mode = { "n" }, "<cmd>Leet info<cr>" },
+      { "<leader>ll", mode = { "n" }, "<cmd>Leet lang<cr>" },
+      { "<leader>ld", mode = { "n" }, "<cmd>Leet desc<cr>" },
+      { "<leader>lr", mode = { "n" }, "<cmd>Leet run<cr>" },
+      { "<leader>ls", mode = { "n" }, "<cmd>Leet submit<cr>" },
+      { "<leader>ly", mode = { "n" }, "<cmd>Leet yank<cr>" },
     },
-  },
+  }
 }
