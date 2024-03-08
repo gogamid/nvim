@@ -1,9 +1,10 @@
-return {{
-  "rest-nvim/rest.nvim",
-  dependencies = { { "nvim-lua/plenary.nvim" } },
-  config = function()
-
-     require("rest-nvim").setup({
+return {
+  -- http client
+  {
+    "rest-nvim/rest.nvim",
+    dependencies = { { "nvim-lua/plenary.nvim" } },
+    config = function()
+      require("rest-nvim").setup {
         -- Open request results in a horizontal split
         result_split_horizontal = true,
         -- Keep the http file buffer above|left when split horizontal|vertical
@@ -34,20 +35,18 @@ return {{
           -- set them to false if you want to disable them
           formatters = {
             json = "jq",
-            html = function(body)
-              return vim.fn.system({"tidy", "-i", "-q", "-"}, body)
-            end
+            html = function(body) return vim.fn.system({ "tidy", "-i", "-q", "-" }, body) end,
           },
         },
         -- Jump to request line on run
         jump_to_request = false,
-        env_file = '.env',
+        env_file = ".env",
         custom_dynamic_variables = {},
         yank_dry_run = true,
         search_back = true,
-    })
-    local keyMap = vim.keymap.set
-    keyMap("n", "<leader>hr", "<cmd>lua require('rest-nvim').run()<CR>")
-  end,
-  }
+      }
+      local keyMap = vim.keymap.set
+      keyMap("n", "<leader>hr", "<cmd>lua require('rest-nvim').run()<CR>")
+    end,
+  },
 }

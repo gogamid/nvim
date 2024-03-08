@@ -7,7 +7,5 @@ return {
       desc = "Browse files",
     },
   },
-  config = function()
-    require("telescope").load_extension("file_browser")
-  end,
+  config = function() require("telescope").load_extension "file_browser" end,
 }

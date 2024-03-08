@@ -1,37 +1,35 @@
 return {
+  -- git signs for nvim
   {
     "lewis6991/gitsigns.nvim",
-    opts = function(_, opts)
-      opts.on_attach = function(buffer)
-        local gs = package.loaded.gitsigns
-
-        local function map(mode, l, r, desc)
-          vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
-        end
-        -- stylua: ignore start
-        map("n", "]h",
+    keys = {
+      -- center after next/prev hunk
+      {
+        "]h",
+        mode = { "n" },
         function()
           require("gitsigns").next_hunk()
-          vim.cmd("normal! zz")
-        end, "Next Hunk")
-
-        map("n", "[h",
+          vim.cmd "normal! zz"
+        end,
+      },
+      {
+        "[h",
+        mode = { "n" },
         function()
           require("gitsigns").prev_hunk()
-          vim.cmd("normal! zz")
-        end, "Prev Hunk")
-
-        map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
-        map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
-        map("n", "<leader>ghS", gs.stage_buffer, "Stage Buffer")
-        map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo Stage Hunk")
-        map("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
-        map("n", "<leader>ghp", gs.preview_hunk, "Preview Hunk")
-        map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame Line")
-        map("n", "<leader>ghd", gs.diffthis, "Diff This")
-        map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff This ~")
-        map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
-      end
-    end,
+          vim.cmd "normal! zz"
+        end,
+      },
+      { "<leader>ghs", mode = { "n", "v" }, "<cmd>Gitsigns stage_hunk<cr>" },
+      { "<leader>ghr", mode = { "n", "v" }, "<cmd>Gitsigns reset_hunk<cr>" },
+      { "<leader>ghS", mode = { "n" }, "<cmd>Gitsigns stage_buffer<cr>" },
+      { "<leader>ghu", mode = { "n" }, "<cmd>Gitsigns undo_stage_hunk<cr>" },
+      { "<leader>ghR", mode = { "n" }, "<cmd>Gitsigns reset_buffer<cr>" },
+      { "<leader>ghp", mode = { "n" }, "<cmd>Gitsigns preview_hunk<cr>" },
+      { "<leader>ghb", mode = { "n" }, "<cmd>lua require('gitsigns').blame_line({ full = true })<cr>" },
+      { "<leader>ghd", mode = { "n" }, "<cmd>Gitsigns diffthis<cr>" },
+      { "<leader>ghD", mode = { "n" }, "<cmd>lua require('gitsigns').diffthis('~')<cr>" },
+      { "ih", mode = { "o", "x" }, "<cmd>Gitsigns select_hunk<cr>" },
+    },
   },
 }

@@ -14,7 +14,7 @@ return {
         ["java"] = {
           before = "import java.util.*;",
         },
-      }
+      },
     },
     build = ":TSUpdate html",
     dependencies = {
@@ -42,5 +42,5 @@ return {
       { "<leader>lx", mode = { "n" }, "<cmd>Leet reset<cr>" },
       { "<leader>lh", mode = { "n" }, "<cmd>Leet last_submit<cr>" },
     },
-  }
+  },
 }
