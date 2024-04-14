@@ -1,17 +1,27 @@
-local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   -- bootstrap lazy.nvim
   -- stylua: ignore
-  vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath })
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath,
+  })
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
-require("lazy").setup {
+require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
     -- import any extras modules here
-    --catpuccin
-    { "LazyVim/LazyVim", opts = { colorscheme = "catppuccin-frappe" }, import = "lazyvim.plugins" },
+    {
+      "LazyVim/LazyVim",
+      opts = { colorscheme = "catppuccin-frappe" },
+      import = "lazyvim.plugins",
+    },
     { import = "plugins" },
   },
   defaults = {
@@ -23,7 +33,6 @@ require("lazy").setup {
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  -- install = { colorscheme = { "tokyonight", "habamax" } },
   checker = {
     enabled = false,
     -- notify = true,
@@ -44,4 +53,4 @@ require("lazy").setup {
       },
     },
   },
-}
+})
