@@ -10,7 +10,8 @@ require("lazy").setup {
   spec = {
     -- add LazyVim and import its plugins
     -- import any extras modules here
-    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    --catpuccin
+    { "LazyVim/LazyVim", opts = { colorscheme = "catppuccin-frappe" }, import = "lazyvim.plugins" },
     { import = "plugins" },
   },
   defaults = {
@@ -34,7 +35,7 @@ require("lazy").setup {
       disabled_plugins = {
         "gzip",
         -- "matchit",
-        -- "matchparen",
+        "matchparen",
         -- "netrwPlugin",
         "tarPlugin",
         "tohtml",

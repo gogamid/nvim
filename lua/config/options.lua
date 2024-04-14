@@ -10,3 +10,4 @@ opt.foldlevelstart = 99
 opt.foldnestmax = 10 -- deepest fold is 10 levels
 opt.foldenable = false -- don't fold by default
 opt.foldlevel = 1
+opt.relativenumber = false
