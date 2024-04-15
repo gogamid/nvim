@@ -6,4 +6,5 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
-vim.api.nvim_set_keymap("n", "<leader>fo", ":lua OpenWithSystem()<CR>", { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap("n", "<leader>fo", ":lua OpenWithSystem()<CR>", { noremap = true, silent = true })
+-- vim.api.
