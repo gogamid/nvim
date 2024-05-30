@@ -19,8 +19,14 @@ require("lazy").setup({
     -- import any extras modules here
     {
       "LazyVim/LazyVim",
-      opts = { colorscheme = "rose-pine" },
+      opts = {
+        colorscheme = "catppuccin-mocha",
+      },
       import = "lazyvim.plugins",
+      keys = {
+        { "<leader>l", ":LazyExtras<CR>", desc = "LazyExtras" },
+        { "<leader>lu", ":Lazy<CR>", desc = "Lazy" },
+      },
     },
     { import = "plugins" },
   },
@@ -54,3 +60,7 @@ require("lazy").setup({
     },
   },
 })
+
+if not vim.g.copilot_status then
+  vim.cmd(":Copilot disable")
+end

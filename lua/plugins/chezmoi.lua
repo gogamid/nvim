@@ -6,12 +6,14 @@ return {
     keys = {
       {
         "<leader>cz",
-        function() require("telescope").extensions.chezmoi.find_files() end,
-        desc = "find chezmoi files",
+        function()
+          require("telescope").extensions.chezmoi.find_files()
+        end,
+        desc = "Find chezmoi files",
       },
     },
     config = function()
-      require("chezmoi").setup {
+      require("chezmoi").setup({
         edit = {
           watch = true,
           force = true,
@@ -20,13 +22,15 @@ return {
           on_open = true,
           on_apply = true,
         },
-      }
+      })
     end,
   },
   -- syntax highlighting for chezmoi files
   {
     "alker0/chezmoi.vim",
     lazy = false,
-    init = function() vim.g["chezmoi#use_tmp_buffer"] = true end,
+    init = function()
+      vim.g["chezmoi#use_tmp_buffer"] = true
+    end,
   },
 }

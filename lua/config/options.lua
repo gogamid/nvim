@@ -11,3 +11,10 @@ opt.foldnestmax = 10 -- deepest fold is 10 levels
 opt.foldenable = false -- don't fold by default
 opt.foldlevel = 1
 opt.relativenumber = false
+
+vim.g.lazyvim_python_lsp = "basedpyright"
+vim.g.lazyvim_python_ruff = "ruff_lsp"
+
+local home = os.getenv("HOME")
+vim.g.python3_host_prog = home .. "/.pyenv/versions/pynvim/bin/python"
+vim.g.copilot_status = false

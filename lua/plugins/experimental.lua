@@ -1,0 +1,55 @@
+return {
+  -- {
+  --   "tris203/precognition.nvim",
+  --   event = "VeryLazy",
+  --   keys = {
+  --     {
+  --       "<leader>pp",
+  --       function()
+  --         require("precognition").toggle()
+  --       end,
+  --       "Toggle precognition",
+  --     },
+  --   },
+  -- },
+  -- {
+  --   "m4xshen/hardtime.nvim",
+  --   enabled = false,
+  --   event = "VeryLazy",
+  --   keys = {
+  --     {
+  --       "<leader>ht",
+  --       ":Hardtime toggle<CR>",
+  --       "Toggle Hardtime",
+  --     },
+  --   },
+  --   dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
+  --   opts = {},
+  -- },
+  -- {
+  --   "mfussenegger/nvim-dap-python",
+  --   -- stylua: ignore
+  --   keys = {
+  --     { "<leader>dPt", function() require('dap-python').test_method() end, desc = "Debug Method", ft = "python" },
+  --     { "<leader>dPc", function() require('dap-python').test_class() end, desc = "Debug Class", ft = "python" },
+  --   },
+  --   config = function()
+  --     -- local path = require("mason-registry").get_package("debugpy"):get_install_path()
+  --     require("dap-python").setup()
+  -- lua require('dap-python').setup()
+  --   end,
+  -- }
+  -- {
+  --   "mfussenegger/nvim-dap-python",
+  -- -- stylua: ignore
+  -- keys = {
+  --   { "<leader>dPt", function() require('dap-python').test_method() end, desc = "Debug Method", ft = "python" },
+  --   { "<leader>dPc", function() require('dap-python').test_class() end, desc = "Debug Class", ft = "python" },
+  -- },
+  --   config = function()
+  --     -- local path = require("mason-registry").get_package("debugpy"):get_install_path()
+  --     -- local path = require("venv-selector").get_active_path()
+  --     require("dap-python").setup("/Users/gogamid/.pyenv/versions/avalanche/bin/python")
+  --   end,
+  -- },
+}
