@@ -8,7 +8,6 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 local ss = require("smart-splits")
-
 --use C arrow keys for resizing, in wezterm use Cmd hjkl
 -- vim.keymap.set("n", "<D-h>", ss.resize_left)
 -- vim.keymap.set("n", "<D-j>", ss.resize_down)
@@ -16,11 +15,11 @@ local ss = require("smart-splits")
 -- vim.keymap.set("n", "<D-l>", ss.resize_right)
 
 -- moving between splits
-vim.keymap.set("n", "<C-h>", ss.move_cursor_left)
-vim.keymap.set("n", "<C-j>", ss.move_cursor_down)
-vim.keymap.set("n", "<C-k>", ss.move_cursor_up)
-vim.keymap.set("n", "<C-l>", ss.move_cursor_right)
-vim.keymap.set("n", "<C-\\>", ss.move_cursor_previous)
+vim.keymap.set("n", "<C-h>", require("smart-splits").move_cursor_left)
+vim.keymap.set("n", "<C-j>", require("smart-splits").move_cursor_down)
+vim.keymap.set("n", "<C-k>", require("smart-splits").move_cursor_up)
+vim.keymap.set("n", "<C-l>", require("smart-splits").move_cursor_right)
+vim.keymap.set("n", "<C-\\>", require("smart-splits").move_cursor_previous)
 -- swapping buffers between windows
 vim.keymap.set("n", "<leader><leader>h", ss.swap_buf_left)
 vim.keymap.set("n", "<leader><leader>j", ss.swap_buf_down)

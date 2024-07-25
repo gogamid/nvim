@@ -5,7 +5,7 @@ return {
     lazy = leet_arg ~= vim.fn.argv()[1],
     opts = {
       arg = leet_arg,
-      lang = "java",
+      lang = "golang",
       injector = { ---@type table<lc.lang, lc.inject>
         ["cpp"] = {
           before = { "#include <bits/stdc++.h>", "using namespace std;" },
@@ -13,6 +13,9 @@ return {
         },
         ["java"] = {
           before = "import java.util.*;",
+        },
+        ["golang"] = {
+          before = "package main",
         },
       },
     },
@@ -38,7 +41,6 @@ return {
       { "<leader>ls", mode = { "n" }, ":Leet submit<cr>" },
       { "<leader>ly", mode = { "n" }, ":Leet yank<cr>" },
       { "<leader>lp", mode = { "n" }, ":Leet list<cr>" },
-      { "<leader>le", mode = { "n" }, ":Leet list difficulty=easy<cr>" },
       { "<leader>lx", mode = { "n" }, ":Leet reset<cr>" },
       { "<leader>lh", mode = { "n" }, ":Leet last_submit<cr>" },
     },
