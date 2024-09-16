@@ -6,8 +6,13 @@ return {
         proto = { "buf" },
       },
       formatters = {
-        goimports = {
-          prepend_args = { "-local", "dev.azure.com/schwarzit/lidl.wawi-core" },
+        -- goimports = {
+        --   prepend_args = { "-local", "dev.azure.com/schwarzit/lidl.wawi-core/" },
+        -- },
+        formatters_by_ft = {
+          go = function()
+            return { "gofumpt" } -- removing goimports
+          end,
         },
       },
     },
