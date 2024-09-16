@@ -13,3 +13,22 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.spell = false
   end,
 })
+
+--Quicktest go output PASS and FAIL highlights
+-- Define highlight groups
+vim.cmd("highlight PassHighlight ctermfg=green guifg=green")
+vim.cmd("highlight FailHighlight ctermfg=red guifg=red")
+vim.cmd("highlight OkHighlight ctermfg=cyan guifg=cyan")
+
+-- Apply highlights based on filetype
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "quicktest-output",
+  callback = function()
+    vim.cmd("syntax match PassKeyword /\\<PASS\\>/ containedin=ALL")
+    vim.cmd("syntax match FailKeyword /\\<FAIL\\>/ containedin=ALL")
+    vim.cmd("syntax match OkKeyword /\\<ok\\>/ containedin=ALL")
+    vim.cmd("highlight link PassKeyword PassHighlight")
+    vim.cmd("highlight link FailKeyword FailHighlight")
+    vim.cmd("highlight link OkKeyword OkHighlight")
+  end,
+})

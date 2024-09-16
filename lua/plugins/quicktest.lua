@@ -7,9 +7,7 @@ return {
       -- Choose your adapter, here all supported adapters are listed
       adapters = {
         require("quicktest.adapters.golang")({
-          additional_args = function(bufnr)
-            return { "-race", "-count=1" }
-          end,
+          additional_args = {},
           -- bin = function(bufnr) return 'go' end
           -- cwd = function(bufnr) return 'your-cwd' end
         }),
