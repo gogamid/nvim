@@ -12,4 +12,8 @@ vim.g.lazyvim_python_ruff = "ruff_lsp"
 local home = os.getenv("HOME")
 vim.g.python3_host_prog = home .. "/.pyenv/versions/pynvim/bin/python"
 
-vim.g.copilot_status = false
+--add lines to lualine
+vim.opt.fillchars = {
+  stl = "─",
+  stlnc = "─",
+}
