@@ -3,6 +3,10 @@ return {
     "nvim-telescope/telescope.nvim",
     opts = {
       defaults = {
+        layout_strategy = "vertical",
+        layout_config = { prompt_position = "top" },
+        sorting_strategy = "ascending",
+        winblend = 0,
         path_display = {
           "filename_first",
         },
@@ -15,28 +19,6 @@ return {
           require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
         end,
         desc = "Find Plugin File",
-      },
-    },
-  },
-  {
-    "jemag/telescope-diff.nvim",
-    dependencies = {
-      { "nvim-telescope/telescope.nvim" },
-    },
-    keys = {
-      {
-        "<leader>fD",
-        function()
-          require("telescope").extensions.diff.diff_files({ hidden = true })
-        end,
-        desc = "Compare 2 files",
-      },
-      {
-        "<leader>fd",
-        function()
-          require("telescope").extensions.diff.diff_current({ hidden = true })
-        end,
-        desc = "Compare file with current",
       },
     },
   },
