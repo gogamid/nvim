@@ -14,6 +14,23 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- General/Global LSP Configuration
+-- fix for https://github.com/neovim/neovim/issues/28058
+local api = vim.api
+local lsp = vim.lsp
+
+local make_client_capabilities = lsp.protocol.make_client_capabilities
+function lsp.protocol.make_client_capabilities()
+  local caps = make_client_capabilities()
+  if not (caps.workspace or {}).didChangeWatchedFiles then
+    vim.notify("lsp capability didChangeWatchedFiles is already disabled", vim.log.levels.WARN)
+  else
+    caps.workspace.didChangeWatchedFiles = nil
+  end
+
+  return caps
+end
+
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
@@ -60,7 +77,3 @@ require("lazy").setup({
     },
   },
 })
-
-if not vim.g.copilot_status then
-  vim.cmd(":Copilot disable")
-end
