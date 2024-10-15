@@ -5,6 +5,13 @@ return {
       inlay_hints = { enabled = false },
       servers = {
         gopls = {
+          keys = {
+            {
+              "<leader>co",
+              LazyVim.lsp.action["source.organizeImports"],
+              desc = "Organize Imports",
+            },
+          },
           settings = {
             gopls = {
               ["local"] = "dev.azure.com/schwarzit/lidl.wawi-core",
@@ -23,6 +30,9 @@ return {
               },
             },
           },
+        },
+        clangd = {
+          filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
         },
       },
       setup = {
