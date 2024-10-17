@@ -4,7 +4,8 @@ return {
     opts = {
       window = {
         layout = "float", -- 'vertical', 'horizontal', 'float', 'replace'
-        width = 0.8,
+        width = 0.65,
+        height = 0.9,
       },
     },
   },
