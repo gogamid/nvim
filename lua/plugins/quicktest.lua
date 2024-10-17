@@ -6,35 +6,18 @@ return {
     qt.setup({
       -- Choose your adapter, here all supported adapters are listed
       adapters = {
-        require("quicktest.adapters.golang")({
-          additional_args = {},
-          -- bin = function(bufnr) return 'go' end
-          -- cwd = function(bufnr) return 'your-cwd' end
-        }),
-        require("quicktest.adapters.vitest")({
-          -- bin = function(bufnr) return 'vitest' end
-          -- cwd = function(bufnr) return bufnr end
-          -- config_path = function(bufnr) return 'vitest.config.js' end
-        }),
-        require("quicktest.adapters.playwright")({
-          -- bin = function(bufnr) return 'playwright' end
-          -- cwd = function(bufnr) return bufnr end
-          -- config_path = function(bufnr) return 'playwright.config.js' end
-        }),
-        require("quicktest.adapters.elixir"),
-        require("quicktest.adapters.criterion"),
-        require("quicktest.adapters.dart"),
+        require("quicktest.adapters.golang")({}),
+        require("quicktest.adapters.vitest")({}),
       },
       -- split or popup mode, when argument not specified
-      default_win_mode = "split",
-      -- Baleia make coloured output. Requires baleia package. Can cause crashes https://github.com/quolpr/quicktest.nvim/issues/11
+      default_win_mode = "popup",
+      use_experimental_colorizer = true,
       use_baleia = false,
     })
   end,
   dependencies = {
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
-    -- "m00qek/baleia.nvim",
   },
   keys = {
     {
@@ -90,7 +73,7 @@ return {
       function()
         local qt = require("quicktest")
 
-        qt.toggle_win("split")
+        qt.toggle_win("popup")
       end,
       desc = "[T]est [T]oggle Window",
     },
