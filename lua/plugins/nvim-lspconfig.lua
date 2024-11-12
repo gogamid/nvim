@@ -29,12 +29,14 @@ local function organize_imports_if_available()
     end
   end)
 end
+
 return {
   {
     "neovim/nvim-lspconfig",
     opts = {
       inlay_hints = { enabled = false },
       servers = {
+        buf_ls = {},
         gopls = {
           settings = {
             gopls = {
@@ -63,7 +65,7 @@ return {
               end,
             })
           end,
-          --reuse gopls server
+          -- --reuse gopls server
           cmd = { "gopls", "-remote=auto", "-remote.listen.timeout", "2m" },
         },
         clangd = {
