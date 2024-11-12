@@ -1,7 +1,19 @@
 local tabnine_enterprise_host = "https://tabnine.stackit.run"
 return {
   {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    opts = {
+      window = {
+        layout = "float", -- 'vertical', 'horizontal', 'float', 'replace'
+        width = 0.65,
+        height = 0.9,
+      },
+    },
+  },
+
+  {
     "codota/tabnine-nvim",
+    enabled = false,
     build = "./dl_binaries.sh " .. tabnine_enterprise_host .. "/update",
     keys = {
       { "<leader>ua", "<cmd>TabnineToggle<CR>", desc = "Toggle Tabnine" },
