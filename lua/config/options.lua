@@ -13,7 +13,9 @@ local home = os.getenv("HOME")
 vim.g.python3_host_prog = home .. "/.pyenv/versions/pynvim/bin/python"
 
 --add lines to lualine
-vim.opt.fillchars = {
+opt.fillchars = {
   stl = "─",
   stlnc = "─",
 }
+
+opt.wrap = true
