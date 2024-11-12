@@ -14,6 +14,13 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = "kbd",
+  callback = function()
+    vim.bo.filetype = "ht"
+  end,
+})
+
 --Quicktest go output PASS and FAIL highlights
 -- Define highlight groups
 vim.cmd("highlight PassHighlight ctermfg=green guifg=green")
@@ -39,6 +46,8 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = {
     "quicktest-output",
     "query",
+    "grug-far",
+    "help",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
