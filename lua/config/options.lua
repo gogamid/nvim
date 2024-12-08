@@ -12,10 +12,25 @@ vim.g.lazyvim_python_ruff = "ruff_lsp"
 local home = os.getenv("HOME")
 vim.g.python3_host_prog = home .. "/.pyenv/versions/pynvim/bin/python"
 
---add lines to lualine
 opt.fillchars = {
+  -- lualine lines
   stl = "─",
   stlnc = "─",
+  -- folds
+  eob = " ",
+  diff = "╱",
+  foldopen = "",
+  foldclose = "",
+  foldsep = "▕",
 }
 
 opt.wrap = true
+
+vim.g.ai_cmp = false
+
+-- vim.g.loaded_netrw = 1
+-- vim.g.loaded_netrwPlugin = 1
+--
+---- Enable Treesitter folding initially
+-- vim.wo.foldmethod = "expr"
+-- vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
