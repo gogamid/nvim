@@ -58,3 +58,12 @@ vim.api.nvim_create_autocmd("FileType", {
     })
   end,
 })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    LazyVim.lsp.on_supports_method("textDocument/foldingRange", function()
+      vim.wo.foldmethod = "expr"
+      vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
+    end)
+  end,
+})
