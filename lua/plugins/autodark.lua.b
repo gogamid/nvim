@@ -13,7 +13,6 @@ end
 return {
   {
     "f-person/auto-dark-mode.nvim",
-    enabled = false,
     dependencies = { "catppuccin/nvim" },
     opts = {
       update_interval = 1000,

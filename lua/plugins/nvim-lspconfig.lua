@@ -34,9 +34,17 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
+      diagnostics = {
+        virtual_text = false,
+      },
+      format = {
+        timeout_ms = 500,
+      },
       inlay_hints = { enabled = false },
       servers = {
+        -- make sure the proto server is insalled with default config
         buf_ls = {},
+        -- main go lsp
         gopls = {
           settings = {
             gopls = {
@@ -54,31 +62,40 @@ return {
                 parameterNames = false,
                 rangeVariableTypes = false,
               },
+              -- do not override string highlighting for sql query, any side effects?
+              noSemanticString = true,
             },
           },
 
-          on_attach = function(client, bufnr)
+          on_attach = function(_, bufnr)
             vim.api.nvim_create_autocmd("BufWritePre", {
               buffer = bufnr,
-              callback = function(event)
+              callback = function(_)
                 organize_imports_if_available()
               end,
             })
           end,
-          -- --reuse gopls server
-          cmd = { "gopls", "-remote=auto", "-remote.listen.timeout", "2m" },
+          --reuse gopls server,  but problematic
+          -- cmd = { "gopls", "-remote=auto", "-remote.listen.timeout", "2m" },
         },
+        -- for go linting of extra space after for loop, combining same type method params etc
+        golangci_lint_ls = {
+          root_dir = function(fname)
+            return require("lspconfig.util").root_pattern(
+              "service.yaml", --run it for each microservice not whole monorepo
+              ".golangci.yml",
+              ".golangci.yaml",
+              ".golangci.toml",
+              ".golangci.json",
+              "go.work",
+              "go.mod",
+              ".git"
+            )(fname)
+          end,
+        },
+        -- removed proto from here
         clangd = {
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
-        },
-        eslint = {
-          -- auto command to fix sorting, imports etc in frontend
-          on_attach = function(client, bufnr)
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              buffer = bufnr,
-              command = "EslintFixAll",
-            })
-          end,
         },
       },
     },

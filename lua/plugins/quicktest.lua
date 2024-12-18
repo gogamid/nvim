@@ -13,6 +13,26 @@ return {
       default_win_mode = "popup",
       use_experimental_colorizer = true,
       use_baleia = false,
+
+      popup_options = {
+
+        enter = true,
+        bufnr = popup_buf,
+        focusable = true,
+        border = {
+          style = "rounded",
+        },
+        relative = "editor",
+        position = {
+          row = "50%",
+          col = "50%",
+        },
+        size = {
+          width = "95%",
+          height = "80%",
+        },
+        zindex = 100, -- Ensure the popup is on top of all panes
+      },
     })
   end,
   dependencies = {

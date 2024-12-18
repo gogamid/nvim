@@ -1,19 +1,5 @@
 local tabnine_enterprise_host = "https://tabnine.stackit.run"
 return {
-  {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    opts = {
-
-      question_header = "## Me", -- Header to use for user questions
-      answer_header = "## Broski", -- Header to use for AI answers
-      window = {
-        title = "",
-        layout = "float", -- 'vertical', 'horizontal', 'float', 'replace'
-        width = 0.65,
-        height = 0.9,
-      },
-    },
-  },
   -- {
   --   "codota/tabnine-nvim",
   --   enabled = false,
@@ -133,20 +119,4 @@ return {
   --     end)
   --   end,
   -- },
-  {
-    "supermaven-inc/supermaven-nvim",
-    opts = {
-      keymaps = {
-        accept_suggestion = "<C-o>",
-        clear_suggestion = "<C-x>",
-        -- accept_word = "<Tab>",
-      },
-      ignore_filetypes = { "copilot-chat" },
-      color = {
-        suggestion_color = "#9198a1",
-        cterm = 244,
-      },
-      disable_inline_completion = vim.g.ai_cmp,
-    },
-  },
 }
