@@ -26,6 +26,7 @@ opt.fillchars = {
 
 opt.wrap = true
 
+--disable ai cmp only virtual text
 vim.g.ai_cmp = false
 
 -- vim.g.loaded_netrw = 1
@@ -34,3 +35,5 @@ vim.g.ai_cmp = false
 ---- Enable Treesitter folding initially
 -- vim.wo.foldmethod = "expr"
 -- vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
+--
+vim.g.snacks_animate = false

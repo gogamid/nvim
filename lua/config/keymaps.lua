@@ -10,11 +10,10 @@ vim.keymap.set("n", "*", "*zz")
 vim.keymap.set("n", "#", "#zz")
 
 local ss = require("smart-splits")
---use C arrow keys for resizing, in wezterm use Cmd hjkl
--- vim.keymap.set("n", "<D-h>", ss.resize_left)
--- vim.keymap.set("n", "<D-j>", ss.resize_down)
--- vim.keymap.set("n", "<D-k>", ss.resize_up)
--- vim.keymap.set("n", "<D-l>", ss.resize_right)
+-- vim.keymap.set("n", "<C-Left>", ss.resize_left)
+-- vim.keymap.set("n", "<C-Down>", ss.resize_down)
+-- vim.keymap.set("n", "<C-Up>", ss.resize_up)
+-- vim.keymap.set("n", "<C-Right>", ss.resize_right)
 
 -- moving between splits
 vim.keymap.set("n", "<C-h>", require("smart-splits").move_cursor_left)
@@ -27,3 +26,26 @@ vim.keymap.set("n", "<leader><leader>h", ss.swap_buf_left)
 vim.keymap.set("n", "<leader><leader>j", ss.swap_buf_down)
 vim.keymap.set("n", "<leader><leader>k", ss.swap_buf_up)
 vim.keymap.set("n", "<leader><leader>l", ss.swap_buf_right)
+
+-- my simple snacks terminal for showing cypress results
+local ui_test = require("custom.ui_test")
+vim.keymap.set("n", "<leader>tu", ui_test.run_cypress, { desc = "Run Cypress tests for the current buffer" })
+
+-- LazyVim doesn't expose float configuration
+local diagnostic_goto = function(next, severity)
+  local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
+  severity = severity and vim.diagnostic.severity[severity] or nil
+  return function()
+    go({ float = false, severity = severity })
+  end
+end
+local map = LazyVim.safe_keymap_set
+map("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
+map("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
+map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
+map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
+map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
+map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
+
+-- disable Lazy keymap and use my own
+vim.keymap.set("n", "<leader>l", "", { silent = true })

@@ -38,11 +38,15 @@ require("lazy").setup({
       "LazyVim/LazyVim",
       import = "lazyvim.plugins",
       opts = {
-        colorscheme = "catppuccin-mocha",
+        colorscheme = "catppuccin",
+        news = {
+          lazyvim = true,
+          neovim = true,
+        },
       },
       keys = {
-        { "<leader>le", ":LazyExtras<CR>", desc = "LazyExtras" },
-        { "<leader>lu", ":Lazy<CR>", desc = "Lazy" },
+        { "<leader>lx", ":LazyExtras<CR>", desc = "LazyExtras" },
+        { "<leader>ll", ":Lazy<CR>", desc = "Lazy" },
       },
     },
     -- import/override with your plugins
@@ -76,4 +80,13 @@ require("lazy").setup({
       },
     },
   },
+  -- dev = {
+  --   -- Directory where you store your local plugin projects. If a function is used,
+  --   -- the plugin directory (e.g. `~/projects/plugin-name`) must be returned.
+  --   ---@type string | fun(plugin: LazyPlugin): string
+  --   path = "~/personal/plugins/",
+  --   ---@type string[] plugins that match these patterns will use your local versions instead of being fetched from GitHub
+  --   patterns = {}, -- For example {"folke"}
+  --   fallback = false, -- Fallback to git when local plugin doesn't exist
+  -- },
 })
