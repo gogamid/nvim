@@ -2,7 +2,6 @@ return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     opts = {
-
       question_header = "## Me", -- Header to use for user questions
       answer_header = "## Broski", -- Header to use for AI answers
       window = {

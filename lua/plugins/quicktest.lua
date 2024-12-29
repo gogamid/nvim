@@ -1,5 +1,6 @@
 return {
   "quolpr/quicktest.nvim",
+  enabled = false,
   config = function()
     local qt = require("quicktest")
 

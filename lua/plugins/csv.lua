@@ -15,7 +15,7 @@ return {
         function()
           require("csvview").toggle()
         end,
-        "Toggle Excel csvview",
+        desc = "Toggle Excel csvview",
       },
     },
   },

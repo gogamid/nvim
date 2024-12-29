@@ -21,6 +21,13 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = "config",
+  callback = function()
+    vim.bo.filetype = "config"
+  end,
+})
+
 --Quicktest go output PASS and FAIL highlights
 -- Define highlight groups
 vim.cmd("highlight PassHighlight ctermfg=green guifg=green")

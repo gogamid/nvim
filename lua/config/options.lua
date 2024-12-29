@@ -37,3 +37,4 @@ vim.g.ai_cmp = false
 -- vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
 --
 vim.g.snacks_animate = false
+opt.spell = true
