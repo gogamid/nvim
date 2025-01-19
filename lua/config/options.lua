@@ -37,4 +37,7 @@ vim.g.ai_cmp = false
 -- vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
 --
 vim.g.snacks_animate = false
-opt.spell = true
+-- opt.spell = true
+
+--on change of directory add to zoxide
+vim.g.zoxide_hook = "pwd"

@@ -1,6 +1,5 @@
 return {
   "quolpr/quicktest.nvim",
-  enabled = false,
   config = function()
     local qt = require("quicktest")
 
@@ -42,7 +41,7 @@ return {
   },
   keys = {
     {
-      "<leader>tl",
+      "<leader>tql",
       function()
         local qt = require("quicktest")
         -- current_win_mode return currently opened panel, split or popup
@@ -54,7 +53,7 @@ return {
       desc = "[T]est Run [L]line",
     },
     {
-      "<leader>tf",
+      "<leader>tqf",
       function()
         local qt = require("quicktest")
 
@@ -63,7 +62,7 @@ return {
       desc = "[T]est Run [F]ile",
     },
     {
-      "<leader>td",
+      "<leader>tqd",
       function()
         local qt = require("quicktest")
 
@@ -72,7 +71,7 @@ return {
       desc = "[T]est Run [D]ir",
     },
     {
-      "<leader>ta",
+      "<leader>tqa",
       function()
         local qt = require("quicktest")
 
@@ -81,7 +80,7 @@ return {
       desc = "[T]est Run [A]ll",
     },
     {
-      "<leader>tp",
+      "<leader>tqp",
       function()
         local qt = require("quicktest")
 
@@ -90,7 +89,7 @@ return {
       desc = "[T]est Run [P]revious",
     },
     {
-      "<leader>tt",
+      "<leader>tqt",
       function()
         local qt = require("quicktest")
 
@@ -99,7 +98,7 @@ return {
       desc = "[T]est [T]oggle Window",
     },
     {
-      "<leader>tc",
+      "<leader>tqc",
       function()
         local qt = require("quicktest")
 

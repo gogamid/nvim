@@ -10,7 +10,7 @@ return {
       formatters_by_ft = {
         proto = { "buf" },
         go = { "gofumpt", "goimports" },
-        sql = { "sqlfluff", "pg_format", "sleek" },
+        -- sql = { "sleek" },
         query = { "format-queries" },
       },
       formatters = {

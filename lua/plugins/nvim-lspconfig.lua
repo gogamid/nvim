@@ -40,7 +40,7 @@ return {
       format = {
         timeout_ms = 500,
       },
-      inlay_hints = { enabled = false },
+      -- inlay_hints = { enabled = false },
       servers = {
         -- make sure the proto server is insalled with default config
         buf_ls = {},
@@ -48,6 +48,7 @@ return {
         gopls = {
           settings = {
             gopls = {
+              buildFlags = { "-tags=manual_test" },
               ["local"] = "dev.azure.com/schwarzit/lidl.wawi-core",
               analyses = {
                 shadow = true,
@@ -101,3 +102,5 @@ return {
     },
   },
 }
+
+-- LSP[gopls] Invalid settings: setting option "analyses": this setting is deprecated, use "the 'fieldalignment' analyzer was removed in gopls/v0.17.0; instead, hover over struct fields to see size/offset information (https://go.dev/issue/66861)" instead

@@ -1,1 +1,0 @@
-return { { "sQVe/sort.nvim" } }

@@ -47,4 +47,20 @@ return {
       },
     },
   },
+  {
+    "f-person/auto-dark-mode.nvim",
+    opts = {
+      update_interval = 1000,
+      set_dark_mode = function()
+        vim.api.nvim_set_option_value("background", "dark", {})
+        require("catppuccin").options.transparent_background = true
+        vim.cmd("colorscheme catppuccin-mocha")
+      end,
+      set_light_mode = function()
+        vim.api.nvim_set_option_value("background", "light", {})
+        require("catppuccin").options.transparent_background = false
+        vim.cmd("colorscheme default")
+      end,
+    },
+  },
 }

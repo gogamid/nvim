@@ -23,6 +23,7 @@ local actions = require("telescope.actions")
 return {
   {
     "nvim-telescope/telescope.nvim",
+    enabled = false,
     dependencies = {
       {
         "nvim-telescope/telescope-live-grep-args.nvim",
@@ -52,27 +53,27 @@ return {
       },
     },
     keys = {
-      {
-        "<leader>/",
-        function()
-          local git_root = find_git_root()
-          if git_root then
-            require("telescope").extensions.live_grep_args.live_grep_args({
-              search_dirs = { git_root },
-            })
-          else
-            require("telescope").extensions.live_grep_args.live_grep_args()
-          end
-        end,
-        desc = "Grep (git root)",
-      },
-      {
-        "<leader>fP",
-        function()
-          require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
-        end,
-        desc = "Find Plugin File",
-      },
+      -- {
+      --   "<leader>/",
+      --   function()
+      --     local git_root = find_git_root()
+      --     if git_root then
+      --       require("telescope").extensions.live_grep_args.live_grep_args({
+      --         search_dirs = { git_root },
+      --       })
+      --     else
+      --       require("telescope").extensions.live_grep_args.live_grep_args()
+      --     end
+      --   end,
+      --   desc = "Grep (git root)",
+      -- },
+      -- -- {
+      --   "<leader>fP",
+      --   function()
+      --     require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root })
+      --   end,
+      --   desc = "Find Plugin File",
+      -- },
     },
     config = function(_, opts)
       local tele = require("telescope")

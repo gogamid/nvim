@@ -2,14 +2,14 @@ return {
   ---@type LazySpec
   {
     "mikavilpas/yazi.nvim",
+    enabled = false,
     event = "VeryLazy",
     keys = {
-      -- 👇 in this section, choose your own keymappings!
-      {
-        "<leader>e",
-        "<cmd>Yazi<cr>",
-        desc = "Open yazi at the current file",
-      },
+      -- {
+      --   "<leader>e",
+      --   "<cmd>Yazi<cr>",
+      --   desc = "Open yazi at the current file",
+      -- },
       {
         -- Open in the current working directory
         "<leader>yd",
