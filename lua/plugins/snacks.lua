@@ -1,25 +1,3 @@
-local function find_git_root()
-  -- Use the current buffer's path as the starting point for the git search
-  local current_file = vim.api.nvim_buf_get_name(0)
-  local current_dir
-  local cwd = vim.fn.getcwd()
-  -- If the buffer is not associated with a file, return nil
-  if current_file == "" then
-    current_dir = cwd
-  else
-    -- Extract the directory from the current file's path
-    current_dir = vim.fn.fnamemodify(current_file, ":h")
-  end
-
-  -- Find the Git root directory from the current file's path
-  local git_root = vim.fn.systemlist("git -C " .. vim.fn.escape(current_dir, " ") .. " rev-parse --show-toplevel")[1]
-  if vim.v.shell_error ~= 0 then
-    print("Not a git repository. Searching on current working directory")
-    return cwd
-  end
-  return git_root
-end
-
 return {
   {
     "folke/snacks.nvim",
@@ -33,36 +11,23 @@ return {
         desc = "Git branches",
       },
       {
-        "<leader>/",
-        function()
-          local git_root = find_git_root()
-          if git_root then
-            Snacks.picker.grep({
-              finder = "grep",
-              format = "file",
-              live = true, -- live grep by default
-              supports_live = true,
-              dirs = { git_root },
-              regex = true,
-            })
-          end
-        end,
-        desc = "Grep (git root)",
-      },
-      {
         "<leader>fg",
         function()
-          local git_root = find_git_root()
-          if git_root then
-            Snacks.picker.files({
-              finder = "files",
-              format = "file",
-              -- live = true, -- live grep by default
-              supports_live = true,
-              dirs = { git_root },
-              -- regex = true,
-            })
-          end
+          Snacks.picker.git_files({ cwd = LazyVim.root.git() })
+        end,
+        desc = "Find Files (git-files)",
+      },
+      {
+        "<leader>/",
+        function()
+          Snacks.picker.grep({
+            finder = "grep",
+            format = "file",
+            live = true, -- live grep by default
+            supports_live = true,
+            dirs = { LazyVim.root.git() },
+            regex = true,
+          })
         end,
         desc = "Grep (git root)",
       },
@@ -87,13 +52,6 @@ return {
           })
         end,
         desc = "Find Plugin File",
-      },
-      {
-        "<leader>fu",
-        function()
-          Snacks.picker.pick("undo", {})
-        end,
-        desc = "Choose from undo tree",
       },
     },
     opts = {
@@ -180,6 +138,15 @@ return {
           i_cr = { "<cr>", { "cmp_accept", "confirm" }, mode = "i" },
           i_tab = { "<tab>", { "cmp_select_next", "cmp" }, mode = "i" },
           q = "cancel",
+        },
+      },
+      gitbrowse = {
+        url_patterns = {
+          ["dev%.azure%.com"] = {
+            file = "?path=/{file}&version=GB{branch}&line={line_start}&lineEnd={line_end}&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+            commit = "/commit/{commit}",
+            branch = "",
+          },
         },
       },
       picker = {
