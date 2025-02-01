@@ -2,8 +2,8 @@ local leet_arg = "leetcode.nvim"
 return {
   {
     "kawre/leetcode.nvim",
-    enabled = false,
     lazy = leet_arg ~= vim.fn.argv()[1],
+    cmd = "Leet",
     opts = {
       arg = leet_arg,
       lang = "golang",
@@ -28,7 +28,6 @@ return {
 
       -- optional
       "nvim-treesitter/nvim-treesitter",
-      "rcarriga/nvim-notify",
       "nvim-tree/nvim-web-devicons",
     },
     keys = {

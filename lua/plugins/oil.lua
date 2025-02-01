@@ -1,6 +1,7 @@
 return {
   {
     "stevearc/oil.nvim",
+    enabled = false,
     ---@module 'oil'
     ---@type oil.SetupOpts
     opts = {
@@ -18,6 +19,7 @@ return {
         "<leader>e",
         function()
           require("oil").open_float()
+          -- Snacks.picker.explorer()
         end,
         "Open oil file viewer",
       },

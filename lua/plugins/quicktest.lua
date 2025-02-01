@@ -41,10 +41,9 @@ return {
   },
   keys = {
     {
-      "<leader>tql",
+      "<leader>tl",
       function()
-        local qt = require("quicktest")
-        -- current_win_mode return currently opened panel, split or popup
+        local qt = require("quicktest") -- current_win_mode return currently opened panel, split or popup
         qt.run_line()
         -- You can force open split or popup like this:
         -- qt.run_line('split')
@@ -53,7 +52,7 @@ return {
       desc = "[T]est Run [L]line",
     },
     {
-      "<leader>tqf",
+      "<leader>tf",
       function()
         local qt = require("quicktest")
 
@@ -62,7 +61,7 @@ return {
       desc = "[T]est Run [F]ile",
     },
     {
-      "<leader>tqd",
+      "<leader>td",
       function()
         local qt = require("quicktest")
 
@@ -71,7 +70,7 @@ return {
       desc = "[T]est Run [D]ir",
     },
     {
-      "<leader>tqa",
+      "<leader>ta",
       function()
         local qt = require("quicktest")
 
@@ -80,7 +79,7 @@ return {
       desc = "[T]est Run [A]ll",
     },
     {
-      "<leader>tqp",
+      "<leader>tp",
       function()
         local qt = require("quicktest")
 
@@ -89,7 +88,7 @@ return {
       desc = "[T]est Run [P]revious",
     },
     {
-      "<leader>tqt",
+      "<leader>tt",
       function()
         local qt = require("quicktest")
 
@@ -98,7 +97,7 @@ return {
       desc = "[T]est [T]oggle Window",
     },
     {
-      "<leader>tqc",
+      "<leader>tc",
       function()
         local qt = require("quicktest")
 

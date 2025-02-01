@@ -1,3 +1,63 @@
+local gitActions = {
+  actions = {
+    ["diffview"] = function(picker)
+      local currentCommit = picker:current().commit
+      picker:close()
+      if currentCommit then
+        local args = { currentCommit .. "^" .. "!" }
+        require("diffview").open(args)
+      end
+    end,
+  },
+  win = {
+    input = {
+      keys = {
+        ["<CR>"] = {
+          "diffview",
+          desc = "Diffview this commit",
+          mode = { "n", "i" },
+        },
+      },
+    },
+  },
+}
+local pickerInputKeys = {
+  ["<a-d>"] = false,
+  ["<c-i>"] = { "inspect", mode = { "n", "i" } },
+
+  ["<c-a>"] = false, -- select all not needed
+  -- ["<c-l>"] = { "select_all", mode = { "n", "i" } },
+
+  ["<a-m>"] = false,
+  ["<c-z>"] = { "toggle_maximize", mode = { "n", "i" } },
+
+  ["<a-p>"] = false,
+  ["<c-t>"] = { "toggle_preview", mode = { "i", "n" } },
+
+  ["<a-w>"] = false,
+  ["<c-e>"] = { "cycle_win", mode = { "i", "n" } },
+  ["<C-w>"] = { "<c-s-w>", mode = { "i" }, expr = true, desc = "delete word" },
+
+  ["<C-Up>"] = false,
+  ["<C-Down>"] = false,
+  ["<c-j>"] = { "history_back", mode = { "i", "n" } },
+  ["<c-k>"] = { "history_forward", mode = { "i", "n" } },
+
+  ["<Tab>"] = false,
+  ["<S-Tab>"] = false,
+  --
+  ["<Down>"] = false,
+  ["<Up>"] = false,
+
+  -- ["<c-j>"] = { "list_down", mode = { "i", "n" } },
+  -- ["<c-k>"] = { "list_up", mode = { "i", "n" } },
+
+  ["<a-i>"] = false,
+  ["<a-h>"] = false,
+  ["<c-,>"] = { "toggle_ignored", mode = { "i", "n" } },
+  ["<c-.>"] = { "toggle_hidden", mode = { "i", "n" } },
+}
+
 return {
   {
     "folke/snacks.nvim",
@@ -6,14 +66,19 @@ return {
       {
         "<leader>gt",
         function()
-          Snacks.picker.pick("git_branches", {})
+          Snacks.picker.pick("git_branches")
         end,
         desc = "Git branches",
       },
       {
         "<leader>fg",
         function()
-          Snacks.picker.git_files({ cwd = LazyVim.root.git() })
+          Snacks.picker.git_files({
+            finder = "git_files",
+            show_empty = true,
+            format = "file",
+            cwd = LazyVim.root.git(),
+          })
         end,
         desc = "Find Files (git-files)",
       },
@@ -23,10 +88,11 @@ return {
           Snacks.picker.grep({
             finder = "grep",
             format = "file",
-            live = true, -- live grep by default
+            show_empty = true,
+            live = true,
             supports_live = true,
             dirs = { LazyVim.root.git() },
-            regex = true,
+            regex = false,
           })
         end,
         desc = "Grep (git root)",
@@ -42,6 +108,7 @@ return {
         "<leader>fP",
         function()
           Snacks.picker.files({
+            show_empty = true,
             finder = "files",
             format = "file",
             hidden = false,
@@ -57,25 +124,44 @@ return {
     opts = {
       dashboard = {
         enabled = true,
+        width = 18,
         preset = {
-          header = [[ 
-                                                                       
-         ████ ██████           █████      ██                     
-        ███████████             █████                             
-        █████████ ███████████████████ ███   ███████████   
-       ███:)████  ███    █████████████ █████ ██████████████   
-      █████████ ██████████ █████████ █████ █████ ████ █████   
-    ███████████ ███    ███ █████████ █████ █████ ████ █████  
-   ██████  █████████████████████ ████ █████ █████ ████ ██████ 
-                                                                         
-]],
+          keys = {
+            {
+              icon = "󱃾 ",
+              key = "K",
+              desc = "kubectl open",
+              action = ":lua require('kubectl').toggle()",
+            },
+            {
+              icon = " ",
+              key = "D",
+              desc = "dadbod ui open",
+              action = ":enew | DBUIToggle",
+            },
+            {
+              icon = " ",
+              key = "L",
+              desc = "leetcode",
+              action = ":Leet",
+            },
+            {
+              icon = " ",
+              key = "S",
+              desc = "restore session",
+              action = ":lua require('persistence').load({ last = true })",
+            },
+            { icon = " ", key = "q", desc = "quit", action = ":qa" },
+          },
+          header = require("custom.headers").neovim,
+        },
+        formats = {
+          key = { "" },
         },
         sections = {
-          -- { section = "terminal", cmd = "fortune -s", hl = "header", padding = 1, indent = 8 },
           { section = "header" },
           { section = "keys", gap = 1, padding = 1 },
           { section = "startup" },
-          -- { section = "terminal", cmd = "fortune -s ", hl = "header", indent = 6 },
         },
       },
       lazygit = {
@@ -150,45 +236,26 @@ return {
         },
       },
       picker = {
+        sources = {
+          explorer = {
+            enabled = true,
+            auto_close = true,
+            jump = { close = false },
+            layout = { preset = "default", preview = false },
+            formatters = { file = { filename_only = true } },
+            matcher = {
+              regex = false,
+              fuzzy = true, -- use fuzzy matching
+              sort_empty = true,
+            },
+          },
+          git_log = gitActions,
+          git_log_file = gitActions,
+        },
         win = {
           -- input window
           input = {
-            keys = {
-              ["<a-d>"] = false,
-              ["<c-i>"] = { "inspect", mode = { "n", "i" } },
-
-              ["<c-a>"] = false,
-              ["<c-l>"] = { "select_all", mode = { "n", "i" } },
-
-              ["<a-m>"] = false,
-              ["<c-z>"] = { "toggle_maximize", mode = { "n", "i" } },
-
-              ["<a-p>"] = false,
-              ["<c-t>"] = { "toggle_preview", mode = { "i", "n" } },
-
-              ["<a-w>"] = false,
-              ["<c-e>"] = { "cycle_win", mode = { "i", "n" } },
-              ["<C-w>"] = { "<c-s-w>", mode = { "i" }, expr = true, desc = "delete word" },
-
-              ["<C-Up>"] = false,
-              ["<C-Down>"] = false,
-              ["<c-j>"] = { "history_back", mode = { "i", "n" } },
-              ["<c-k>"] = { "history_forward", mode = { "i", "n" } },
-
-              ["<Tab>"] = false,
-              ["<S-Tab>"] = false,
-              --
-              ["<Down>"] = false,
-              ["<Up>"] = false,
-
-              -- ["<c-j>"] = { "list_down", mode = { "i", "n" } },
-              -- ["<c-k>"] = { "list_up", mode = { "i", "n" } },
-
-              ["<a-i>"] = false,
-              ["<a-h>"] = false,
-              ["<c-,>"] = { "toggle_ignored", mode = { "i", "n" } },
-              ["<c-.>"] = { "toggle_hidden", mode = { "i", "n" } },
-            },
+            keys = pickerInputKeys,
             b = {
               minipairs_disable = true,
             },
@@ -203,7 +270,7 @@ return {
               ["<Down>"] = false,
               ["<Up>"] = false,
               ["<c-i>"] = "inspect",
-              ["<c-l>"] = "select_all",
+              -- ["<c-l>"] = "select_all",
               ["<c-f>"] = "preview_scroll_down",
               ["<c-b>"] = "preview_scroll_up",
             },
@@ -245,15 +312,6 @@ return {
             },
           },
         },
-        -- preset = "ivy",
-
-        -- - default                                    |snacks-picker-layouts-default|
-        -- - dropdown                                  |snacks-picker-layouts-dropdown|
-        -- - ivy                                            |snacks-picker-layouts-ivy|
-        -- - select                                      |snacks-picker-layouts-select|
-        -- - telescope                                |snacks-picker-layouts-telescope|
-        -- - vertical                                  |snacks-picker-layouts-vertical|
-        -- - vscode                                      |snacks-picker-layouts-vscode|
         formatters = {
           file = {
             filename_first = true,

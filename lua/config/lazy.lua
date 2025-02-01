@@ -45,8 +45,8 @@ require("lazy").setup({
         },
       },
       keys = {
-        { "<leader>lx", ":LazyExtras<CR>", desc = "LazyExtras" },
-        { "<leader>ll", ":Lazy<CR>", desc = "Lazy" },
+        { "<leader>lX", ":LazyExtras<CR>", desc = "LazyExtras" },
+        { "<leader>lL", ":Lazy<CR>", desc = "Lazy" },
       },
     },
     -- import/override with your plugins
