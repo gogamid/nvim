@@ -61,17 +61,14 @@ local pickerInputKeys = {
 return {
   {
     "folke/snacks.nvim",
+    -- stylua: ignore
     keys = {
       { "<leader>n", false },
-      {
-        "<leader>gt",
-        function()
-          Snacks.picker.pick("git_branches")
-        end,
-        desc = "Git branches",
-      },
-      {
-        "<leader>fg",
+      { "<leader>.", false }, --no scratch buffer
+      { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
+      { "<leader>gt", function() Snacks.picker.pick("git_branches") end, desc = "Git branches", },
+      { "<leader>fz", function() Snacks.picker.zoxide({}) end, desc = "Zoxide folders", },
+      { "<leader>fg",
         function()
           Snacks.picker.git_files({
             finder = "git_files",
@@ -98,13 +95,6 @@ return {
         desc = "Grep (git root)",
       },
       {
-        "<leader>fz",
-        function()
-          Snacks.picker.zoxide({})
-        end,
-        desc = "Zoxide folders",
-      },
-      {
         "<leader>fP",
         function()
           Snacks.picker.files({
@@ -126,31 +116,12 @@ return {
         enabled = true,
         width = 18,
         preset = {
+          -- stylua: ignore
           keys = {
-            {
-              icon = "󱃾 ",
-              key = "K",
-              desc = "kubectl open",
-              action = ":lua require('kubectl').toggle()",
-            },
-            {
-              icon = " ",
-              key = "D",
-              desc = "dadbod ui open",
-              action = ":enew | DBUIToggle",
-            },
-            {
-              icon = " ",
-              key = "L",
-              desc = "leetcode",
-              action = ":Leet",
-            },
-            {
-              icon = " ",
-              key = "S",
-              desc = "restore session",
-              action = ":lua require('persistence').load({ last = true })",
-            },
+            { icon = "󱃾 ", key = "K", desc = "kubectl open", action = ":lua require('kubectl').toggle()" },
+            { icon = " ", key = "D", desc = "dadbod ui open", action = ":enew | DBUIToggle" },
+            { icon = " ", key = "L", desc = "leetcode", action = ":Leet" },
+            { icon = " ", key = "S", desc = "restore session", action = ":lua require('persistence').load({ last = true })", },
             { icon = " ", key = "q", desc = "quit", action = ":qa" },
           },
           header = require("custom.headers").neovim,
@@ -184,7 +155,7 @@ return {
           },
         },
       },
-      bigfile = { enabled = true },
+      bigfile = { enabled = false },
       notifier = {
         enabled = true,
         timeout = 3000,
@@ -251,6 +222,7 @@ return {
           },
           git_log = gitActions,
           git_log_file = gitActions,
+          git_log_line = gitActions,
         },
         win = {
           -- input window
