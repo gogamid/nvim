@@ -15,7 +15,6 @@ return {
       use_baleia = false,
 
       popup_options = {
-
         enter = true,
         bufnr = popup_buf,
         focusable = true,
@@ -33,6 +32,7 @@ return {
         },
         zindex = 100, -- Ensure the popup is on top of all panes
       },
+      use_builtin_colorizer = true,
     })
   end,
   dependencies = {
