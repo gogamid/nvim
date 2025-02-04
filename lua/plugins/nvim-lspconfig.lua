@@ -1,28 +1,18 @@
 local function organize_imports_if_available()
-  local params = vim.lsp.util.make_range_params()
-  params.context = { only = { "source.organizeImports" } }
+  local params = vim.lsp.util.make_range_params(0, "utf-8")
 
-  vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, result, ctx, config)
-    if err then
-      -- print("Error fetching code actions: " .. err.message)
+  vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, result, ctx)
+    if err or not result or vim.tbl_isempty(result) then
       return
     end
-
-    if not result or vim.tbl_isempty(result) then
-      -- print("No organize imports action available")
-      return
-    end
-
     for _, action in pairs(result) do
       if action.kind == "source.organizeImports" then
         if action.command then
-          vim.lsp.buf.execute_command(action.command)
+          vim.lsp.buf.code_action({ context = { only = { action.command }, diagnostics = {}, context = ctx } })
           print("Organized imports")
         elseif action.edit then
           vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
           print("Applied workspace edit for organizing imports")
-        else
-          -- print("No command or edit available for organizing imports")
         end
         return
       end
@@ -42,14 +32,21 @@ return {
       },
       -- inlay_hints = { enabled = false },
       servers = {
+        eslint = {
+          on_attach = function(_, bufnr)
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              buffer = bufnr,
+              command = "EslintFixAll",
+            })
+          end,
+        },
         -- make sure the proto server is insalled with default config
         buf_ls = {},
-        -- main go lsp
         gopls = {
           settings = {
             gopls = {
               buildFlags = { "-tags=manual_test" },
-              ["local"] = "dev.azure.com/schwarzit/lidl.wawi-core",
+              ["local"] = os.getenv("GO_LOCAL_PKG"),
               analyses = {
                 shadow = true,
                 unusedvariable = true,
@@ -67,7 +64,6 @@ return {
               noSemanticString = true,
             },
           },
-
           on_attach = function(_, bufnr)
             vim.api.nvim_create_autocmd("BufWritePre", {
               buffer = bufnr,
@@ -99,8 +95,19 @@ return {
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
         },
       },
+      setup = {
+        -- remove this once fieldalignment is removed from default
+        gopls = function(_, opts)
+          local an = opts.settings.gopls.analyses
+          local filtered_an = {}
+          for k, v in pairs(an) do
+            if k ~= "fieldalignment" then
+              filtered_an[k] = v
+            end
+          end
+          opts.settings.gopls.analyses = filtered_an
+        end,
+      },
     },
   },
 }
-
--- LSP[gopls] Invalid settings: setting option "analyses": this setting is deprecated, use "the 'fieldalignment' analyzer was removed in gopls/v0.17.0; instead, hover over struct fields to see size/offset information (https://go.dev/issue/66861)" instead
