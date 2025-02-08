@@ -95,19 +95,7 @@ return {
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
         },
       },
-      setup = {
-        -- remove this once fieldalignment is removed from default
-        gopls = function(_, opts)
-          local an = opts.settings.gopls.analyses
-          local filtered_an = {}
-          for k, v in pairs(an) do
-            if k ~= "fieldalignment" then
-              filtered_an[k] = v
-            end
-          end
-          opts.settings.gopls.analyses = filtered_an
-        end,
-      },
+      setup = {},
     },
   },
 }
