@@ -16,7 +16,6 @@ vim.opt.rtp:prepend(lazypath)
 
 -- General/Global LSP Configuration
 -- fix for https://github.com/neovim/neovim/issues/28058
-local api = vim.api
 local lsp = vim.lsp
 
 local make_client_capabilities = lsp.protocol.make_client_capabilities
