@@ -1,18 +1,15 @@
 local function organize_imports_if_available()
   local params = vim.lsp.util.make_range_params(0, "utf-8")
-
-  vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, result, ctx)
+  vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, result, _)
     if err or not result or vim.tbl_isempty(result) then
       return
     end
     for _, action in pairs(result) do
       if action.kind == "source.organizeImports" then
         if action.command then
-          vim.lsp.buf.code_action({ context = { only = { action.command }, diagnostics = {}, context = ctx } })
-          print("Organized imports")
+          LazyVim.lsp.action["source.organizeImports"]()
         elseif action.edit then
           vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
-          print("Applied workspace edit for organizing imports")
         end
         return
       end
@@ -24,13 +21,10 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
-      diagnostics = {
-        virtual_text = false,
-      },
       format = {
         timeout_ms = 500,
       },
-      -- inlay_hints = { enabled = false },
+      inlay_hints = { enabled = false },
       servers = {
         eslint = {
           on_attach = function(_, bufnr)
@@ -60,8 +54,6 @@ return {
                 parameterNames = false,
                 rangeVariableTypes = false,
               },
-              -- do not override string highlighting for sql query, any side effects?
-              noSemanticString = true,
             },
           },
           on_attach = function(_, bufnr)
@@ -94,6 +86,7 @@ return {
         clangd = {
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
         },
+        sqls = {},
       },
       setup = {},
     },

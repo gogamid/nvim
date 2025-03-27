@@ -33,34 +33,43 @@ local colors = require("catppuccin.palettes").get_palette(flavour)
 return {
   {
     "folke/tokyonight.nvim",
-    enabled = false,
   },
   {
     "catppuccin/nvim",
     name = "catppuccin",
     priority = 1000,
+    -- keys = {
+    --   {
+    --     "<leader>u.",
+    --     function()
+    --       require("catppuccin").options.transparent_background = false
+    --       vim.cmd("colorscheme tokyonight-day")
+    --     end,
+    --     "Toggle to Light Colorscheme",
+    --   },
+    -- },
     opts = {
       transparent_background = true,
       custom_highlights = {
         CursorLineNr = { bg = "none", fg = "#d2a4fd" },
-        CursorLine = { bg = u.blend(colors.mauve, colors.base, 0.10) },
+        --   CursorLine = { bg = u.blend(colors.mauve, colors.base, 0.10) },
       },
     },
   },
-  {
-    "f-person/auto-dark-mode.nvim",
-    opts = {
-      update_interval = 1000,
-      set_dark_mode = function()
-        vim.api.nvim_set_option_value("background", "dark", {})
-        require("catppuccin").options.transparent_background = true
-        vim.cmd("colorscheme catppuccin-mocha")
-      end,
-      set_light_mode = function()
-        vim.api.nvim_set_option_value("background", "light", {})
-        require("catppuccin").options.transparent_background = false
-        vim.cmd("colorscheme default")
-      end,
-    },
-  },
+  -- {
+  --   "f-person/auto-dark-mode.nvim",
+  --   opts = {
+  --     update_interval = 1000,
+  --     set_dark_mode = function()
+  --       vim.api.nvim_set_option_value("background", "dark", {})
+  --       require("catppuccin").options.transparent_background = true
+  --       vim.cmd("colorscheme catppuccin-mocha")
+  --     end,
+  --     set_light_mode = function()
+  --       vim.api.nvim_set_option_value("background", "light", {})
+  --       require("catppuccin").options.transparent_background = false
+  --       vim.cmd("colorscheme default")
+  --     end,
+  --   },
+  -- },
 }

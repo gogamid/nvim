@@ -57,6 +57,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "help",
     "markdown",
     "oil",
+    "codecompanion",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
@@ -89,5 +90,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.wo.foldmethod = "expr"
       vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
     end)
+    -- LazyVim.lsp.on_supports_method("source.organizeImports", function()
+    --   vim.api.nvim_create_autocmd("BufWritePre", {
+    --     buffer = args.buf,
+    --     callback = organize_imports_if_available,
+    --   })
+    -- end)
   end,
 })

@@ -39,19 +39,15 @@ return {
             end,
           },
         },
+        lualine_z = {},
       },
     },
   },
   {
     "nvim-lualine/lualine.nvim",
     opts = function(_, opts)
-      table.insert(opts.sections.lualine_x, 2, {
-        function()
-          local output = string.find(require("tabnine.status").status(), "disabled") and ""
-            or LazyVim.config.icons.kinds.TabNine
-          return output
-        end,
-      })
+      -- remove lazy updates symbol
+      table.remove(opts.sections.lualine_x, 5)
     end,
   },
 }

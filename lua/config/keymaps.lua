@@ -49,3 +49,7 @@ map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 
 -- disable Lazy keymap and use my own
 vim.keymap.set("n", "<leader>l", "", { silent = true })
+
+if vim.g.started_by_firenvim == true then
+  vim.keymap.set({ "n", "i", "v" }, "<C-s>", "<Esc>:wq<CR>")
+end

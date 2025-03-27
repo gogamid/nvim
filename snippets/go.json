@@ -1,4 +1,8 @@
 {
+  "todo gamidli": {
+    "prefix": "td",
+    "body": ["// TODO: Gamidli: "]
+  },
   "test starter": {
     "prefix": "ttstarter",
     "body": [

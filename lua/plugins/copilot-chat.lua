@@ -5,12 +5,7 @@ return {
       {
         "<leader>ap",
         function()
-          local actions = require("CopilotChat.actions")
-          require("CopilotChat.integrations.snacks").pick(actions.prompt_actions(), {
-            layout = {
-              preset = "dropdown",
-            },
-          })
+          require("CopilotChat").select_prompt()
         end,
         desc = "Prompt actions",
       },
@@ -40,7 +35,7 @@ return {
       },
     },
     opts = {
-      model = "gemini-2.0-flash-001",
+      model = "DeepSeek-V3",
       question_header = "## Me", -- Header to use for user questions
       answer_header = "## Broski", -- Header to use for AI answers
       window = {
