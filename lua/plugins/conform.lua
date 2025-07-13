@@ -12,6 +12,8 @@ return {
         go = { "gofumpt", "goimports" },
         -- sql = { "sleek" },
         query = { "format-queries" },
+        http = { "kulala-fmt" },
+        xml = { "xmlformatter" },
       },
       formatters = {
         goimports = {

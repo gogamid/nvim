@@ -24,8 +24,8 @@ return {
       },
       lazygit = {
         win = {
-          width = 0.9,
-          height = 0.9,
+          width = 0.99,
+          height = 0.99,
         },
       },
       terminal = {

@@ -1,5 +1,6 @@
 return {
   "olimorris/codecompanion.nvim",
+  enabled = true,
   config = true,
   dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
   opts = {

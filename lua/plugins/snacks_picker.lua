@@ -1,4 +1,4 @@
-local gitActions = {
+local gitOptions = {
   actions = {
     ["diffview"] = function(picker)
       local currentCommit = picker:current().commit
@@ -21,12 +21,43 @@ local gitActions = {
     },
   },
 }
+local marksOptions = {
+  actions = {
+    ["delete_mark"] = function(picker)
+      picker.preview:reset()
+      local currentMark = picker:current()
+      local label = currentMark and currentMark.label
+      if label and label == label:lower() then
+        vim.api.nvim_buf_del_mark(0, label)
+      elseif label then
+        vim.api.nvim_del_mark(label)
+      end
+      picker.list:set_selected()
+      picker.list:set_target()
+      picker:find()
+    end,
+  },
+  win = {
+    input = {
+      keys = {
+        ["<C-x>"] = {
+          "delete_mark",
+          desc = "Delete mark",
+          mode = { "n", "i" },
+        },
+      },
+    },
+  },
+  ["local"] = false,
+  -- TODO: do not show 0-9 marks
+}
+
 local pickerInputKeys = {
   ["<a-d>"] = false,
   ["<c-i>"] = { "inspect", mode = { "n", "i" } },
 
-  ["<c-a>"] = false, -- select all not needed
-  -- ["<c-l>"] = { "select_all", mode = { "n", "i" } },
+  ["<c-l>"] = { "select_and_next", mode = { "n", "i" } },
+  ["<c-a>"] = { "select_all", mode = { "n", "i" } },
 
   ["<a-m>"] = false,
   ["<c-z>"] = { "toggle_maximize", mode = { "n", "i" } },
@@ -74,9 +105,10 @@ return {
             fuzzy = false, -- use fuzzy matching
           },
         },
-        git_log = gitActions,
-        git_log_file = gitActions,
-        git_log_line = gitActions,
+        git_log = gitOptions,
+        git_log_file = gitOptions,
+        git_log_line = gitOptions,
+        marks = marksOptions,
       },
       win = {
         -- input window
@@ -152,6 +184,15 @@ return {
         Snacks.picker.smart()
       end,
       desc = "Smart Find Files",
+    },
+    {
+      "<leader>fs",
+      function()
+        Snacks.picker.files({
+          dirs = { vim.fs.root(vim.api.nvim_get_current_buf(), { "service.yaml" }) },
+        })
+      end,
+      desc = "find files in the service",
     },
     {
       "<leader>gt",

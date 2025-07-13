@@ -1,6 +1,7 @@
 return {
   {
     "ramilito/kubectl.nvim",
+    enabled = false,
     keys = {
       { "<leader>kk", ':lua require("kubectl").toggle()<cr>', mode = "n", desc = "Open Kubectl" },
     },

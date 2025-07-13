@@ -37,6 +37,10 @@ return {
       -- Choose your adapter, here all supported adapters are listed
       adapters = {
         require("quicktest.adapters.golang")({
+          args = function(bufnt, args)
+            vim.list_extend(args, { "-count=1" })
+            return args
+          end,
           additional_args = function(_)
             return { "-tags=manual_test" }
           end,

@@ -10,10 +10,10 @@ vim.keymap.set("n", "*", "*zz")
 vim.keymap.set("n", "#", "#zz")
 
 local ss = require("smart-splits")
--- vim.keymap.set("n", "<C-Left>", ss.resize_left)
--- vim.keymap.set("n", "<C-Down>", ss.resize_down)
--- vim.keymap.set("n", "<C-Up>", ss.resize_up)
--- vim.keymap.set("n", "<C-Right>", ss.resize_right)
+vim.keymap.set("v", "<C-h>", ss.resize_left)
+vim.keymap.set("v", "<C-j>", ss.resize_down)
+vim.keymap.set("v", "<C-k>", ss.resize_up)
+vim.keymap.set("v", "<C-l>", ss.resize_right)
 
 -- moving between splits
 vim.keymap.set("n", "<C-h>", require("smart-splits").move_cursor_left)
@@ -53,3 +53,5 @@ vim.keymap.set("n", "<leader>l", "", { silent = true })
 if vim.g.started_by_firenvim == true then
   vim.keymap.set({ "n", "i", "v" }, "<C-s>", "<Esc>:wq<CR>")
 end
+
+vim.keymap.set("x", "p", "P", { noremap = true }) -- Use 'P' (preserves register)

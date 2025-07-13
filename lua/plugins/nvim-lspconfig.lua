@@ -34,6 +34,7 @@ return {
             })
           end,
         },
+        kulala_ls = {},
         -- make sure the proto server is insalled with default config
         buf_ls = {},
         gopls = {
@@ -68,20 +69,21 @@ return {
           -- cmd = { "gopls", "-remote=auto", "-remote.listen.timeout", "2m" },
         },
         -- for go linting of extra space after for loop, combining same type method params etc
-        golangci_lint_ls = {
-          root_dir = function(fname)
-            return require("lspconfig.util").root_pattern(
-              "service.yaml", --run it for each microservice not whole monorepo
-              ".golangci.yml",
-              ".golangci.yaml",
-              ".golangci.toml",
-              ".golangci.json",
-              "go.work",
-              "go.mod",
-              ".git"
-            )(fname)
-          end,
-        },
+        -- golangci_lint_ls = {
+        --   root_dir = function(fname)
+        --     return require("lspconfig.util").root_pattern(
+        --       "service.yaml", --run it for each microservice not whole monorepo
+        --       ".golangci.yml",
+        --       ".golangci.yaml",
+        --       ".golangci.toml",
+        --       ".golangci.json",
+        --       "go.work",
+        --       "go.mod",
+        --       ".git"
+        --     )(fname)
+        --   end,
+        --   },
+        -- },
         -- removed proto from here
         clangd = {
           filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
