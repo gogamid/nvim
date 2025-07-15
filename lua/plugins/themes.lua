@@ -1,23 +1,33 @@
 return {
   { "Mofiqul/vscode.nvim" },
-  {
-    "sainnhe/everforest",
-    -- config = function(_, opts)
-    --   vim.g.everforest_transparent_background = 1
-    -- end,
-  },
+  { "sainnhe/everforest" },
   { "folke/tokyonight.nvim" },
+  { "rose-pine/neovim", name = "rose-pine" },
+  { "projekt0n/github-nvim-theme", name = "github-theme" },
   {
-    "projekt0n/github-nvim-theme",
-    name = "github-theme",
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-    config = function()
-      require("github-theme").setup({
-        -- options = {
-        --   transparent = true,
-        -- },
-      })
-    end,
+    "catppuccin/nvim",
+    name = "catppuccin",
+    -- priority = 1000,
+    -- opts = {
+    --   transparent_background = true,
+    --   custom_highlights = {
+    --     CursorLineNr = { bg = "none", fg = "#d2a4fd" },
+    --     --   CursorLine = { bg = u.blend(colors.mauve, colors.base, 0.10) },
+    --   },
+    -- },
+  },
+  {
+    "f-person/auto-dark-mode.nvim",
+    opts = {
+      update_interval = 1000,
+      set_dark_mode = function()
+        vim.api.nvim_set_option_value("background", "dark", {})
+        vim.cmd("colorscheme catppuccin-mocha")
+      end,
+      set_light_mode = function()
+        vim.api.nvim_set_option_value("background", "light", {})
+        vim.cmd("colorscheme rose-pine-dawn")
+      end,
+    },
   },
 }

@@ -8,14 +8,11 @@ return {
     opts = {
       image = {},
       dashboard = {
-        enabled = true,
         preset = {
           keys = {},
           header = require("custom.headers").neovim,
         },
-        formats = {
-          key = { "" },
-        },
+        formats = { key = { "" } },
         sections = {
           { section = "header" },
           { section = "keys", gap = 1, padding = 1 },
@@ -57,11 +54,9 @@ return {
         },
       },
       zen = {
-        toggles = {
-          dim = false,
-        },
+        toggles = { dim = false },
       },
-      input = {},
+      input = { enabled = true },
       gitbrowse = {
         url_patterns = {
           ["dev%.azure%.com"] = {
