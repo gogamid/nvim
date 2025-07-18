@@ -24,7 +24,7 @@ opt.fillchars = {
   foldsep = "▕",
 }
 
-opt.wrap = true
+opt.wrap = false
 
 --disable ai cmp only virtual text
 vim.g.ai_cmp = false

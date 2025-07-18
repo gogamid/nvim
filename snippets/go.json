@@ -72,5 +72,31 @@
       "\treturn nil",
       "}"
     ]
+  },
+  "pager": {
+    "prefix": "pager",
+    "body": [
+      "pager := paging.NewPager(",
+      "\t(*pb${1:Var1}.List${2:Var2}Response).Get${2:Var2},",
+      "\tfunc(ctx context.Context, pageToken string) (*pb${1:Var1}.List${2:Var2}Response, error) {",
+      "\t\treturn retry.Backoff(ctx, retry.LongrunningConfig(), func(ctx context.Context) (*pb${1:Var1}.List${2:Var2}Response, error) {",
+      "\t\t\treturn svc.${1:Var1}.List${2:Var2}(ctx, &pb${1:Var1}.List${2:Var2}Request{",
+      "\t\t\t\tPageSize:  paging.DefaultPageSize,",
+      "\t\t\t\tPageToken: pageToken,",
+      "\t\t\t\tFilter: &pb${1:Var1}.List${2:Var2}Request_And{",
+      "\t\t\t\t\tAnd: &pb${1:Var1}.List${2:Var2}Request_FiltersOneOf{",
+      "\t\t\t\t\t\tFilters: []*pb${1:Var1}.${2:Var2}FilterOneOf{},",
+      "\t\t\t\t\t},",
+      "\t\t\t\t},",
+      "\t\t\t})",
+      "\t\t})",
+      "\t},",
+      ")",
+      "for item, err := range pager.All(ctx, paging.AllPages) {",
+      "\tif err != nil {",
+      "\t\treturn fmt.Errorf(\"error fetching ${2:Var2}: %w\", err)",
+      "\t}",
+      "}"
+    ]
   }
 }
