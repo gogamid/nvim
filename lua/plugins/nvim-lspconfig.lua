@@ -40,6 +40,7 @@ return {
         gopls = {
           settings = {
             gopls = {
+              gofumpt = true,
               buildFlags = { "-tags=manual_test" },
               ["local"] = os.getenv("GO_LOCAL_PKG"),
               analyses = {
