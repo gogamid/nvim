@@ -1,9 +1,13 @@
 return {
   "yetone/avante.nvim",
+  enabled = true,
   event = "VeryLazy",
   lazy = false,
   build = "make",
 
+  keys = {
+    { "<leader>as", false },
+  },
   opts = {
     provider = "copilot",
     providers = {
@@ -11,8 +15,10 @@ return {
         endpoint = "http://localhost:11434",
         model = "gemma3n:e4b",
       },
+      copilot = {
+        model = "gemini-2.5-pro",
+      },
     },
-
     web_search_engine = {
       provider = "tavily", -- tavily, serpapi, google, kagi, brave, or searxng
       proxy = nil, -- proxy support, e.g., http://127.0.0.1:7890
@@ -21,49 +27,11 @@ return {
       enable_fastapply = true, -- Enable Fast Apply feature
       auto_suggestions = false,
     },
-
     input = {
       provider = "snacks", -- "native" | "dressing" | "snacks"
     },
     selector = {
       provider = "snacks",
-    },
-
-    windows = {},
-    custom_tools = {
-      {
-        name = "run_go_tests", -- Unique name for the tool
-        description = "Run Go unit tests and return results", -- Description shown to AI
-        command = "go test -v ./...", -- Shell command to execute
-        param = { -- Input parameters (optional)
-          type = "table",
-          fields = {
-            {
-              name = "target",
-              description = "Package or directory to test (e.g. './pkg/...' or './internal/pkg')",
-              type = "string",
-              optional = true,
-            },
-          },
-        },
-        returns = { -- Expected return values
-          {
-            name = "result",
-            description = "Result of the fetch",
-            type = "string",
-          },
-          {
-            name = "error",
-            description = "Error message if the fetch was not successful",
-            type = "string",
-            optional = true,
-          },
-        },
-        func = function(params, on_log, on_complete) -- Custom function to execute
-          local target = params.target or "./..."
-          return vim.fn.system(string.format("go test -v %s", target))
-        end,
-      },
     },
   },
 }

@@ -15,20 +15,18 @@ return {
       disable_inline_completion = vim.g.ai_cmp,
     },
     keys = {
-      -- {
-      --   "<leader>aus",
-      --   function()
-      --     require("supermaven-nvim.api").stop()
-      --   end,
-      --   desc = "Toggle Supermaven",
-      -- },
-      -- {
-      --   "<leader>aut",
-      --   function()
-      --     require("supermaven-nvim.api").start()
-      --   end,
-      --   desc = "Toggle Supermaven",
-      -- },
+      {
+        "<leader>ast",
+        function()
+          require("supermaven-nvim.api").toggle()
+          if require("supermaven-nvim.api").is_running() then
+            print("supermaven running")
+          else
+            print("supermaven stopped")
+          end
+        end,
+        desc = "Toggle Supermaven",
+      },
     },
   },
 }

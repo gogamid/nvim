@@ -6,6 +6,15 @@ return {
         view = {
           display_mode = "border",
         },
+
+        parser = {
+          delimiter = {
+            default = ";",
+            ft = {
+              tsv = "\t",
+            },
+          },
+        },
       })
     end,
     ft = { "csv" },

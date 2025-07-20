@@ -236,6 +236,21 @@ return {
       desc = "Grep (git root)",
     },
     {
+      "<leader>sg",
+      function()
+        Snacks.picker.grep({
+          finder = "grep",
+          format = "file",
+          show_empty = true,
+          live = true,
+          supports_live = true,
+          dirs = { LazyVim.root.cwd() },
+          regex = false,
+        })
+      end,
+      desc = "Grep (git root)",
+    },
+    {
       "<leader>fP",
       function()
         Snacks.picker.files({
