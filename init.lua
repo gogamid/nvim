@@ -353,7 +353,7 @@ local function mode_icon()
         ["!"] = "SHELL",
         t = "TERMINAL",
     }
-    return (modes[mode] or "  ") .. mode:upper()
+    return modes[mode] or mode:upper()
 end
 
 _G.mode_icon = mode_icon
