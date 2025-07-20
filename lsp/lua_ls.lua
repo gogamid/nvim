@@ -1,29 +1,30 @@
 return {
-    cmd = { 'lua-language-server' },
-    filetypes = { 'lua' },
+    cmd = { "lua-language-server" },
+    filetypes = { "lua" },
     root_markers = {
-        '.luarc.json',
-        '.luarc.jsonc',
-        '.luacheckrc',
-        '.stylua.toml',
-        'stylua.toml',
-        'selene.toml',
-        'selene.yml',
-        '.git',
+        ".luarc.json",
+        ".luarc.jsonc",
+        ".luacheckrc",
+        ".stylua.toml",
+        "stylua.toml",
+        "selene.toml",
+        "selene.yml",
+        ".git",
     },
     settings = {
         Lua = {
             format = {
-                enable = true,
+                -- enable = true,
                 defaultConfig = {
-                    indent_style = "space",
-                    indent_size = "4",
-                }
+                    indent_style = "Space",
+                    indent_size = "2",
+                    column_width = "100",
+                },
             },
             workspace = {
                 checkThirdParty = false,
                 library = { vim.env.VIMRUNTIME },
             },
-        }
+        },
     },
 }
