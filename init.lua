@@ -3,9 +3,6 @@
 -- original author: Radley E. Sidwell-lewis, adapted by gogamid
 -- ================================================================================================
 
--- theme & transparency
-vim.g.appearance = "dark"
-
 -- Basic settings
 vim.opt.number = true         -- Line numbers
 vim.opt.relativenumber = true -- Relative line numbers
@@ -134,6 +131,8 @@ vim.keymap.set("n", "<leader>rc", ":e ~/.config/nvim/init.lua<CR>", { desc = "Ed
 -- USEFUL FUNCTIONS
 -- ============================================================================
 --
+-- theme & transparency
+vim.g.appearance = "dark"
 vim.keymap.set("n", "<leader>uc", function()
         if vim.g.appearance == "dark" then
             vim.g.appearance = "light"
