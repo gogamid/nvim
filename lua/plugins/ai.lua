@@ -1,11 +1,11 @@
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
+    enabled = true,
     dependencies = {
       { "github/copilot.vim" },
       { "nvim-lua/plenary.nvim", branch = "master" },
     },
-    enabled = true,
     keys = {
       { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
       { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
@@ -51,7 +51,7 @@ return {
       },
     },
     opts = {
-      -- model = "DeepSeek-V3",
+      chat_autocomplete = false, -- Enable chat autocompletion (when disabled, requires manual `mappings.complete` trigger)
       question_header = "## Me", -- Header to use for user questions
       answer_header = "## Broski", -- Header to use for AI answers
       window = {
@@ -147,32 +147,27 @@ Here are some rules:
   },
   {
     "supermaven-inc/supermaven-nvim",
+    keys = {
+      {
+        "<leader>ast",
+        function()
+          require("supermaven-nvim.api").toggle()
+        end,
+        desc = "Toggle Supermaven",
+      },
+    },
     opts = {
       keymaps = {
-        accept_suggestion = "<C-o>",
+        accept_suggestion = "<C-i>",
+        accept_word = "<C-o>",
         clear_suggestion = "<C-x>",
-        -- accept_word = "<Tab>",
       },
       ignore_filetypes = { "copilot-chat" },
       color = {
         suggestion_color = "#9198a1",
         cterm = 244,
       },
-      disable_inline_completion = vim.g.ai_cmp,
-    },
-    keys = {
-      {
-        "<leader>ast",
-        function()
-          require("supermaven-nvim.api").toggle()
-          if require("supermaven-nvim.api").is_running() then
-            print("supermaven running")
-          else
-            print("supermaven stopped")
-          end
-        end,
-        desc = "Toggle Supermaven",
-      },
+      disable_inline_completion = false,
     },
   },
 }

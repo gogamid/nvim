@@ -34,6 +34,64 @@ local c = {
   blue = "#8caaee",
   mauve = "#ca9ee6",
 }
+---@diagnostic disable: unused-function, unused-local
+local ok_everforest = pcall(require, "everforest")
+
+local autocmd = vim.api.nvim_create_autocmd
+local augroup = vim.api.nvim_create_augroup
+
+local function transparent()
+  vim.cmd([[
+    highlight Normal guibg=NONE ctermbg=NONE
+    highlight EndOfBuffer guibg=NONE ctermbg=NONE
+    highlight NonText ctermbg=NONE
+    highlight WinSeparator guibg=None  " Remove borders for window separators
+    highlight SignColumn guibg=None " Remove background from signs column
+    highlight NvimTreeWinSeparator guibg=None
+    highlight NvimTreeEndOfBuffer guibg=None
+    highlight NvimTreeNormal guibg=None
+  ]])
+end
+
+local function default()
+  -- -- highlight current line number
+  -- vim.opt.cursorline = true
+  -- vim.cmd("hi clear CursorLine")
+  -- local c = require("everforest.colors")
+  --
+  -- for _, func in ipairs(G.plugin_hl) do
+  --   func(c)
+  -- end
+  --
+end
+
+---@param background? "dark" | "light
+---@param contrast? "hard" | "medium" | "soft"
+local function everforest(background, contrast)
+  if not background then
+    background = "dark"
+  end
+  if not contrast then
+    contrast = "soft"
+  end
+
+  vim.cmd("set background=" .. background)
+  vim.cmd(string.format("let g:everforest_background='%s'", contrast))
+  vim.cmd([[
+    let g:everforest_enable_italic = 1
+    let g:everforest_disable_italic_comment = 1
+
+    colorscheme everforest
+  ]])
+end
+
+-- local group = augroup("colorscheme", {})
+-- autocmd("ColorScheme", {
+--   pattern = "*",
+--   group = group,
+--   callback = default,
+-- })
+
 return {
   {
     "catppuccin/nvim",
@@ -119,7 +177,7 @@ return {
           -- mantle = c.truffle_1,
           -- crust = c.truffle_2,
 
-          -- GREEN background
+          -- -- GREEN background
           rosewater = "#e6cfc3", -- warm, soft highlight (10%)
           flamingo = "#e9a07b", -- accent, earthy orange (10%)
           pink = "#e6b7a9", -- muted, warm pink (10%)
@@ -134,22 +192,22 @@ return {
           lavender = "#b3b9a5", -- soft, earthy lavender (10%)
           blue = "#7d8c8f", -- slate blue (10%)
           mauve = "#b49fa3", -- muted mauve (10%)
-
-          text = "#eae7d6", -- off-white, readable (surface/text, 30%)
-          subtext1 = "#cfcab8", -- lighter subtext
-          subtext0 = "#b3ae9c", -- even lighter subtext
-
-          overlay2 = "#a7a98b", -- overlay, subtle
-          overlay1 = "#8e8f7b",
-          overlay0 = "#757869",
-
-          surface2 = "#5c6a4d", -- surface, deep olive (30%)
-          surface1 = "#4b5a3a",
-          surface0 = "#3a4728", -- main highlight (background, 60%)
-
-          base = "#3a4728", -- lighter olive green for main background (60%)
-          mantle = "#2e3b23", -- slightly darker
-          crust = "#26311b", -- darkest
+          --
+          -- text = "#eae7d6", -- off-white, readable (surface/text, 30%)
+          -- subtext1 = "#cfcab8", -- lighter subtext
+          -- subtext0 = "#b3ae9c", -- even lighter subtext
+          --
+          -- overlay2 = "#a7a98b", -- overlay, subtle
+          -- overlay1 = "#8e8f7b",
+          -- overlay0 = "#757869",
+          --
+          -- surface2 = "#5c6a4d", -- surface, deep olive (30%)
+          -- surface1 = "#4b5a3a",
+          -- surface0 = "#3a4728", -- main highlight (background, 60%)
+          --
+          -- base = "#3a4728", -- lighter olive green for main background (60%)
+          -- mantle = "#2e3b23", -- slightly darker
+          -- crust = "#26311b", -- darkest
         },
         mocha = {
           rosewater = "#f2d5cf",
@@ -184,6 +242,22 @@ return {
           mantle = "#292c3c",
           crust = "#232634",
         },
+        -- latte = {
+        --   rosewater = "#f5e9e2", -- lighter, warm highlight
+        --   flamingo = "#f2c6a0", -- soft, earthy orange
+        --   pink = "#f3d3c2", -- gentle, warm pink
+        --   red = "#d08c7e", -- soft clay red
+        --   maroon = "#b97c74", -- earth red
+        --   peach = "#f5e1b3", -- light peach
+        --   yellow = "#ece3b1", -- pale muted yellow
+        --   green = "#a3b98b", -- soft olive green
+        --   teal = "#a2c1bb", -- gentle muted teal
+        --   sky = "#b7d3d4", -- light dusty sky blue
+        --   sapphire = "#a5c3be", -- soft blue-green
+        --   lavender = "#d2d6c7", -- light earthy lavender
+        --   blue = "#aab7ba", -- pale slate blue
+        --   mauve = "#d3c2c7", -- light muted mauve
+        -- },
       },
       integrations = {
         blink_cmp = true,
@@ -222,24 +296,15 @@ return {
       require("catppuccin").setup(opts)
 
       -- theme & transparency
-      vim.g.appearance = "dark"
-      vim.cmd.colorscheme("catppuccin-frappe")
-      -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-      -- vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-      -- vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
       vim.keymap.set("n", "<leader>uc", function()
         if vim.g.appearance == "dark" then
           vim.g.appearance = "light"
-          vim.cmd.colorscheme("catppuccin-latte")
           vim.o.background = "light" -- For a light background
-          -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-          -- vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-          -- vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
+          vim.cmd.colorscheme("catppuccin-latte")
           print("now light theme")
         elseif vim.g.appearance == "light" then
           vim.g.appearance = "dark"
           vim.cmd.colorscheme("catppuccin-frappe")
-          vim.o.background = "dark" -- For a dark background
           -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
           -- vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
           -- vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
@@ -247,5 +312,26 @@ return {
         end
       end, { desc = "Toggle light/dark colorscheme" })
     end,
+  },
+
+  { "sainnhe/everforest" },
+  {
+    "f-person/auto-dark-mode.nvim",
+    opts = {
+      update_interval = 1000,
+      set_dark_mode = function()
+        -- vim.o.background = "dark"
+        vim.g.appearance = "dark"
+        vim.cmd("colorscheme catppuccin-frappe")
+        --
+        -- everforest("dark", "hard")
+      end,
+      set_light_mode = function()
+        -- vim.g.appearance = "light"
+        -- vim.o.background = "light"
+        -- vim.cmd("colorscheme catppuccin-latte")
+        everforest("light", "soft")
+      end,
+    },
   },
 }

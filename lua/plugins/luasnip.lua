@@ -4,8 +4,6 @@ return {
   -- ... other settings ...
   config = function()
     -- Load our custom snippets
-    --
-    require("luasnip.loaders.from_vscode").lazy_load()
-    -- require("config.snippets")
+    require("config.snippets")
   end,
 }

@@ -15,6 +15,13 @@ return {
 
       --toml
       "taplo",
+
+      --vue
+      "vue-language-server",
+      "vtsls",
+
+      --shell
+      "shfmt",
     },
   },
 }

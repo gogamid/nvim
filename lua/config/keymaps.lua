@@ -34,9 +34,6 @@ vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 -- Better J behavior
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
 
--- Quick config editing
-vim.keymap.set("n", "<leader>rc", ":e ~/.config/nvim/init.lua<CR>", { desc = "Edit config" })
-
 -- ============================================================================
 -- USEFUL FUNCTIONS
 -- ============================================================================

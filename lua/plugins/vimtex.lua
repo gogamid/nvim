@@ -1,6 +1,6 @@
 return {
   "lervag/vimtex",
-  enabled = false,
+  enabled = false, --not writing latex anymore
   config = function()
     -- vim.g.vimtex_compiler_latexmk_engines = "lualatex"
     vim.g.vimtex_view_method = "sioyek"
