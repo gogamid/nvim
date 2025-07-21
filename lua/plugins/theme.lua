@@ -3,7 +3,6 @@ local c = {
   truffle = "#605F4B",
   truffle_1 = "#4B4A39",
   truffle_2 = "#333326",
-
   sage = "#9C9E80",
 
   oyster = "#F9F4EA",
@@ -19,6 +18,21 @@ local c = {
 
   terracotta = "#C47457",
   rust = "#8B4D2E",
+
+  rosewater = "#f2d5cf",
+  flamingo = "#eebebe",
+  pink = "#f4b8e4",
+  red = "#e78284",
+  maroon = "#ea999c",
+  peach = "#ef9f76",
+  yellow = "#e5c890",
+  green = "#a6d189",
+  teal = "#81c8be",
+  sky = "#99d1db",
+  sapphire = "#85c1dc",
+  lavender = "#babbf1",
+  blue = "#8caaee",
+  mauve = "#ca9ee6",
 }
 return {
   {
@@ -29,7 +43,7 @@ return {
     opts = {
       background = { light = "latte", dark = "frappe" }, -- latte, frappe, macchiato, mocha
       show_end_of_buffer = false,
-      transparent_background = false,
+      transparent_background = true,
       styles = {
         comments = { "italic" },
         functions = { "bold" },
@@ -47,6 +61,97 @@ return {
 
       color_overrides = {
         frappe = {
+          -- rosewater = c.flamingo,
+          -- flamingo = c.pink,
+          -- pink = c.red,
+          -- red = c.maroon,
+          -- maroon = c.peach,
+          -- peach = c.yellow,
+          -- yellow = c.green,
+          -- green = c.teal,
+          -- teal = c.sky,
+          -- sky = c.sapphire,
+          -- sapphire = c.rosewater,
+          -- lavender = c.yellow,
+          -- blue = c.maroon,
+          -- mauve = c.peach,
+          --
+          -- -- rosewater = "#f2d5cf",
+          -- -- flamingo = "#eebebe",
+          -- -- pink = "#f4b8e4",
+          -- -- red = "#e78284",
+          -- -- maroon = "#ea999c",
+          -- -- peach = "#ef9f76",
+          -- -- yellow = "#e5c890",
+          -- -- green = "#a6d189",
+          -- -- teal = "#81c8be",
+          -- -- sky = "#99d1db",
+          -- -- sapphire = "#85c1dc",
+          -- -- lavender = "#babbf1",
+          -- -- blue = "#8caaee",
+          -- -- mauve = "#ca9ee6",
+          --
+          -- -- -- text = "#c6d0f5",
+          -- -- -- subtext1 = "#b5bfe2",
+          -- -- -- subtext0 = "#a5adce",
+          -- text = c.oyster,
+          -- subtext1 = c.oyster_2,
+          -- subtext0 = c.oyster_3,
+          -- --
+          -- -- -- overlay2 = "#949cbb",
+          -- -- -- overlay1 = "#838ba7",
+          -- -- -- overlay0 = "#737994",
+          -- overlay2 = c.oyster_3,
+          -- overlay1 = c.oyster_4,
+          -- overlay0 = c.oyster_5,
+          -- --
+          -- -- -- surface2 = "#626880",
+          -- -- -- surface1 = "#51576d",
+          -- -- -- surface0 = "#414559",
+          -- surface2 = c.copper,
+          -- surface1 = c.oyster_4,
+          -- surface0 = c.oyster_4, -- main highlight
+          -- --
+          -- -- -- base = "#303446",
+          -- -- -- mantle = "#292c3c",
+          -- -- -- crust = "#232634",
+          -- base = c.truffle,
+          -- mantle = c.truffle_1,
+          -- crust = c.truffle_2,
+
+          -- GREEN background
+          rosewater = "#e6cfc3", -- warm, soft highlight (10%)
+          flamingo = "#e9a07b", -- accent, earthy orange (10%)
+          pink = "#e6b7a9", -- muted, warm pink (10%)
+          red = "#b4635a", -- clay red (10%)
+          maroon = "#a05d56", -- deep earth red (10%)
+          peach = "#e2b97f", -- warm peach (10%)
+          yellow = "#d9c97c", -- muted yellow (10%)
+          green = "#6e8b57", -- olive green (main accent, 30%)
+          teal = "#5e8d87", -- muted teal (10%)
+          sky = "#8caeaf", -- dusty sky blue (10%)
+          sapphire = "#7a9e99", -- muted blue-green (10%)
+          lavender = "#b3b9a5", -- soft, earthy lavender (10%)
+          blue = "#7d8c8f", -- slate blue (10%)
+          mauve = "#b49fa3", -- muted mauve (10%)
+
+          text = "#eae7d6", -- off-white, readable (surface/text, 30%)
+          subtext1 = "#cfcab8", -- lighter subtext
+          subtext0 = "#b3ae9c", -- even lighter subtext
+
+          overlay2 = "#a7a98b", -- overlay, subtle
+          overlay1 = "#8e8f7b",
+          overlay0 = "#757869",
+
+          surface2 = "#5c6a4d", -- surface, deep olive (30%)
+          surface1 = "#4b5a3a",
+          surface0 = "#3a4728", -- main highlight (background, 60%)
+
+          base = "#3a4728", -- lighter olive green for main background (60%)
+          mantle = "#2e3b23", -- slightly darker
+          crust = "#26311b", -- darkest
+        },
+        mocha = {
           rosewater = "#f2d5cf",
           flamingo = "#eebebe",
           pink = "#f4b8e4",
@@ -60,38 +165,24 @@ return {
           teal = "#81c8be",
           sky = "#99d1db",
           sapphire = "#85c1dc",
-          -- blue = "#8caaee",
-          -- lavender = "#babbf1",
-          blue = c.terracotta,
-          lavender = c.oyster,
+          blue = "#8caaee",
+          lavender = "#babbf1",
 
-          -- text = "#c6d0f5",
-          -- subtext1 = "#b5bfe2",
-          -- subtext0 = "#a5adce",
-          text = c.oyster,
-          subtext1 = c.oyster_1,
-          subtext0 = c.oyster_2,
+          text = "#c6d0f5",
+          subtext1 = "#b5bfe2",
+          subtext0 = "#a5adce",
 
-          -- overlay2 = "#949cbb",
-          -- overlay1 = "#838ba7",
-          -- overlay0 = "#737994",
-          overlay2 = c.oyster_3,
-          overlay1 = c.oyster_4,
-          overlay0 = c.oyster_5,
+          overlay2 = "#949cbb",
+          overlay1 = "#838ba7",
+          overlay0 = "#737994",
 
-          -- surface2 = "#626880",
-          -- surface1 = "#51576d",
-          -- surface0 = "#414559",
-          surface2 = c.copper,
-          surface1 = c.copper_1,
-          surface0 = c.copper_2,
+          surface2 = "#626880",
+          surface1 = "#51576d",
+          surface0 = "#414559",
 
-          -- base = "#303446",
-          -- mantle = "#292c3c",
-          -- crust = "#232634",
-          base = c.truffle,
-          mantle = c.truffle_1,
-          crust = c.truffle_2,
+          base = "#303446",
+          mantle = "#292c3c",
+          crust = "#232634",
         },
       },
       integrations = {

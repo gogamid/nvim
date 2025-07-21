@@ -106,11 +106,11 @@ Here are some rules:
   },
   {
     "yetone/avante.nvim",
+    enabled = false,
     dependencies = {
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
     },
-    enabled = true,
     event = "VeryLazy",
     lazy = false,
     build = "make",
