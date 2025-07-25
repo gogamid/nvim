@@ -42,7 +42,7 @@ return {
       },
     },
     sections = {
-      lualine_a = { "mode" },
+      lualine_a = {},
       lualine_b = { supermaven },
       lualine_c = {
         "lsp_status",
@@ -50,8 +50,11 @@ return {
         "%=",
       },
       lualine_x = { "diagnostics", "diff", "filetype" },
-      lualine_y = { "progress" },
-      lualine_z = { "location" },
+      lualine_y = {
+        "progress",
+        "location",
+      },
+      lualine_z = {},
     },
     inactive_sections = {
       lualine_a = {},
