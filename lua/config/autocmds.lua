@@ -77,7 +77,6 @@ vim.api.nvim_create_autocmd("FileType", {
     "spectre_panel",
     "startuptime",
     "tsplayground",
-    "quicktest-output",
     "query",
     "grug-far",
     "help",
@@ -104,5 +103,15 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   pattern = "config",
   callback = function()
     vim.bo.filetype = "config"
+  end,
+})
+
+-- wrap and do not check for spell in text filetypes
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup,
+  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = false
   end,
 })

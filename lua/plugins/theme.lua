@@ -53,18 +53,6 @@ local function transparent()
   ]])
 end
 
-local function default()
-  -- -- highlight current line number
-  -- vim.opt.cursorline = true
-  -- vim.cmd("hi clear CursorLine")
-  -- local c = require("everforest.colors")
-  --
-  -- for _, func in ipairs(G.plugin_hl) do
-  --   func(c)
-  -- end
-  --
-end
-
 ---@param background? "dark" | "light
 ---@param contrast? "hard" | "medium" | "soft"
 local function everforest(background, contrast)
@@ -84,13 +72,6 @@ local function everforest(background, contrast)
     colorscheme everforest
   ]])
 end
-
--- local group = augroup("colorscheme", {})
--- autocmd("ColorScheme", {
---   pattern = "*",
---   group = group,
---   callback = default,
--- })
 
 return {
   {
@@ -242,22 +223,6 @@ return {
           mantle = "#292c3c",
           crust = "#232634",
         },
-        -- latte = {
-        --   rosewater = "#f5e9e2", -- lighter, warm highlight
-        --   flamingo = "#f2c6a0", -- soft, earthy orange
-        --   pink = "#f3d3c2", -- gentle, warm pink
-        --   red = "#d08c7e", -- soft clay red
-        --   maroon = "#b97c74", -- earth red
-        --   peach = "#f5e1b3", -- light peach
-        --   yellow = "#ece3b1", -- pale muted yellow
-        --   green = "#a3b98b", -- soft olive green
-        --   teal = "#a2c1bb", -- gentle muted teal
-        --   sky = "#b7d3d4", -- light dusty sky blue
-        --   sapphire = "#a5c3be", -- soft blue-green
-        --   lavender = "#d2d6c7", -- light earthy lavender
-        --   blue = "#aab7ba", -- pale slate blue
-        --   mauve = "#d3c2c7", -- light muted mauve
-        -- },
       },
       integrations = {
         blink_cmp = true,

@@ -268,7 +268,8 @@ return {
         { "<leader>gd", function() Snacks.picker.git_diff() end,                                                                                     desc = "Git Diff (Hunks)" },
         -- Grep
         { "<leader>/",  function() Snacks.picker.grep({ cwd = Snacks.git.get_root() }) end,                                                          desc = "Grep Git Files" },
-        { "<leader>sg", function() Snacks.picker.grep({ dirs = { vim.fs.root(vim.api.nvim_get_current_buf(), { "service.yaml" }) } }) end,           desc = "Grep Service" },
+        { "<leader>sg",  function() Snacks.picker.grep({ cwd = Snacks.git.get_root() }) end,                                                          desc = "Grep Git Files" },
+        { "<leader>ss", function() Snacks.picker.grep({ dirs = { vim.fs.root(vim.api.nvim_get_current_buf(), { "service.yaml" }) } }) end,           desc = "Grep Service" },
         { "<leader>sG", function() Snacks.picker.grep() end,                                                                                         desc = "Grep Cwd" },
         { "<leader>sb", function() Snacks.picker.lines() end,                                                                                        desc = "Buffer Lines" },
         { "<leader>sB", function() Snacks.picker.grep_buffers() end,                                                                                 desc = "Grep Open Buffers" },
@@ -301,7 +302,7 @@ return {
         { "gr",         function() Snacks.picker.lsp_references() end,                                                                               nowait = true,                      desc = "References" },
         { "gi",         function() Snacks.picker.lsp_implementations() end,                                                                          desc = "Goto Implementation" },
         { "gy",         function() Snacks.picker.lsp_type_definitions() end,                                                                         desc = "Goto T[y]pe Definition" },
-        { "<leader>ss", function() Snacks.picker.lsp_symbols() end,                                                                                  desc = "LSP Symbols" },
+        -- { "<leader>ss", function() Snacks.picker.lsp_symbols() end,                                                                                  desc = "LSP Symbols" },
         { "<leader>sS", function() Snacks.picker.lsp_workspace_symbols() end,                                                                        desc = "LSP Workspace Symbols" },
         -- Other
         { "<leader>z",  function() Snacks.zen() end,                                                                                                 desc = "Toggle Zen Mode" },

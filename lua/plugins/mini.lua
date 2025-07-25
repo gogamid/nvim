@@ -104,6 +104,11 @@ return {
   {
     "echasnovski/mini.hipatterns",
     opts = {
+      -- Delays (in ms) defining asynchronous highlighting process
+      delay = {
+        text_change = 200,
+        scroll = 50,
+      },
       highlighters = {
         -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
         fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
@@ -112,6 +117,20 @@ return {
         note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
 
         hex_color = require("mini.hipatterns").gen_highlighter.hex_color(),
+
+        -- test colors
+        fail = {
+          pattern = vim.bo.filetype == "quicktest-output" and "%f[%w]()FAIL()%f[%W]" or nil,
+          group = require("mini.hipatterns").compute_hex_color_group("#ff0000", "fg"),
+        },
+        pass = {
+          pattern = vim.bo.filetype == "quicktest-output" and "%f[%w]()PASS()%f[%W]" or nil,
+          group = require("mini.hipatterns").compute_hex_color_group("#00ff00", "fg"),
+        },
+        ok = {
+          pattern = vim.bo.filetype == "quicktest-output" and "%f[%w]()ok()%f[%W]" or nil,
+          group = require("mini.hipatterns").compute_hex_color_group("#0000ff", "fg"),
+        },
       },
     },
   },

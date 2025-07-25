@@ -22,6 +22,12 @@ return {
 
       --shell
       "shfmt",
+
+      --markdown
+      "prettier",
+
+      --xml
+      "xmlformatter",
     },
   },
 }

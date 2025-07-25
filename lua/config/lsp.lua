@@ -63,10 +63,21 @@ local vue_ls_config = {
     end
   end,
 }
--- nvim 0.11 or above
+
+local buf_ls_config = {
+  cmd = { "buf", "beta", "lsp", "--timeout=0", "--log-format=text" },
+  root_markers = { "buf.yaml", ".git" },
+  filetypes = { "proto" },
+}
+
+-- nvim 0.11 or above vue config
 vim.lsp.config("vtsls", vtsls_config)
 vim.lsp.config("vue_ls", vue_ls_config)
 vim.lsp.enable({ "vtsls", "vue_ls" })
+
+-- proto buf
+vim.lsp.config("buf_ls", buf_ls_config)
+vim.lsp.enable({ "buf_ls" })
 
 vim.lsp.enable({
   "lua_ls",

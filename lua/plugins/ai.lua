@@ -51,7 +51,8 @@ return {
       },
     },
     opts = {
-      chat_autocomplete = false, -- Enable chat autocompletion (when disabled, requires manual `mappings.complete` trigger)
+      -- system_prompt = "You are a helpful assistant",
+      -- chat_autocomplete = false, -- Enable chat autocompletion (when disabled, requires manual `mappings.complete` trigger)
       question_header = "## Me", -- Header to use for user questions
       answer_header = "## Broski", -- Header to use for AI answers
       window = {

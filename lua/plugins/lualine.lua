@@ -13,7 +13,7 @@ return {
       theme = "everforest", -- Use your current colorscheme's theme or set a specific one
       globalstatus = true, -- Use a single statusline for all windows
       icons_enabled = true,
-      component_separators = { left = "/", right = "\\" },
+      component_separators = { left = "", right = "" },
       section_separators = { left = "", right = "" },
       disabled_filetypes = {
         statusline = {},
@@ -44,8 +44,12 @@ return {
     sections = {
       lualine_a = { "mode" },
       lualine_b = { supermaven },
-      lualine_c = { "lsp_status", "filetype", { "buffers", max_length = vim.o.columns * 1 / 3 } },
-      lualine_x = { "diagnostics", "diff" },
+      lualine_c = {
+        "lsp_status",
+        { "filename", path = 3 },
+        "%=",
+      },
+      lualine_x = { "diagnostics", "diff", "filetype" },
       lualine_y = { "progress" },
       lualine_z = { "location" },
     },
