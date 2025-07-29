@@ -1,34 +1,31 @@
 return {
   {
-    -- "epwalsh/obsidian.nvim",
     "obsidian-nvim/obsidian.nvim",
-    version = "*", -- recommended, use latest release instead of latest commit
+    version = "*",
     lazy = true,
     ft = "markdown",
     keys = {
-      { "<leader>on", mode = { "n" }, "<cmd>ObsidianNew<cr>", desc = "Obsidian new note" },
-      -- { "<leader>fos", mode = { "n" }, "<cmd>ObsidianNewFromTemplate<cr>", desc = "Obsidian search" },
+      { "<leader>on", mode = { "n" }, "<cmd>Obsidian new<cr>", desc = "Obsidian new note" },
 
       --search
-      { "<leader>os", mode = { "n" }, "<cmd>ObsidianSearch<cr>", desc = "Obsidian search" },
-      { "<leader>of", mode = { "n" }, "<cmd>ObsidianQuickSwitch<cr>", desc = "Obsidian Files" },
-      { "<leader>ob", mode = { "n" }, "<cmd>ObsidianBacklinks<cr>", desc = "Obsidian Backlinks" },
-      { "<leader>og", mode = { "n" }, "<cmd>ObsidianTags<cr>", desc = "Obsidian Tags" },
-      { "<leader>ol", mode = { "n" }, "<cmd>ObsidianLinks<cr>", desc = "Obsidian Links in current buffer" },
-      { "<leader><cr>", mode = { "n" }, "<cmd>ObsidianFollowLink<cr>", desc = "Obsidian Follow link" },
+      { "<leader>os", mode = { "n" }, "<cmd>Obsidian search<cr>", desc = "Obsidian search" },
+      { "<leader>of", mode = { "n" }, "<cmd>Obsidian quick_switch<cr>", desc = "Obsidian Files" },
+      { "<leader>ob", mode = { "n" }, "<cmd>Obsidian backlinks<cr>", desc = "Obsidian Backlinks" },
+      { "<leader>og", mode = { "n" }, "<cmd>Obsidian tags<cr>", desc = "Obsidian Tags" },
+      { "<leader>ol", mode = { "n" }, "<cmd>Obsidian links<cr>", desc = "Obsidian Links in current buffer" },
+      { "<leader><cr>", mode = { "n" }, "<cmd>Obsidian follow_link<cr>", desc = "Obsidian Follow link" },
 
       --editing
-      -- { "<leader>fot", mode = { "n" }, "<cmd>ObsidianTemplate<cr>", desc = "Obsidian search" },
-      { "<leader>oi", mode = { "n" }, "<cmd>ObsidianPasteImg<cr>", desc = "Obsidian Image paste" },
-      { "<leader>or", mode = { "n" }, "<cmd>ObsidianRename<cr>", desc = "Obsidian Rename note" },
+      { "<leader>oi", mode = { "n" }, "<cmd>Obsidian paste_img<cr>", desc = "Obsidian Image paste" },
+      { "<leader>or", mode = { "n" }, "<cmd>Obsidian rename<cr>", desc = "Obsidian Rename note" },
 
       --visual
-      -- { "<leader>oe", mode = { "v" }, "<cmd>ObsidianExtractNote<cr>", desc = "Obsidian Extract to a note" },
-      -- { "<leader>ol", mode = { "v" }, "<cmd>ObsidianLink<cr>", desc = "Obsidian Link to a note" },
-      { "<leader>ol", mode = { "v" }, "<cmd>ObsidianLinkNew<cr>", desc = "Obsidian Link to a note" },
+      { "<leader>ol", mode = { "v" }, "<cmd>Obsidian link_new<cr>", desc = "Obsidian Link to a note" },
     },
     dependencies = {
-      "nvim-lua/plenary.nvim",
+      --optional
+      -- blink.cmp
+      -- snacks picker
     },
     opts = {
       picker = {

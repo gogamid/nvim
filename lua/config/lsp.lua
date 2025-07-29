@@ -1,22 +1,13 @@
--- ============================================================================
--- LSP
--- ============================================================================
--- If you are using mason.nvim, you can get the ts_plugin_path like this
--- For Mason v1,
--- local mason_registry = require("mason-registry")
--- local vue_language_server_path = mason_registry.get_package("vue-language-server"):get_install_path()
---   .. "/node_modules/@vue/language-server"
--- For Mason v2,
--- local vue_language_server_path = vim.fn.expand '$MASON/packages' .. '/vue-language-server' .. '/node_modules/@vue/language-server'
--- or even
 local vue_language_server_path = vim.fn.stdpath("data")
   .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+
 local vue_plugin = {
   name = "@vue/typescript-plugin",
   location = vue_language_server_path,
   languages = { "vue" },
   configNamespace = "typescript",
 }
+
 local vtsls_config = {
   cmd = { "vtsls", "--stdio" },
   root_markers = { "tsconfig.json", "package.json", "jsconfig.json", ".git" },
@@ -32,6 +23,7 @@ local vtsls_config = {
   },
   filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
 }
+vim.lsp.config("vtsls", vtsls_config)
 
 local vue_ls_config = {
   cmd = { "vue-language-server", "--stdio" },
@@ -63,38 +55,75 @@ local vue_ls_config = {
     end
   end,
 }
-
-local buf_ls_config = {
-  cmd = { "buf", "beta", "lsp", "--timeout=0", "--log-format=text" },
-  root_markers = { "buf.yaml", ".git" },
-  filetypes = { "proto" },
-}
-
--- nvim 0.11 or above vue config
-vim.lsp.config("vtsls", vtsls_config)
 vim.lsp.config("vue_ls", vue_ls_config)
-vim.lsp.enable({ "vtsls", "vue_ls" })
 
--- proto buf
-vim.lsp.config("buf_ls", buf_ls_config)
-vim.lsp.enable({ "buf_ls" })
+local gopls_config = {
+  cmd = { "gopls" },
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  root_markers = {
+    "go.work",
+    "go.mod",
+    ".git",
+  },
+  settings = {
+    gopls = {
+      gofumpt = true,
+      buildFlags = { "-tags=manual_test" },
+      ["local"] = os.getenv("GO_LOCAL_PKG"),
+      staticcheck = true,
+      analyses = {
+        shadow = true,
+        unusedvariable = true,
+        nilness = true,
+        unusedwrite = true,
+        useany = true,
+        ST1003 = false,
+      },
+      hints = {
+        assignVariableTypes = false,
+        compositeLiteralFields = false,
+        compositeLiteralTypes = false,
+        constantValues = true,
+        functionTypeParameters = false,
+        parameterNames = false,
+        rangeVariableTypes = false,
+      },
+      codelenses = {
+        gc_details = false,
+        generate = true,
+        regenerate_cgo = true,
+        run_govulncheck = true,
+        test = true,
+        tidy = true,
+        upgrade_dependency = true,
+        vendor = true,
+      },
+      usePlaceholders = true,
+      completeUnimported = true,
+      directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
+      semanticTokens = true,
+      diagnosticsTrigger = "Save",
+    },
+  },
+}
+vim.lsp.config("gopls", gopls_config)
 
 vim.lsp.enable({
+  "vtsls",
+  "vue_ls",
+
+  "buf_ls",
+
+  "gopls",
+
   "lua_ls",
+
   "bashls",
+
   "taplo",
+
   "gopls",
 })
-
--- autoformat with lsp on save
--- vim.api.nvim_create_autocmd("BufWritePre", {
---     -- buffer = buffer,
---     callback = function()
---         vim.lsp.buf.format { async = true }
---     end
--- })
---
--- vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format, { desc = "Format file" })
 
 -- LSP keymaps
 vim.api.nvim_create_autocmd("LspAttach", {

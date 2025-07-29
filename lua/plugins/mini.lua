@@ -106,7 +106,7 @@ return {
     opts = {
       -- Delays (in ms) defining asynchronous highlighting process
       delay = {
-        text_change = 200,
+        text_change = 100,
         scroll = 50,
       },
       highlighters = {
@@ -120,16 +120,22 @@ return {
 
         -- test colors
         fail = {
-          pattern = vim.bo.filetype == "quicktest-output" and "%f[%w]()FAIL()%f[%W]" or nil,
-          group = require("mini.hipatterns").compute_hex_color_group("#ff0000", "fg"),
+          pattern = function()
+            return vim.bo.filetype == "quicktest-output" and "%f[%w]()FAIL()%f[%W]" or nil
+          end,
+          group = require("mini.hipatterns").compute_hex_color_group("#B4635A", "fg"),
         },
         pass = {
-          pattern = vim.bo.filetype == "quicktest-output" and "%f[%w]()PASS()%f[%W]" or nil,
-          group = require("mini.hipatterns").compute_hex_color_group("#00ff00", "fg"),
+          pattern = function()
+            return vim.bo.filetype == "quicktest-output" and "%f[%w]()PASS()%f[%W]" or nil
+          end,
+          group = require("mini.hipatterns").compute_hex_color_group("#6E8B56", "fg"),
         },
         ok = {
-          pattern = vim.bo.filetype == "quicktest-output" and "%f[%w]()ok()%f[%W]" or nil,
-          group = require("mini.hipatterns").compute_hex_color_group("#0000ff", "fg"),
+          pattern = function()
+            return vim.bo.filetype == "quicktest-output" and "%f[%w]()ok()%f[%W]" or nil
+          end,
+          group = require("mini.hipatterns").compute_hex_color_group("#6E8B56", "fg"),
         },
       },
     },
