@@ -1,58 +1,3 @@
-local c = {
-
-  truffle = "#605F4B",
-  truffle_1 = "#4B4A39",
-  truffle_2 = "#333326",
-  sage = "#9C9E80",
-
-  oyster = "#F9F4EA",
-  oyster_1 = "#E0D6C3",
-  oyster_2 = "#C7B89C",
-  oyster_3 = "#A89972",
-  oyster_4 = "#8C7A4F",
-  oyster_5 = "#6E5C2B",
-
-  copper = "#DBB887",
-  copper_1 = "#C99A5B",
-  copper_2 = "#B68036",
-
-  terracotta = "#C47457",
-  rust = "#8B4D2E",
-
-  rosewater = "#f2d5cf",
-  flamingo = "#eebebe",
-  pink = "#f4b8e4",
-  red = "#e78284",
-  maroon = "#ea999c",
-  peach = "#ef9f76",
-  yellow = "#e5c890",
-  green = "#a6d189",
-  teal = "#81c8be",
-  sky = "#99d1db",
-  sapphire = "#85c1dc",
-  lavender = "#babbf1",
-  blue = "#8caaee",
-  mauve = "#ca9ee6",
-}
----@diagnostic disable: unused-function, unused-local
-local ok_everforest = pcall(require, "everforest")
-
-local autocmd = vim.api.nvim_create_autocmd
-local augroup = vim.api.nvim_create_augroup
-
-local function transparent()
-  vim.cmd([[
-    highlight Normal guibg=NONE ctermbg=NONE
-    highlight EndOfBuffer guibg=NONE ctermbg=NONE
-    highlight NonText ctermbg=NONE
-    highlight WinSeparator guibg=None  " Remove borders for window separators
-    highlight SignColumn guibg=None " Remove background from signs column
-    highlight NvimTreeWinSeparator guibg=None
-    highlight NvimTreeEndOfBuffer guibg=None
-    highlight NvimTreeNormal guibg=None
-  ]])
-end
-
 ---@param background? "dark" | "light
 ---@param contrast? "hard" | "medium" | "soft"
 local function everforest(background, contrast)
@@ -76,9 +21,8 @@ end
 return {
   {
     "catppuccin/nvim",
-    lazy = false,
+    enabled = false,
     name = "catppuccin",
-    priority = 1000,
     opts = {
       background = { light = "latte", dark = "frappe" }, -- latte, frappe, macchiato, mocha
       show_end_of_buffer = false,
@@ -130,8 +74,7 @@ return {
           red = "#e78284",
           maroon = "#ea999c",
           peach = "#ef9f76",
-          -- yellow = "#e5c890",
-          yellow = c.copper,
+          yellow = "#e5c890",
           green = "#a6d189",
           teal = "#81c8be",
           sky = "#99d1db",
@@ -191,43 +134,34 @@ return {
     },
     config = function(_, opts)
       require("catppuccin").setup(opts)
-
-      -- theme & transparency
-      vim.keymap.set("n", "<leader>uc", function()
-        if vim.g.appearance == "dark" then
-          vim.g.appearance = "light"
-          vim.o.background = "light" -- For a light background
-          vim.cmd.colorscheme("catppuccin-latte")
-          print("now light theme")
-        elseif vim.g.appearance == "light" then
-          vim.g.appearance = "dark"
-          vim.cmd.colorscheme("catppuccin-frappe")
-          -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-          -- vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-          -- vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
-          print("now dark theme")
-        end
-      end, { desc = "Toggle light/dark colorscheme" })
     end,
   },
-
   { "sainnhe/everforest" },
   {
     "f-person/auto-dark-mode.nvim",
     opts = {
       update_interval = 1000,
       set_dark_mode = function()
-        -- vim.o.background = "dark"
-        vim.g.appearance = "dark"
-        vim.cmd("colorscheme catppuccin-frappe")
+        -- vim.cmd("colorscheme catppuccin-frappe")
         --
-        -- everforest("dark", "hard")
+        everforest("dark", "hard")
+
+        vim.cmd("highlight Normal guibg=none")
+        vim.cmd("highlight NormalNC guibg=none")
+        vim.cmd("highlight NormalSB guibg=none")
+        vim.cmd("highlight NormalFloat guibg=none")
+        vim.cmd("highlight Pmenu guibg=none")
+        vim.cmd("highlight FloatBorder guibg=none")
+        vim.cmd("highlight NonText guibg=none")
+        vim.cmd("highlight Normal ctermbg=none")
+        vim.cmd("highlight NonText ctermbg=none")
+        vim.cmd("highlight EndOfBuffer guibg=none ctermbg=none")
       end,
       set_light_mode = function()
-        -- vim.g.appearance = "light"
-        -- vim.o.background = "light"
         -- vim.cmd("colorscheme catppuccin-latte")
-        everforest("light", "soft")
+        everforest("light", "medium")
+
+        vim.api.nvim_set_hl(0, "Visual", { bg = "#A7C080", fg = "#2B3339" })
       end,
     },
   },

@@ -36,6 +36,8 @@ return {
         "gomod",
         "gowork",
         "gosum",
+        "swift",
+        "objc",
       },
       incremental_selection = {
         enable = true,

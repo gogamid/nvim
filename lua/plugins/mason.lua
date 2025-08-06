@@ -13,9 +13,6 @@ return {
       --lua
       "stylua",
 
-      --toml
-      "taplo",
-
       --vue
       "vue-language-server",
       "vtsls",
@@ -26,8 +23,11 @@ return {
       --markdown
       "prettier",
 
-      --xml
-      "xmlformatter",
+      --json
+      "json-lsp",
+
+      --toml
+      "taplo",
     },
   },
 }

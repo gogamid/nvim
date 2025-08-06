@@ -3,7 +3,6 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     enabled = true,
     dependencies = {
-      { "github/copilot.vim" },
       { "nvim-lua/plenary.nvim", branch = "master" },
     },
     keys = {
@@ -169,6 +168,9 @@ Here are some rules:
         cterm = 244,
       },
       disable_inline_completion = false,
+      condition = function()
+        return true
+      end,
     },
   },
 }

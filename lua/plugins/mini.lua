@@ -77,6 +77,10 @@ return {
         vim.ui.open(MiniFiles.get_fs_entry().path)
       end
 
+      local show_in_finder = function()
+        vim.fn.system({ "open", "-R", MiniFiles.get_fs_entry().path })
+      end
+
       vim.api.nvim_create_autocmd("User", {
         pattern = "MiniFilesBufferCreate",
         callback = function(args)
@@ -96,6 +100,7 @@ return {
             { buffer = args.data.buf_id, desc = "Set cwd" }
           )
           vim.keymap.set("n", "go", ui_open, { buffer = args.data.buf_id, desc = "OS open" })
+          vim.keymap.set("n", "gf", show_in_finder, { buffer = args.data.buf_id, desc = "Show in finder" })
           vim.keymap.set("n", "gy", yank_path, { buffer = args.data.buf_id, desc = "Yank path" })
         end,
       })
@@ -117,26 +122,6 @@ return {
         note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
 
         hex_color = require("mini.hipatterns").gen_highlighter.hex_color(),
-
-        -- test colors
-        fail = {
-          pattern = function()
-            return vim.bo.filetype == "quicktest-output" and "%f[%w]()FAIL()%f[%W]" or nil
-          end,
-          group = require("mini.hipatterns").compute_hex_color_group("#B4635A", "fg"),
-        },
-        pass = {
-          pattern = function()
-            return vim.bo.filetype == "quicktest-output" and "%f[%w]()PASS()%f[%W]" or nil
-          end,
-          group = require("mini.hipatterns").compute_hex_color_group("#6E8B56", "fg"),
-        },
-        ok = {
-          pattern = function()
-            return vim.bo.filetype == "quicktest-output" and "%f[%w]()ok()%f[%W]" or nil
-          end,
-          group = require("mini.hipatterns").compute_hex_color_group("#6E8B56", "fg"),
-        },
       },
     },
   },

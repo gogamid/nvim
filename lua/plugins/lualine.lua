@@ -1,6 +1,6 @@
 local function supermaven()
   if require("supermaven-nvim.api").is_running() then
-    return " "
+    return "  "
   else
     return " "
   end
@@ -43,17 +43,16 @@ return {
     },
     sections = {
       lualine_a = {},
-      lualine_b = { supermaven },
+      lualine_b = {},
       lualine_c = {
-        "lsp_status",
         { "filename", path = 3 },
+        "progress",
+        "filetype",
+        "lsp_status",
         "%=",
       },
-      lualine_x = { "diagnostics", "diff", "filetype" },
-      lualine_y = {
-        "progress",
-        "location",
-      },
+      lualine_x = { supermaven, "diagnostics", "diff" },
+      lualine_y = {},
       lualine_z = {},
     },
     inactive_sections = {

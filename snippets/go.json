@@ -14,7 +14,7 @@
       "\t\tname     string",
       "\t\tgiven    given",
       "\t\texpected expected",
-      "\t}{}",
+      "\t}{{name: \"first test\", given: given{}, expected: expected{}}}",
       "\tfor _, tt := range tests {",
       "\t\tt.Run(tt.name, func(t *testing.T) {})",
       "\t}",

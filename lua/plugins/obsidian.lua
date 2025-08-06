@@ -11,9 +11,6 @@ return {
       { "<leader>os", mode = { "n" }, "<cmd>Obsidian search<cr>", desc = "Obsidian search" },
       { "<leader>of", mode = { "n" }, "<cmd>Obsidian quick_switch<cr>", desc = "Obsidian Files" },
       { "<leader>ob", mode = { "n" }, "<cmd>Obsidian backlinks<cr>", desc = "Obsidian Backlinks" },
-      { "<leader>og", mode = { "n" }, "<cmd>Obsidian tags<cr>", desc = "Obsidian Tags" },
-      { "<leader>ol", mode = { "n" }, "<cmd>Obsidian links<cr>", desc = "Obsidian Links in current buffer" },
-      { "<leader><cr>", mode = { "n" }, "<cmd>Obsidian follow_link<cr>", desc = "Obsidian Follow link" },
 
       --editing
       { "<leader>oi", mode = { "n" }, "<cmd>Obsidian paste_img<cr>", desc = "Obsidian Image paste" },
@@ -22,12 +19,8 @@ return {
       --visual
       { "<leader>ol", mode = { "v" }, "<cmd>Obsidian link_new<cr>", desc = "Obsidian Link to a note" },
     },
-    dependencies = {
-      --optional
-      -- blink.cmp
-      -- snacks picker
-    },
     opts = {
+      legacy_commands = false,
       picker = {
         name = "snacks.pick",
       },
@@ -41,27 +34,6 @@ return {
         blink = true,
         min_chars = 2,
       },
-      mappings = {
-        ["gf"] = {
-          action = function()
-            return require("obsidian").util.gf_passthrough()
-          end,
-          opts = { noremap = false, expr = true, buffer = true },
-        },
-        ["<leader>ch"] = {
-          action = function()
-            return require("obsidian").util.toggle_checkbox()
-          end,
-          opts = { buffer = true },
-        },
-        -- Smart action depending on context: follow link, show notes with tag, toggle checkbox, or toggle heading fold
-        ["<cr>"] = {
-          action = function()
-            return require("obsidian").util.smart_action()
-          end,
-          opts = { buffer = true, expr = true },
-        },
-      },
       ui = {
         enable = false,
       },
@@ -70,14 +42,33 @@ return {
       ---@param url string
       follow_url_func = function(url)
         vim.ui.open(url)
-        -- vim.ui.open(url, { cmd = { "firefox" } })
       end,
 
       -- Sets how you follow images
       ---@param img string
       follow_img_func = function(img)
         vim.ui.open(img)
-        -- vim.ui.open(img, { cmd = { "loupe" } })
+      end,
+
+      -- Optional, customize how note IDs are generated given an optional title.
+      ---@param title string|?
+      ---@return string
+      note_id_func = function(title)
+        -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+        -- In this case a note with the title 'My new note' will be given an ID that looks
+        -- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'.
+        -- You may have as many periods in the note ID as you'd like—the ".md" will be added automatically
+        local suffix = ""
+        if title ~= nil then
+          -- If title is given, transform it into valid file name.
+          suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+        else
+          -- If title is nil, just add 4 random uppercase letters to the suffix.
+          for _ = 1, 4 do
+            suffix = suffix .. string.char(math.random(65, 90))
+          end
+        end
+        return tostring(os.time()) .. "-" .. suffix
       end,
       open = {},
     },

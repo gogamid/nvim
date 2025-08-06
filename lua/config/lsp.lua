@@ -1,142 +1,7 @@
-local vue_language_server_path = vim.fn.stdpath("data")
-  .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
-
-local vue_plugin = {
-  name = "@vue/typescript-plugin",
-  location = vue_language_server_path,
-  languages = { "vue" },
-  configNamespace = "typescript",
-}
-
-local vtsls_config = {
-  cmd = { "vtsls", "--stdio" },
-  root_markers = { "tsconfig.json", "package.json", "jsconfig.json", ".git" },
-  single_file_support = true,
-  settings = {
-    vtsls = {
-      tsserver = {
-        globalPlugins = {
-          vue_plugin,
-        },
-      },
-    },
-  },
-  filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
-}
-vim.lsp.config("vtsls", vtsls_config)
-
-local vue_ls_config = {
-  cmd = { "vue-language-server", "--stdio" },
-  filetypes = { "vue" },
-  root_markers = { "package.json" },
-  on_init = function(client)
-    client.handlers["tsserver/request"] = function(_, result, context)
-      local clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "vtsls" })
-      if #clients == 0 then
-        vim.notify("Could not find `vtsls` lsp client, `vue_ls` would not work without it.", vim.log.levels.ERROR)
-        return
-      end
-      local ts_client = clients[1]
-
-      local param = unpack(result)
-      local id, command, payload = unpack(param)
-      ts_client:exec_cmd({
-        title = "vue_request_forward", -- You can give title anything as it's used to represent a command in the UI, `:h Client:exec_cmd`
-        command = "typescript.tsserverRequest",
-        arguments = {
-          command,
-          payload,
-        },
-      }, { bufnr = context.bufnr }, function(_, r)
-        local response_data = { { id, r.body } }
-        ---@diagnostic disable-next-line: param-type-mismatch
-        client:notify("tsserver/response", response_data)
-      end)
-    end
-  end,
-}
-vim.lsp.config("vue_ls", vue_ls_config)
-
-local gopls_config = {
-  cmd = { "gopls" },
-  filetypes = { "go", "gomod", "gowork", "gotmpl" },
-  root_markers = {
-    "go.work",
-    "go.mod",
-    ".git",
-  },
-  settings = {
-    gopls = {
-      gofumpt = true,
-      buildFlags = { "-tags=manual_test" },
-      ["local"] = os.getenv("GO_LOCAL_PKG"),
-      staticcheck = true,
-      analyses = {
-        shadow = true,
-        unusedvariable = true,
-        nilness = true,
-        unusedwrite = true,
-        useany = true,
-        ST1003 = false,
-      },
-      hints = {
-        assignVariableTypes = false,
-        compositeLiteralFields = false,
-        compositeLiteralTypes = false,
-        constantValues = true,
-        functionTypeParameters = false,
-        parameterNames = false,
-        rangeVariableTypes = false,
-      },
-      codelenses = {
-        gc_details = false,
-        generate = true,
-        regenerate_cgo = true,
-        run_govulncheck = true,
-        test = true,
-        tidy = true,
-        upgrade_dependency = true,
-        vendor = true,
-      },
-      usePlaceholders = true,
-      completeUnimported = true,
-      directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
-      semanticTokens = true,
-      diagnosticsTrigger = "Save",
-    },
-  },
-}
-vim.lsp.config("gopls", gopls_config)
-
-vim.lsp.enable({
-  "vtsls",
-  "vue_ls",
-
-  "buf_ls",
-
-  "gopls",
-
-  "lua_ls",
-
-  "bashls",
-
-  "taplo",
-
-  "gopls",
-})
-
 -- LSP keymaps
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(event)
     local opts = { buffer = event.buf }
-
-    -- -- Navigation
-    -- vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-    -- vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-    -- vim.keymap.set("n", "gy", vim.lsp.buf.type_definition, opts)
-    -- vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-    -- vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-
     -- Information
     vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 
@@ -148,11 +13,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, opts)
     vim.keymap.set("n", "<leader>dq", vim.diagnostic.setloclist, opts)
 
-    local client = vim.lsp.get_client_by_id(event.data.client_id)
-    if client and client.server_capabilities.foldingRangeProvider then
-      vim.wo.foldmethod = "expr"
-      vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
-    end
+    -- local client = vim.lsp.get_client_by_id(event.data.client_id)
+    -- if client and client.server_capabilities.foldingRangeProvider then
+    --   vim.wo.foldmethod = "expr"
+    --   vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
+    -- end
   end,
 })
 
@@ -215,4 +80,390 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   callback = function(_)
     organize_imports_if_available()
   end,
+})
+
+vim.lsp.enable({
+  --vue with ts
+  "vtsls",
+  "vue_ls",
+
+  -- proto
+  "buf_ls",
+
+  --lua
+  "lua_ls",
+
+  --bash
+  "bashls",
+
+  --yaml
+  "taplo",
+
+  --go
+  "gopls",
+
+  --json
+  "jsonls",
+
+  -- "ada_ls",
+  -- "agda_ls",
+  -- "aiken",
+  -- "air",
+  -- "alloy_ls",
+  -- "anakin_language_server",
+  -- "angularls",
+  -- "ansiblels",
+  -- "antlersls",
+  -- "arduino_language_server",
+  -- "asm_lsp",
+  -- "ast_grep",
+  -- "astro",
+  -- "atlas",
+  -- "autohotkey_lsp",
+  -- "autotools_ls",
+  -- "awk_ls",
+  -- "azure_pipelines_ls",
+  -- "bacon_ls",
+  -- "ballerina",
+  -- "basedpyright",
+  -- "bashls",
+  -- "basics_ls",
+  -- "bazelrc_lsp",
+  -- "beancount",
+  -- "bicep",
+  -- "biome",
+  -- "bitbake_language_server",
+  -- "blueprint_ls",
+  -- "bqls",
+  -- "bright_script",
+  -- "bsl_ls",
+  -- "buck2",
+  -- "buddy_ls",
+  -- "buf_ls",
+  -- "bufls",
+  -- "bzl",
+  -- "c3_lsp",
+  -- "cairo_ls",
+  -- "ccls",
+  -- "cds_lsp",
+  -- "circom-lsp",
+  -- "clangd",
+  -- "clarinet",
+  -- "clojure_lsp",
+  -- "cmake",
+  -- "cobol_ls",
+  -- "codebook",
+  -- "coffeesense",
+  -- "contextive",
+  -- "coq_lsp",
+  -- "crystalline",
+  -- "csharp_ls",
+  -- "cspell_ls",
+  -- "css_variables",
+  -- "cssls",
+  -- "cssmodules_ls",
+  -- "cucumber_language_server",
+  -- "cue",
+  -- "custom_elements_ls",
+  -- "cypher_ls",
+  -- "daedalus_ls",
+  -- "dafny",
+  -- "dagger",
+  -- "dartls",
+  -- "dcmls",
+  -- "debputy",
+  -- "denols",
+  -- "dhall_lsp_server",
+  -- "diagnosticls",
+  -- "digestif",
+  -- "djlsp",
+  -- "docker_compose_language_service",
+  -- "docker_language_server",
+  -- "dockerls",
+  -- "dolmenls",
+  -- "dotls",
+  -- "dprint",
+  -- "ds_pinyin_lsp",
+  -- "dts_lsp",
+  -- "earthlyls",
+  -- "ecsact",
+  -- "efm",
+  -- "elixirls",
+  -- "elmls",
+  -- "elp",
+  -- "ember",
+  -- "emmet_language_server",
+  -- "emmet_ls",
+  -- "emm_ls",
+  -- "erg_language_server",
+  -- "erlangls",
+  -- "esbonio",
+  -- "eslint",
+  -- "facility_language_server",
+  -- "fennel_language_server",
+  -- "fennel_ls",
+  -- "fish_lsp",
+  -- "flow",
+  -- "flux_lsp",
+  -- "foam_ls",
+  -- "fortls",
+  -- "fsautocomplete",
+  -- "fsharp_language_server",
+  -- "fstar",
+  -- "futhark_lsp",
+  -- "gdscript",
+  -- "gdshader_lsp",
+  -- "gh_actions_ls",
+  -- "ghcide",
+  -- "ghdl_ls",
+  -- "ginko_ls",
+  -- "gitlab_ci_ls",
+  -- "glasgow",
+  -- "gleam",
+  -- "glint",
+  -- "glsl_analyzer",
+  -- "glslls",
+  -- "gnls",
+  -- "golangci_lint_ls",
+  -- "gopls",
+  -- "gradle_ls",
+  -- "grammarly",
+  -- "graphql",
+  -- "groovyls",
+  -- "guile_ls",
+  -- "harper_ls",
+  -- "hdl_checker",
+  -- "helm_ls",
+  -- "herb_ls",
+  -- "hhvm",
+  -- "hie",
+  -- "hlasm",
+  -- "hls",
+  -- "hoon_ls",
+  -- "html",
+  -- "htmx",
+  -- "hydra_lsp",
+  -- "hyprls",
+  -- "idris2_lsp",
+  -- "intelephense",
+  -- "janet_lsp",
+  -- "java_language_server",
+  -- "jdtls",
+  -- "jedi_language_server",
+  -- "jinja_lsp",
+  -- "jqls",
+  -- "jsonls",
+  -- "jsonnet_ls",
+  -- "julials",
+  -- "just",
+  -- "kcl",
+  -- "koka",
+  -- "kotlin_language_server",
+  -- "kotlin_lsp",
+  -- "kulala_ls",
+  -- "laravel_ls",
+  -- "lean3ls",
+  -- "lelwel_ls",
+  -- "lemminx",
+  -- "lexical",
+  -- "lsp_ai",
+  -- "ltex",
+  -- "ltex_plus",
+  -- "lwc_ls",
+  -- "m68k",
+  -- "markdown_oxide",
+  -- "marko-js",
+  -- "marksman",
+  -- "matlab_ls",
+  -- "mdx_analyzer",
+  -- "mesonlsp",
+  -- "metals",
+  -- "millet",
+  -- "mint",
+  -- "mlir_lsp_server",
+  -- "mlir_pdll_lsp_server",
+  -- "mm0_ls",
+  -- "mojo",
+  -- "motoko_lsp",
+  -- "move_analyzer",
+  -- "msbuild_project_tools_server",
+  -- "muon",
+  -- "mutt_ls",
+  -- "n_lsp",
+  -- "neocmake",
+  -- "nextflow_ls",
+  -- "nextls",
+  -- "nginx_language_server",
+  -- "nickel_ls",
+  -- "nil_ls",
+  -- "nim_langserver",
+  -- "nimls",
+  -- "nixd",
+  -- "nomad_lsp",
+  -- "ntt",
+  -- "nushell",
+  -- "nxls",
+  -- "ocamlls",
+  -- "ocamllsp",
+  -- "ols",
+  -- "omnisharp",
+  -- "opencl_ls",
+  -- "openscad_ls",
+  -- "openscad_lsp",
+  -- "oxlint",
+  -- "pact_ls",
+  -- "pasls",
+  -- "pbls",
+  -- "perlls",
+  -- "perlnavigator",
+  -- "perlpls",
+  -- "pest_ls",
+  -- "phan",
+  -- "phpactor",
+  -- "pico8_ls",
+  -- "please",
+  -- "pli",
+  -- "poryscript_pls",
+  -- "postgres_lsp",
+  -- "powershell_es",
+  -- "prismals",
+  -- "prolog_ls",
+  -- "prosemd_lsp",
+  -- "protols",
+  -- "psalm",
+  -- "pug",
+  -- "puppet",
+  -- "purescriptls",
+  -- "pylsp",
+  -- "pylyzer",
+  -- "pyre",
+  -- "pyrefly",
+  -- "pyright",
+  -- "qmlls",
+  -- "quick_lint_js",
+  -- "r_language_server",
+  -- "racket_langserver",
+  -- "raku_navigator",
+  -- "reason_ls",
+  -- "regal",
+  -- "regols",
+  -- "remark_ls",
+  -- "rescriptls",
+  -- "rls",
+  -- "rnix",
+  -- "robotcode",
+  -- "robotframework_ls",
+  -- "roc_ls",
+  -- "rome",
+  -- "roslyn_ls",
+  -- "rpmspec",
+  -- "rubocop",
+  -- "ruby_lsp",
+  -- "ruff",
+  -- "ruff_lsp",
+  -- "rune_languageserver",
+  -- "rust_analyzer",
+  -- "salt_ls",
+  -- "scheme_langserver",
+  -- "scry",
+  -- "selene3p_ls",
+  -- "serve_d",
+  -- "shopify_theme_ls",
+  -- "sixtyfps",
+  -- "slangd",
+  -- "slint_lsp",
+  -- "smarty_ls",
+  -- "smithy_ls",
+  -- "snakeskin_ls",
+  -- "snyk_ls",
+  -- "solang",
+  -- "solargraph",
+  -- "solc",
+  -- "solidity",
+  -- "solidity_ls",
+  -- "solidity_ls_nomicfoundation",
+  -- "somesass_ls",
+  -- "sorbet",
+  -- "sourcekit",
+  -- "spectral",
+  -- "spyglassmc_language_server",
+  -- "sqlls",
+  -- "sqls",
+  -- "sqruff",
+  -- "standardrb",
+  -- "starlark_rust",
+  -- "starpls",
+  -- "statix",
+  -- "steep",
+  -- "stimulus_ls",
+  -- "stylelint_lsp",
+  -- "st3p_ls",
+  -- "superhtml",
+  -- "svelte",
+  -- "svlangserver",
+  -- "svls",
+  -- "swift_mesonls",
+  -- "syntax_tree",
+  -- "systemd_ls",
+  -- "tabby_ml",
+  -- "tailwindcss",
+  -- "taplo",
+  -- "tblgen_lsp_server",
+  -- "teal_ls",
+  -- "templ",
+  -- "termux_language_server",
+  -- "terraform_lsp",
+  -- "terraformls",
+  -- "texlab",
+  -- "textlsp",
+  -- "tflint",
+  -- "theme_check",
+  -- "thriftls",
+  -- "tilt_ls",
+  -- "tinymist",
+  -- "tofu_ls",
+  -- "tombi",
+  -- "ts_ls",
+  -- "ts_query_ls",
+  -- "tsp_server",
+  -- "ttags",
+  -- "turbo_ls",
+  -- "turtle_ls",
+  -- "tvm_ffi_navigator",
+  -- "twiggy_language_server",
+  -- "ty",
+  -- "typeprof",
+  -- "typos_lsp",
+  -- "typst_lsp",
+  -- "uiua",
+  -- "ungrammar_languageserver",
+  -- "unison",
+  -- "unocss",
+  -- "uvls",
+  -- "v_analyzer",
+  -- "vacuum",
+  -- "vala_ls",
+  -- "vale_ls",
+  -- "vectorcode_server",
+  -- "verible",
+  -- "veridian",
+  -- "veryl_ls",
+  -- "vespa_ls",
+  -- "vhdl_ls",
+  -- "vimls",
+  -- "visualforce_ls",
+  -- "vls",
+  -- "volar",
+  -- "vscoqtop",
+  -- "vtsls",
+  -- "vue_ls",
+  -- "wasm_language_tools",
+  -- "wgsl_analyzer",
+  -- "yamlls",
+  -- "yang_lsp",
+  -- "yls",
+  -- "ziggy",
+  -- "ziggy_schema",
+  -- "zk",
+  -- "zls",
 })
