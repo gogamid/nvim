@@ -3,21 +3,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(event)
     local opts = { buffer = event.buf }
     -- Information
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = event.buf, desc = "Hover" })
 
     -- Code actions
-    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = event.buf, desc = "Code Action" })
+    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = event.buf, desc = "Rename" })
 
     -- Diagnostics
-    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, opts)
-    vim.keymap.set("n", "<leader>dq", vim.diagnostic.setloclist, opts)
-
-    -- local client = vim.lsp.get_client_by_id(event.data.client_id)
-    -- if client and client.server_capabilities.foldingRangeProvider then
-    --   vim.wo.foldmethod = "expr"
-    --   vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
-    -- end
+    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = event.buf, desc = "Open Diagnostic" })
+    vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, { buffer = event.buf, desc = "Quickfix Diagnostics" })
   end,
 })
 
