@@ -132,7 +132,7 @@ return {
       usePlaceholders = true,
       completeUnimported = true,
       directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
-      semanticTokens = true,
+      semanticTokens = false, -- overrides injections
       diagnosticsTrigger = "Save",
     },
   },

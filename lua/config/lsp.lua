@@ -387,7 +387,7 @@ vim.lsp.enable({
   -- "sourcekit",
   -- "spectral",
   -- "spyglassmc_language_server",
-  -- "sqlls",
+  "sqlls",
   -- "sqls",
   -- "sqruff",
   -- "standardrb",

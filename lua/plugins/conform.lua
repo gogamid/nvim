@@ -1,8 +1,5 @@
 return {
   "stevearc/conform.nvim",
-  dependencies = {
-    { "mason-org/mason.nvim" },
-  },
   opts = {
     default_format_opts = {
       lsp_format = "never",

@@ -2,12 +2,10 @@ return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     enabled = true,
-    dependencies = {
-      { "nvim-lua/plenary.nvim", branch = "master" },
-    },
     keys = {
       { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
       { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
+      { "<leader>aM", ":CopilotChatModels<CR>", desc = "CopilotChat Models", mode = { "n" } },
       {
         "<leader>aa",
         function()
@@ -19,11 +17,14 @@ return {
       {
         "<leader>aq",
         function()
-          vim.ui.input({
-            prompt = "Quick Chat: ",
-          }, function(input)
+          vim.ui.input({ prompt = "Quick Chat: " }, function(input)
+            input = vim.trim(input or "")
             if input ~= "" then
-              require("CopilotChat").ask(input)
+              require("CopilotChat").ask(input, {
+                { selection = require("CopilotChat.select").visual or require("CopilotChat.select").line },
+              })
+            else
+              vim.notify("No input provided for Quick Chat.", vim.log.levels.WARN)
             end
           end)
         end,
@@ -41,30 +42,42 @@ return {
       {
         "<leader>ad",
         function()
-          require("CopilotChat").ask("Please assist with the following diagnostic issue in file", {
-            selection = require("CopilotChat.select").line,
-          })
+          require("CopilotChat").ask(
+            "Please assist with the following diagnostic issue in file #diagnostics:current",
+            { selection = require("CopilotChat.select").visual or require("CopilotChat.select").line }
+          )
         end,
         desc = "Diagnostics help",
         mode = { "n", "v" },
       },
     },
     opts = {
-      -- system_prompt = "You are a helpful assistant",
-      -- chat_autocomplete = false, -- Enable chat autocompletion (when disabled, requires manual `mappings.complete` trigger)
-      question_header = "## Me", -- Header to use for user questions
-      answer_header = "## Broski", -- Header to use for AI answers
+      model = "gpt-4.1",
+      temperature = 0.1,
+      auto_insert_mode = false,
+      headers = {
+        user = "👤: ",
+        assistant = "🤖: ",
+        tool = "🔧: ",
+      },
       window = {
         title = "",
         layout = "float", -- 'vertical', 'horizontal', 'float', 'replace'
         width = 0.5,
         height = 0.8,
+
+        -- layout = "horizontal", -- 'vertical', 'horizontal', 'float'
+        -- height = 0.3,
       },
+      selection = function(source)
+        return require("CopilotChat.select").visual(source) or require("CopilotChat.select").line(source)
+      end,
       prompts = {
-        DiagnosticFix = {
-          prompt = "Please assist with the following diagnostic issue in file",
-          description = "Diagnostics help",
-        },
+        -- DiagnosticFix = {
+        --   prompt = "Please assist with the following diagnostic issue in file #diagnostics:current",
+        --   description = "Diagnostics help",
+        --   mapping = "<leader>ad",
+        -- },
         ReviewCode = {
           prompt = "Review code Feedback",
           system_prompt = [[You are a developer tasked with providing detailed, constructive feedback on code snippets across various programming languages. Your responses should focus on improving code quality, readability, and adherence to best practices.
@@ -103,6 +116,18 @@ Here are some rules:
         },
       },
     },
+    config = function(_, opts)
+      require("CopilotChat").setup(opts)
+
+      vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = "copilot-*",
+        callback = function()
+          vim.opt_local.relativenumber = false
+          vim.opt_local.number = false
+          vim.opt_local.conceallevel = 0
+        end,
+      })
+    end,
   },
   {
     "yetone/avante.nvim",
@@ -162,15 +187,15 @@ Here are some rules:
         accept_word = "<C-o>",
         clear_suggestion = "<C-x>",
       },
-      ignore_filetypes = { "copilot-chat" },
+      -- ignore_filetypes = { "copilot-chat" },
       color = {
         suggestion_color = "#9198a1",
         cterm = 244,
       },
       disable_inline_completion = false,
-      condition = function()
-        return true
-      end,
+      -- condition = function()
+      --   return true
+      -- end,
     },
   },
 }

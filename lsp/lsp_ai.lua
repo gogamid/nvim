@@ -10,7 +10,7 @@
 --- completion/code actions. See the [wiki docs](https://github.com/SilasMarvin/lsp-ai/wiki/Configuration) and
 --- [examples](https://github.com/SilasMarvin/lsp-ai/blob/main/examples/nvim) for more information.
 return {
-  cmd = { 'lsp-ai' },
+  cmd = { "lsp-ai" },
   filetypes = {},
   root_dir = nil,
   init_options = {

@@ -7,16 +7,6 @@ return {
       "sources.compat",
       "sources.default",
     },
-    dependencies = {
-      {
-        "rafamadriz/friendly-snippets",
-        config = function()
-          -- load snippets from the snippets folder
-          require("luasnip.loaders.from_vscode").lazy_load()
-          require("luasnip.loaders.from_vscode").lazy_load({ paths = { vim.fn.stdpath("config") .. "/snippets" } })
-        end,
-      },
-    },
     event = "InsertEnter",
 
     ---@module 'blink.cmp'

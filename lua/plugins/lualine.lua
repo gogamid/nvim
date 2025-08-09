@@ -7,7 +7,6 @@ local function supermaven()
 end
 return {
   "nvim-lualine/lualine.nvim",
-  dependencies = { "nvim-tree/nvim-web-devicons" },
   opts = {
     options = {
       theme = "everforest", -- Use your current colorscheme's theme or set a specific one

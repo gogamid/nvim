@@ -2,10 +2,6 @@
 local mode = "split"
 return {
   "quolpr/quicktest.nvim",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-    "MunifTanjim/nui.nvim",
-  },
 --stylua: ignore
   keys = {
     { "<leader>tl", ":QuicktestRunLine<CR>", desc = "[T]est Run [L]line" },

@@ -243,7 +243,9 @@ return {
     indent = { enabled = true },
     scope = { enabled = true },
     scroll = { enabled = false },
-    words = { enabled = false },
+
+    -- Auto-show LSP references and quickly navigate between them
+    words = { enabled = true },
   },
     --stylua: ignore
     keys = {
@@ -253,10 +255,11 @@ return {
         { "<leader>ff", function() Snacks.picker.files() end,                                                                                        desc = "Find Files Cwd" },
         { "<leader>fg", function() Snacks.picker.git_files() end,                                                                                    desc = "Find Git Files" },
         { "<leader>fs", function() Snacks.picker.files({ dirs = { vim.fs.root(vim.api.nvim_get_current_buf(), { "service.yaml", ".git" }) }, }) end, desc = "find files in the service", },
+        { "<leader>fd", function() Snacks.picker.files({ dirs = { vim.fs.root(vim.api.nvim_get_current_buf(), { "sonar-project.properties", ".git" }) }, }) end, desc = "find files in the domain", },
         { "<leader>fb", function() Snacks.picker.buffers() end,                                                                                      desc = "Buffers" },
         { "<leader>,",  function() Snacks.picker.buffers() end,                                                                                      desc = "Buffers" },
         { "<leader>fr", function() Snacks.picker.recent() end,                                                                                       desc = "Recent" },
-        { "<leader>fP", function() Snacks.picker.files({ cwd = require("lazy.core.config").options.root }) end,                                      desc = "Find Plugin File" },
+        { "<leader>fp", function() Snacks.picker.files({ cwd = require("lazy.core.config").options.root }) end,                                      desc = "Find Plugin File" },
         { "<leader>fz", function() Snacks.picker.zioxide() end,                                                                                      desc = "Zoxide folders" },
         { "<leader>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end,                                                      desc = "Find Config File" },
         -- git

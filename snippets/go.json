@@ -98,5 +98,12 @@
       "\t}",
       "}"
     ]
+  },
+  "debug print json": {
+    "prefix": "debug print json",
+    "body": [
+      "${1:item}Json, _ := json.MarshalIndent(${1:item}, \"\", \"  \")",
+      "fmt.Fprintf(os.Stderr, \"DEBUGPRINT: ${1:item}=%s\\n\", string(${1:item}Json))"
+    ]
   }
 }
