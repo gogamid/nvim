@@ -1,12 +1,8 @@
 ---@param background? "dark" | "light
 ---@param contrast? "hard" | "medium" | "soft"
 local function everforest(background, contrast)
-  if not background then
-    background = "dark"
-  end
-  if not contrast then
-    contrast = "soft"
-  end
+  if not background then background = "dark" end
+  if not contrast then contrast = "soft" end
 
   vim.cmd("set background=" .. background)
   vim.cmd(string.format("let g:everforest_background='%s'", contrast))
@@ -132,9 +128,7 @@ return {
         which_key = true,
       },
     },
-    config = function(_, opts)
-      require("catppuccin").setup(opts)
-    end,
+    config = function(_, opts) require("catppuccin").setup(opts) end,
   },
   { "sainnhe/everforest" },
   {

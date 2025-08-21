@@ -32,9 +32,7 @@ return {
     keys = {
       {
         "<leader>e",
-        function()
-          require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
-        end,
+        function() require("mini.files").open(vim.api.nvim_buf_get_name(0), true) end,
         desc = "Open mini.files (Directory of Current File)",
       },
     },
@@ -42,12 +40,8 @@ return {
       require("mini.files").setup(opts)
 
       local show_dotfiles = true
-      local filter_show = function(fs_entry)
-        return true
-      end
-      local filter_hide = function(fs_entry)
-        return not vim.startswith(fs_entry.name, ".")
-      end
+      local filter_show = function(fs_entry) return true end
+      local filter_hide = function(fs_entry) return not vim.startswith(fs_entry.name, ".") end
 
       local toggle_dotfiles = function()
         show_dotfiles = not show_dotfiles
@@ -58,28 +52,20 @@ return {
       local files_set_cwd = function()
         local cur_entry_path = MiniFiles.get_fs_entry().path
         local cur_directory = vim.fs.dirname(cur_entry_path)
-        if cur_directory ~= nil then
-          vim.fn.chdir(cur_directory)
-        end
+        if cur_directory ~= nil then vim.fn.chdir(cur_directory) end
       end
 
       -- Yank in register full path of entry under cursor
       local yank_path = function()
         local path = (MiniFiles.get_fs_entry() or {}).path
-        if path == nil then
-          return vim.notify("Cursor is not on valid entry")
-        end
+        if path == nil then return vim.notify("Cursor is not on valid entry") end
         vim.fn.setreg(vim.v.register, path)
       end
 
       -- Open path with system default handler (useful for non-text files)
-      local ui_open = function()
-        vim.ui.open(MiniFiles.get_fs_entry().path)
-      end
+      local ui_open = function() vim.ui.open(MiniFiles.get_fs_entry().path) end
 
-      local show_in_finder = function()
-        vim.fn.system({ "open", "-R", MiniFiles.get_fs_entry().path })
-      end
+      local show_in_finder = function() vim.fn.system({ "open", "-R", MiniFiles.get_fs_entry().path }) end
 
       vim.api.nvim_create_autocmd("User", {
         pattern = "MiniFilesBufferCreate",
@@ -115,9 +101,8 @@ return {
         scroll = 50,
       },
       highlighters = {
-        -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+        -- Highlight standalone 'FIXME',  'TODO', 'NOTE'
         fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
-        hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "MiniHipatternsHack" },
         todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
         note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
 
@@ -132,9 +117,7 @@ return {
     keys = {
       {
         "<leader>go",
-        function()
-          require("mini.diff").toggle_overlay(0)
-        end,
+        function() require("mini.diff").toggle_overlay(0) end,
         desc = "Toggle mini.diff overlay",
       },
     },
@@ -154,9 +137,7 @@ return {
     opts = function()
       Snacks.toggle({
         name = "Mini Diff Signs",
-        get = function()
-          return vim.g.minidiff_disable ~= true
-        end,
+        get = function() return vim.g.minidiff_disable ~= true end,
         set = function(state)
           vim.g.minidiff_disable = not state
           if state then
@@ -164,10 +145,7 @@ return {
           else
             require("mini.diff").disable(0)
           end
-          -- HACK: redraw to update the signs
-          vim.defer_fn(function()
-            vim.cmd([[redraw!]])
-          end, 200)
+          vim.defer_fn(function() vim.cmd([[redraw!]]) end, 200)
         end,
       }):map("<leader>uG")
     end,

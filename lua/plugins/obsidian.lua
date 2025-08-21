@@ -40,15 +40,11 @@ return {
       -- other  defaults
       -- Sets how you follow URLs
       ---@param url string
-      follow_url_func = function(url)
-        vim.ui.open(url)
-      end,
+      follow_url_func = function(url) vim.ui.open(url) end,
 
       -- Sets how you follow images
       ---@param img string
-      follow_img_func = function(img)
-        vim.ui.open(img)
-      end,
+      follow_img_func = function(img) vim.ui.open(img) end,
 
       -- Optional, customize how note IDs are generated given an optional title.
       ---@param title string|?
@@ -81,9 +77,7 @@ return {
       opts.directory = "~/work/obsidian/work"
       opts.title = "Scratchpad"
 
-      opts.post_open = function(_, _)
-        vim.cmd("normal! Gzz")
-      end
+      opts.post_open = function(_, _) vim.cmd("normal! Gzz") end
       global_note.setup(opts)
       vim.keymap.set("n", "<leader>n", global_note.toggle_note, {
         desc = "Toggle global note",

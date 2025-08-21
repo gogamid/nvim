@@ -1,4 +1,3 @@
-local provider = require("vim.provider")
 local leet_arg = "leetcode.nvim"
 return {
   "kawre/leetcode.nvim",

@@ -9,7 +9,7 @@ end
 local function overseer_status()
   local ok, overseer = pcall(require, "overseer")
   if not ok then return "" end
-  
+
   local tasks = overseer.list_tasks({ status = "RUNNING" })
   if #tasks > 0 then
     local task_names = {}
@@ -67,7 +67,7 @@ return {
       lualine_a = {},
       lualine_b = {},
       lualine_c = {
-        { "filename", path = 3 },
+        { "filename", path = 4 },
         "progress",
         "filetype",
         "lsp_status",
