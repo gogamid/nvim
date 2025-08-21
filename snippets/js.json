@@ -1,6 +1,6 @@
 {
   "todo gamidli": {
-    "prefix": "tdg",
-    "body": ["// TODO: Gamidli: "]
+    "prefix": "todo gamidli",
+    "body": ["// TODO(ig): "]
   }
 }

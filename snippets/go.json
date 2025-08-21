@@ -1,7 +1,7 @@
 {
   "todo gamidli": {
     "prefix": "todo gamidli",
-    "body": ["// TODO: Gamidli: "]
+    "body": ["// TODO(ig): "]
   },
 
   "test structure": {
