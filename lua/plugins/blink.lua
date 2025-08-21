@@ -48,6 +48,7 @@ return {
         -- with blink.compat
         -- compat = {},
         default = { "lsp", "path", "snippets", "buffer" },
+        min_keyword_length = 2,
       },
 
       cmdline = { enabled = true },

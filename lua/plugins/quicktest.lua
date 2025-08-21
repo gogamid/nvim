@@ -2,6 +2,7 @@
 local mode = "split"
 return {
   "quolpr/quicktest.nvim",
+  enabled = false,
 --stylua: ignore
   keys = {
     { "<leader>tl", ":QuicktestRunLine<CR>", desc = "[T]est Run [L]line" },
@@ -10,7 +11,6 @@ return {
     { "<leader>ta", ":QuicktestRunAll<CR>", desc = "[T]est Run [A]ll" },
     { "<leader>tp", function() require("quicktest").run_previous() end, desc = "[T]est Run [P]revious" },
     { "<leader>tt", function() require("quicktest").toggle_win(mode) end, desc = "[T]est [T]oggle Window" },
-    { "<leader>ts", function()  require("quicktest").cancel_current_run() end, desc = "[T]est [C]ancel Current Run" },
   },
   config = function(_, opts)
     require("quicktest").setup({

@@ -21,6 +21,9 @@ return {
       sh = { "shfmt" },
       markdown = { "prettier" },
       xml = { "xmlformatter" },
+      vue = { "prettier", lsp_format = "prefer" },
+      typescript = { "prettier", lsp_format = "prefer" },
+      javascript = { "prettier", lsp_format = "prefer" },
     },
     formatters = {},
   },
@@ -29,12 +32,8 @@ return {
 
     Snacks.toggle({
       name = "Autoformat",
-      get = function()
-        return not vim.g.autoformat
-      end,
-      set = function(state)
-        vim.g.autoformat = not state
-      end,
+      get = function() return not vim.g.autoformat end,
+      set = function(state) vim.g.autoformat = not state end,
     }):map("<leader>uf")
   end,
 }

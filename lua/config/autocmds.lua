@@ -115,3 +115,14 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.spell = false
   end,
 })
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  group = augroup,
+  callback = function(args)
+    vim.keymap.set("n", "q", "<cmd>close<CR>", {
+      buffer = args.buf,
+      silent = true,
+      desc = "Quit terminal window",
+    })
+  end,
+})

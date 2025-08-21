@@ -1,10 +1,32 @@
 local function supermaven()
   if require("supermaven-nvim.api").is_running() then
-    return "  "
+    return "  "
   else
     return " "
   end
 end
+
+local function overseer_status()
+  local ok, overseer = pcall(require, "overseer")
+  if not ok then return "" end
+  
+  local tasks = overseer.list_tasks({ status = "RUNNING" })
+  if #tasks > 0 then
+    local task_names = {}
+    for _, task in ipairs(tasks) do
+      -- Extract meaningful part of task name
+      local name = task.name or "unknown"
+      -- Shorten common patterns
+      name = name:gsub("^test%-line: ", "🧪 ")
+      name = name:gsub("^test%-file: ", "📁 ")
+      name = name:gsub("^make ", "🔨 ")
+      table.insert(task_names, name)
+    end
+    return " " .. table.concat(task_names, " | ")
+  end
+  return ""
+end
+
 return {
   "nvim-lualine/lualine.nvim",
   opts = {
@@ -37,6 +59,7 @@ return {
           "CursorMoved",
           "CursorMovedI",
           "ModeChanged",
+          "User OverseerTaskUpdate", -- Custom event for overseer updates
         },
       },
     },
@@ -50,7 +73,7 @@ return {
         "lsp_status",
         "%=",
       },
-      lualine_x = { supermaven, "diagnostics", "diff" },
+      lualine_x = { supermaven, overseer_status, "diagnostics", "diff" },
       lualine_y = {},
       lualine_z = {},
     },

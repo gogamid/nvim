@@ -54,9 +54,7 @@ end, { desc = "Show LSP client info" })
 local function organize_imports_if_available()
   local params = vim.lsp.util.make_range_params(0, "utf-8")
   vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, result, _)
-    if err or not result or vim.tbl_isempty(result) then
-      return
-    end
+    if err or not result or vim.tbl_isempty(result) then return end
     for _, action in pairs(result) do
       if action.kind == "source.organizeImports" then
         if action.command then
@@ -71,9 +69,7 @@ local function organize_imports_if_available()
 end
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = { "go" },
-  callback = function(_)
-    organize_imports_if_available()
-  end,
+  callback = function(_) organize_imports_if_available() end,
 })
 
 vim.lsp.enable({
@@ -381,7 +377,7 @@ vim.lsp.enable({
   -- "sourcekit",
   -- "spectral",
   -- "spyglassmc_language_server",
-  "sqlls",
+  -- "sqlls",
   -- "sqls",
   -- "sqruff",
   -- "standardrb",

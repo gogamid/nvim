@@ -52,7 +52,7 @@ return {
       },
     },
     opts = {
-      model = "gpt-4.1",
+      model = "claude-sonnet-4",
       temperature = 0.1,
       auto_insert_mode = false,
       headers = {
