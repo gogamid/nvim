@@ -53,7 +53,7 @@ vim.opt.autowrite = false -- Don't auto save
 vim.opt.hidden = true -- Allow hidden buffers
 vim.opt.errorbells = false -- No error bells
 vim.opt.backspace = "indent,eol,start" -- Better backspace behavior
-vim.opt.autochdir = true -- Don't auto change directory
+vim.opt.autochdir = true
 vim.opt.iskeyword:append("-") -- Treat dash as part of word
 vim.opt.path:append("**") -- include subdirectories in search
 vim.opt.selection = "exclusive" -- Selection behavior
@@ -97,9 +97,7 @@ vim.opt.maxmempattern = 20000
 
 -- Create undo directory if it doesn't exist
 local undodir = vim.fn.expand("~/.vim/undodir")
-if vim.fn.isdirectory(undodir) == 0 then
-  vim.fn.mkdir(undodir, "p")
-end
+if vim.fn.isdirectory(undodir) == 0 then vim.fn.mkdir(undodir, "p") end
 
 -- Tab display settings
 vim.opt.showtabline = 1 -- Always show tabline (0=never, 1=when multiple tabs, 2=always)

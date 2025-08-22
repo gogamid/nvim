@@ -1,1 +1,0 @@
-return { "nanotee/zoxide.vim" }

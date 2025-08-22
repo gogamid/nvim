@@ -82,3 +82,13 @@ vim.keymap.set(
   require("config.utils").compute_and_add_alias_import_snippets,
   { desc = "Copute and add alias import snippets" }
 )
+
+-- paste without yanking
+vim.keymap.set("x", "<leader>p", [["_dP]])
+
+-- -- copy into system clipboard
+-- vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
+-- vim.keymap.set("n", "<leader>Y", [["+Y]])
+
+-- delete without yanking
+vim.keymap.set({ "n", "v" }, "<leader>d", '"_d')

@@ -222,6 +222,7 @@ return {
     picker = picker_options,
     image = {},
     dashboard = {
+      enabled = false,
       preset = {
         keys = {},
         header = require("config.headers").neovim,
@@ -234,6 +235,7 @@ return {
       },
     },
     lazygit = {
+      enabled = false,
       win = {
         width = 0.99,
         height = 0.99,
@@ -248,7 +250,19 @@ return {
       top_down = false,
     },
     quickfile = { enabled = true },
-    statuscolumn = { enabled = true },
+    statuscolumn = {
+      enabled = true, -- automatically enable statuscolumn
+      left = { "mark", "sign" }, -- priority of signs on the left (high to low)
+      right = { "fold", "git" }, -- priority of signs on the right (high to low)
+      folds = {
+        open = true, -- show open fold icons
+        git_hl = true, -- use Git Signs hl for fold icons
+      },
+      git = {
+        patterns = { "MiniDiffSign" }, -- patterns to match Git signs
+      },
+      refresh = 50, -- refresh at most every 50ms
+    },
     styles = {
       notification = {
         wo = { wrap = true }, -- Wrap notifications

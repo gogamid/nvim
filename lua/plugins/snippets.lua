@@ -9,5 +9,4 @@ return {
       require("luasnip.loaders.from_lua").lazy_load({ paths = { snippets_path } })
     end,
   },
-  { "rafamadriz/friendly-snippets" },
 }

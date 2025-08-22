@@ -49,9 +49,7 @@ function M.compute_and_add_alias_import_snippets()
       t(alias),
       i(1, "", {
         node_callbacks = {
-          [e.enter] = function()
-            add_import_to_go_file_if_not_exists(package_path, alias)
-          end,
+          [e.enter] = function() add_import_to_go_file_if_not_exists(package_path, alias) end,
         },
       }),
     })
