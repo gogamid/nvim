@@ -62,16 +62,24 @@ vim.opt.clipboard:append("unnamedplus") -- Use system clipboard
 vim.opt.modifiable = true -- Allow buffer modifications
 vim.opt.encoding = "UTF-8" -- Set encoding
 
--- Cursor settings
--- vim.opt.guicursor =
---   "n-v-c:block,i-ci:ver50,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
-
 -- Folding settings
 vim.opt.foldmethod = "expr" -- Use expression for folding
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- Use treesitter for folding
+function _G.custom_foldtext()
+  local start_line = vim.fn.getline(vim.v.foldstart)
+  local next_line = vim.fn.getline(vim.v.foldstart + 1)
+  local line_count = vim.v.foldend - vim.v.foldstart + 1
+  local indent = string.rep(" ", vim.fn.indent(vim.v.foldstart))
+
+  -- Combine two lines and limit to 80 chars
+  local combined = vim.trim(start_line) .. " " .. vim.trim(next_line)
+  if #combined > 80 then combined = combined:sub(1, 60) end
+
+  return string.format("%s%s ... (%d lines)", indent, combined, line_count)
+end
+vim.opt.foldtext = "v:lua.custom_foldtext()"
 vim.opt.foldlevel = 99 -- Start with all folds open
 vim.opt.fillchars = {
-  -- folds
   eob = " ",
   diff = "╱",
   foldopen = "",
