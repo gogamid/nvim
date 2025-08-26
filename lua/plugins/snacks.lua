@@ -222,7 +222,7 @@ return {
     picker = picker_options,
     image = {},
     dashboard = {
-      enabled = false,
+      enabled = true,
       preset = {
         keys = {},
         header = require("config.headers").neovim,
@@ -270,6 +270,9 @@ return {
     },
     zen = {
       toggles = { dim = false },
+      win = {
+        width = 100,
+      },
     },
     input = { enabled = true },
     gitbrowse = {

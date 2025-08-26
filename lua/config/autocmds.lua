@@ -101,8 +101,11 @@ vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
   pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
   callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.spell = false
+    vim.opt_local.wrap = true -- ✅ Enable visual wrapping
+    vim.opt_local.linebreak = true -- ✅ Wrap at word boundaries
+    vim.opt_local.textwidth = 0 -- ❌ Disable automatic hard wrapping
+    vim.opt_local.relativenumber = false -- ✅ Disable line numbers
+    vim.opt_local.number = false -- ✅ Disable line numbers
   end,
 })
 

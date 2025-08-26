@@ -20,6 +20,10 @@ return {
       { "<leader>ol", mode = { "v" }, "<cmd>Obsidian link_new<cr>", desc = "Obsidian Link to a note" },
     },
     opts = {
+      footer = {
+        enabled = false,
+        format = "{{properties}} properties {{backlinks}} backlinks {{words}} words {{chars}} chars",
+      },
       legacy_commands = false,
       picker = {
         name = "snacks.pick",

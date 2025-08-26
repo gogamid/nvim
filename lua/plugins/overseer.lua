@@ -240,7 +240,7 @@ return {
     })
 
     overseer.register_template({
-      name = "make skaffold-dev",
+      name = "skaffold dev",
       builder = function()
         return {
           cmd = { "make", "skaffold-dev-remotedev", "ALIAS=" .. (os.getenv("USER") or "user") },
@@ -293,6 +293,24 @@ return {
           name = "make test",
           cmd = { "make", "test" },
           cwd = get_project_root(),
+        }
+      end,
+    })
+
+    overseer.register_template({
+      name = "colima start",
+      builder = function()
+        return {
+          cmd = { "colima", "start" },
+        }
+      end,
+    })
+
+    overseer.register_template({
+      name = "activate pim roles",
+      builder = function()
+        return {
+          cmd = { os.getenv("HOME") .. "/work/nexus-tools/azurelogin.sh", "all" },
         }
       end,
     })
