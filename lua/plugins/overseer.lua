@@ -242,35 +242,23 @@ return {
     overseer.register_template({
       name = "skaffold dev",
       builder = function()
+        local cwd = get_project_root()
         return {
           cmd = { "make", "skaffold-dev-remotedev", "ALIAS=" .. (os.getenv("USER") or "user") },
-          cwd = get_project_root(),
+          cwd = cwd,
+          name = "sk " .. vim.fn.fnamemodify(cwd, ":t"),
           components = {
-            "default",
+            { "unique", replace = false },
             {
               "restart_on_save",
-              paths = { get_project_root() },
-              delay = 1000,
+              paths = { cwd },
+              delay = 10,
               interrupt = true,
             },
-            {
-              "on_output_parse",
-              parser = {
-                { "extract", "Press any key to rebuild/redeploy", "_" },
-                {
-                  "always",
-                  {
-                    "dispatch",
-                    function()
-                      vim.schedule(function()
-                        local project_name = vim.fn.fnamemodify(get_project_root(), ":t")
-                        vim.notify("🚀 " .. project_name .. " ready", vim.log.levels.INFO)
-                      end)
-                    end,
-                  },
-                },
-              },
-            },
+            "on_output_summarize",
+            "on_exit_set_status",
+            "on_complete_notify",
+            "on_complete_dispose",
           },
         }
       end,
@@ -279,9 +267,11 @@ return {
     overseer.register_template({
       name = "make lint",
       builder = function()
+        local cwd = get_project_root()
         return {
+          name = "make lint " .. vim.fn.fnamemodify(cwd, ":t"),
           cmd = { "make", "lint" },
-          cwd = get_project_root(),
+          cwd = cwd,
         }
       end,
     })
@@ -289,10 +279,11 @@ return {
     overseer.register_template({
       name = "make test",
       builder = function()
+        local cwd = get_project_root()
         return {
-          name = "make test",
+          name = "make test " .. vim.fn.fnamemodify(cwd, ":t"),
           cmd = { "make", "test" },
-          cwd = get_project_root(),
+          cwd = cwd,
         }
       end,
     })

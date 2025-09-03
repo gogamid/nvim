@@ -53,11 +53,8 @@ local git_options = {
   win = {
     input = {
       keys = {
-        ["<CR>"] = {
-          "diffview",
-          desc = "Diffview this commit",
-          mode = { "n", "i" },
-        },
+        ["<CR>"] = { "diffview", desc = "Diffview this commit", mode = { "n", "i" } },
+        ["<C-c>"] = { "git_checkout", desc = "Checkout commit", mode = { "n", "i" } },
       },
     },
   },

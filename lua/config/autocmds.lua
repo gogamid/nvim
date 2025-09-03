@@ -119,3 +119,11 @@ vim.api.nvim_create_autocmd("TermOpen", {
     })
   end,
 })
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    -- Check if current working directory is within NEXUS_REPO
+    if vim.fn.getcwd():find(vim.fn.expand("$NEXUS_REPO"), 1, true) == 1 then
+      require("config.utils").compute_and_add_alias_import_snippets()
+    end
+  end,
+})

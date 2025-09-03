@@ -1,6 +1,5 @@
 return {
   s("todo", {
-    t({ "// TODO(ig): " }),
-    i(0),
+    t"// TODO(ig): ", i(0),
   }),
 }

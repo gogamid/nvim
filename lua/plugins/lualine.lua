@@ -1,6 +1,6 @@
 local function supermaven()
   if require("supermaven-nvim.api").is_running() then
-    return "  "
+    return " "
   else
     return " "
   end
@@ -67,13 +67,26 @@ return {
       lualine_a = {},
       lualine_b = {},
       lualine_c = {
-        { "filename", path = 4 },
+        {
+          "filename",
+          path = 3, -- full path
+          fmt = function(str)
+            local max = 60
+            if #str < max then
+              return string.rep("", max - #str) .. str
+            elseif #str > max then
+              return str:sub(-max)
+            else
+              return str
+            end
+          end,
+        },
         "progress",
         "filetype",
         "lsp_status",
         "%=",
       },
-      lualine_x = { supermaven, overseer_status, "diagnostics", "diff" },
+      lualine_x = { supermaven, "overseer", overseer_status, "diagnostics", "diff" },
       lualine_y = {},
       lualine_z = {},
     },
