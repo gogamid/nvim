@@ -1,6 +1,6 @@
 return {
   {
-    "echasnovski/mini.files",
+    "nvim-mini/mini.files",
     lazy = false,
     opts = {
       mappings = {
@@ -93,7 +93,7 @@ return {
     end,
   },
   {
-    "echasnovski/mini.hipatterns",
+    "nvim-mini/mini.hipatterns",
     opts = {
       -- Delays (in ms) defining asynchronous highlighting process
       delay = {
@@ -110,9 +110,9 @@ return {
       },
     },
   },
-  { "echasnovski/mini.icons" },
+  { "nvim-mini/mini.icons" },
   {
-    "echasnovski/mini.diff",
+    "nvim-mini/mini.diff",
     event = "VeryLazy",
     keys = {
       {

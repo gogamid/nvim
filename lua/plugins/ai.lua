@@ -8,9 +8,7 @@ return {
       { "<leader>aM", ":CopilotChatModels<CR>", desc = "CopilotChat Models", mode = { "n" } },
       {
         "<leader>aa",
-        function()
-          return require("CopilotChat").toggle()
-        end,
+        function() return require("CopilotChat").toggle() end,
         desc = "Toggle (CopilotChat)",
         mode = { "n", "v" },
       },
@@ -33,9 +31,7 @@ return {
       },
       {
         "<leader>ap",
-        function()
-          require("CopilotChat").select_prompt()
-        end,
+        function() require("CopilotChat").select_prompt() end,
         desc = "Prompt actions",
         mode = { "n", "v" },
       },
@@ -73,11 +69,6 @@ return {
         return require("CopilotChat.select").visual(source) or require("CopilotChat.select").line(source)
       end,
       prompts = {
-        -- DiagnosticFix = {
-        --   prompt = "Please assist with the following diagnostic issue in file #diagnostics:current",
-        --   description = "Diagnostics help",
-        --   mapping = "<leader>ad",
-        -- },
         ReviewCode = {
           prompt = "Review code Feedback",
           system_prompt = [[You are a developer tasked with providing detailed, constructive feedback on code snippets across various programming languages. Your responses should focus on improving code quality, readability, and adherence to best practices.
@@ -130,54 +121,11 @@ Here are some rules:
     end,
   },
   {
-    "yetone/avante.nvim",
-    enabled = false,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-    },
-    event = "VeryLazy",
-    lazy = false,
-    build = "make",
-
-    keys = {
-      { "<leader>as", false },
-    },
-    opts = {
-      provider = "copilot",
-      providers = {
-        ollama = {
-          endpoint = "http://localhost:11434",
-          model = "gemma3n:e4b",
-        },
-        copilot = {
-          model = "gemini-2.5-pro",
-        },
-      },
-      web_search_engine = {
-        provider = "tavily", -- tavily, serpapi, google, kagi, brave, or searxng
-        proxy = nil, -- proxy support, e.g., http://127.0.0.1:7890
-      },
-      behaviour = {
-        enable_fastapply = true, -- Enable Fast Apply feature
-        auto_suggestions = false,
-      },
-      input = {
-        provider = "snacks", -- "native" | "dressing" | "snacks"
-      },
-      selector = {
-        provider = "snacks",
-      },
-    },
-  },
-  {
     "supermaven-inc/supermaven-nvim",
     keys = {
       {
-        "<leader>ast",
-        function()
-          require("supermaven-nvim.api").toggle()
-        end,
+        "<leader>ass",
+        function() require("supermaven-nvim.api").toggle() end,
         desc = "Toggle Supermaven",
       },
     },
@@ -187,15 +135,32 @@ Here are some rules:
         accept_word = "<C-o>",
         clear_suggestion = "<C-x>",
       },
-      -- ignore_filetypes = { "copilot-chat" },
+      ignore_filetypes = { "copilot-chat, opencode_ask" },
       color = {
         suggestion_color = "#9198a1",
         cterm = 244,
       },
       disable_inline_completion = false,
-      -- condition = function()
-      --   return true
-      -- end,
+    },
+  },
+  {
+    "NickvanDyke/opencode.nvim",
+    dependencies = {
+      -- Recommended for better prompt input, and required to use opencode.nvim's embedded terminal — otherwise optional
+      { "folke/snacks.nvim", opts = { input = { enabled = true } } },
+    },
+    opts = {
+      -- Your configuration, if any — see lua/opencode/config.lua
+    },
+    keys = {
+      { "<leader>Aa", function() require("opencode").toggle() end, desc = "Toggle embedded opencode" },
+      {
+        "<leader>As",
+        function() require("opencode").ask("@selection: ") end,
+        desc = "Ask opencode about selection",
+        mode = "v",
+      },
+      { "<leader>An", function() require("opencode").command("session_new") end, desc = "New Opencode session" },
     },
   },
 }

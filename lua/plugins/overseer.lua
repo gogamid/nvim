@@ -265,7 +265,23 @@ return {
     })
 
     overseer.register_template({
-      name = "make lint",
+      name = "auth skaffold dev",
+      builder = function()
+        return {
+          name = "auth skaffold dev",
+          cmd = {
+            "make",
+            "-C",
+            (os.getenv("NEXUS_REPO") or "") .. "/domains/wam/services/auth",
+            "skaffold-dev-remotedev",
+            "ALIAS=" .. (os.getenv("USER") or "user"),
+          },
+        }
+      end,
+    })
+
+    overseer.register_template({
+      name = "",
       builder = function()
         local cwd = get_project_root()
         return {

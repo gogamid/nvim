@@ -1,5 +1,7 @@
 return {
   s("jsontag", {
-    t'`json:"', i(0), t'"`',
+    t('`json:"'),
+    i(0),
+    t('"`'),
   }),
 }
