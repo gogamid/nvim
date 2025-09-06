@@ -70,11 +70,11 @@ end, { expr = true, desc = "Escape and Clear hlsearch" })
 
 vim.keymap.set("n", "<leader>fu", function()
   local url = vim.fn.expand("<cWORD>")
-  if url:match("^https?://") then
-    -- remove non alphanumeric characters in the end of the url
-    url = url:gsub("%W+$", "")
+  if url:match("https?://") then
+    url = url:match("https?://[%w%-%._~:/%?#%[%]@!$&'()*+,;=]+")
+    url = url and url:gsub("[%)%.]+$", "") or url
     vim.fn.setreg("+", url)
-    vim.ui.open(url)
+    vim.fn.jobstart({ "open", url }, { detach = true })
   end
 end, { desc = "Go to URL under cursor" })
 

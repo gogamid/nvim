@@ -67,26 +67,25 @@ return {
       lualine_a = {},
       lualine_b = {},
       lualine_c = {
+        "filetype",
+        "lsp_status",
+        "%=",
         {
           "filename",
-          path = 3, -- full path
+          path = 3,
           fmt = function(str)
             local max = 60
             if #str < max then
-              return string.rep("", max - #str) .. str
+              return str .. string.rep(" ", max - #str)
             elseif #str > max then
-              return str:sub(-max)
+              return "..." .. str:sub(-max)
             else
               return str
             end
           end,
         },
-        "progress",
-        "filetype",
-        "lsp_status",
-        "%=",
       },
-      lualine_x = { supermaven, "overseer", overseer_status, "diagnostics", "diff" },
+      lualine_x = { supermaven, "overseer", overseer_status, "diagnostics", "diff", "progress" },
       lualine_y = {},
       lualine_z = {},
     },

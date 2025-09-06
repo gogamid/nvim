@@ -7,7 +7,7 @@ return {
       { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
       { "<leader>aM", ":CopilotChatModels<CR>", desc = "CopilotChat Models", mode = { "n" } },
       {
-        "<leader>aa",
+        "<leader>ac",
         function() return require("CopilotChat").toggle() end,
         desc = "Toggle (CopilotChat)",
         mode = { "n", "v" },
@@ -48,7 +48,7 @@ return {
       },
     },
     opts = {
-      model = "claude-sonnet-4",
+      -- model = "claude-sonnet-4",
       temperature = 0.1,
       auto_insert_mode = false,
       headers = {
@@ -124,7 +124,7 @@ Here are some rules:
     "supermaven-inc/supermaven-nvim",
     keys = {
       {
-        "<leader>ass",
+        "<leader>aS",
         function() require("supermaven-nvim.api").toggle() end,
         desc = "Toggle Supermaven",
       },
@@ -149,18 +149,22 @@ Here are some rules:
       -- Recommended for better prompt input, and required to use opencode.nvim's embedded terminal — otherwise optional
       { "folke/snacks.nvim", opts = { input = { enabled = true } } },
     },
-    opts = {
-      -- Your configuration, if any — see lua/opencode/config.lua
-    },
+    config = function()
+      vim.g.opencode_opts = {
+        -- Your configuration, if any — see `lua/opencode/config.lua`
+      }
+
+      -- Required for `opts.auto_reload`
+      vim.opt.autoread = true
+    end,
     keys = {
-      { "<leader>Aa", function() require("opencode").toggle() end, desc = "Toggle embedded opencode" },
+      { "<leader>ao", function() require("opencode").toggle() end, desc = "Toggle embedded opencode" },
       {
-        "<leader>As",
+        "<leader>as",
         function() require("opencode").ask("@selection: ") end,
         desc = "Ask opencode about selection",
         mode = "v",
       },
-      { "<leader>An", function() require("opencode").command("session_new") end, desc = "New Opencode session" },
     },
   },
 }

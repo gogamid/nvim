@@ -105,6 +105,9 @@ return {
           vim.env.VIMRUNTIME,
         },
       },
+      diagnostics = {
+        globals = { "vim", "Snacks", "MiniFiles" },
+      },
     })
   end,
   settings = {
