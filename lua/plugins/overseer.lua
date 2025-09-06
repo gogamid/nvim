@@ -251,7 +251,7 @@ return {
             { "unique", replace = false },
             {
               "restart_on_save",
-              paths = { cwd },
+              paths = { cwd .. "/main/**" },
               delay = 10,
               interrupt = true,
             },

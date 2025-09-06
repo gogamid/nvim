@@ -7,7 +7,7 @@ return {
   opts = {
     arg = leet_arg,
     lang = "golang",
-    injector = { ---@type table<lc.lang, lc.inject>
+    injector = {
       ["cpp"] = {
         before = { "#include <bits/stdc++.h>", "using namespace std;" },
         after = "int main() {}",
