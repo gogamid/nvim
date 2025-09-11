@@ -1,8 +1,22 @@
 return {
   "stevearc/conform.nvim",
   opts = {
+    formatters_by_ft = {
+      lua = { lsp_format = "prefer" },
+      proto = { "buf" },
+      go = { "goimports", "gofumpt" },
+      toml = { "taplo" },
+      sh = { "shfmt" },
+      xml = { "xmlformatter" },
+
+      markdown = { "prettier" },
+      json = { "prettier" },
+      vue = { "prettier", lsp_format = "prefer" },
+      typescript = { "prettier", lsp_format = "prefer" },
+      javascript = { "prettier", lsp_format = "prefer" },
+    },
     default_format_opts = {
-      lsp_format = "never",
+      lsp_format = "fallback",
       async = true,
       timeout_ms = 100,
     },
@@ -10,22 +24,9 @@ return {
       if vim.g.autoformat then
         return nil
       else
-        return { lsp_format = "never" }
+        return {}
       end
     end,
-    formatters_by_ft = {
-      proto = { "buf" },
-      go = { "goimports", "gofumpt" },
-      lua = { "stylua" },
-      toml = { "taplo" },
-      sh = { "shfmt" },
-      markdown = { "prettier" },
-      xml = { "xmlformatter" },
-      vue = { "prettier", lsp_format = "prefer" },
-      typescript = { "prettier", lsp_format = "prefer" },
-      javascript = { "prettier", lsp_format = "prefer" },
-    },
-    formatters = {},
   },
   config = function(_, opts)
     require("conform").setup(opts)
