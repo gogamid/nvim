@@ -23,8 +23,8 @@ local pick_chezmoi = function()
     confirm = function(picker, item)
       picker:close()
       require("chezmoi.commands").edit({
-        targets = { item.text },
-        args = { "--watch" },
+        targets = {item.text},
+        args = {"--watch"},
       })
     end,
   }
@@ -42,7 +42,7 @@ return {
   },
   {
     "xvzc/chezmoi.nvim",
-    cmd = { "ChezmoiEdit" },
+    cmd = {"ChezmoiEdit"},
     keys = {
       {
         "<leader>sz",
@@ -61,13 +61,13 @@ return {
         on_watch = false,
       },
       telescope = {
-        select = { "<CR>" },
+        select = {"<CR>"},
       },
     },
     init = function()
       -- run chezmoi edit on file enter
-      vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-        pattern = { os.getenv("HOME") .. "/.local/share/chezmoi/*" },
+      vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+        pattern = {os.getenv("HOME") .. "/.local/share/chezmoi/*"},
         callback = function() vim.schedule(require("chezmoi.commands.__edit").watch) end,
       })
     end,

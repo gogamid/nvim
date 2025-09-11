@@ -39,7 +39,7 @@ return {
         -- vim.cmd("colorscheme catppuccin-latte")
         everforest("light", "medium")
 
-        vim.api.nvim_set_hl(0, "Visual", { bg = "#A7C080", fg = "#2B3339" })
+        vim.api.nvim_set_hl(0, "Visual", {bg = "#A7C080", fg = "#2B3339"})
       end,
     },
   },

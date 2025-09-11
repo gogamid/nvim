@@ -5,6 +5,6 @@ return {
     ensure_installed = {},
   },
   keys = {
-    { "<leader>M", ":Mason<CR>", desc = "Mason" },
+    {"<leader>M", ":Mason<CR>", desc = "Mason"},
   },
 }

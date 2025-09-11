@@ -20,7 +20,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- Set filetype-specific settings
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
-  pattern = { "lua", "python" },
+  pattern = {"lua", "python"},
   callback = function()
     vim.opt_local.tabstop = 4
     vim.opt_local.shiftwidth = 4
@@ -29,7 +29,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
-  pattern = { "javascript", "typescript", "json", "html", "css" },
+  pattern = {"javascript", "typescript", "json", "html", "css"},
   callback = function()
     vim.opt_local.tabstop = 2
     vim.opt_local.shiftwidth = 2
@@ -81,7 +81,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.schedule(function()
       vim.keymap.set("n", "q", function()
         vim.cmd("close")
-        pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+        pcall(vim.api.nvim_buf_delete, event.buf, {force = true})
       end, {
         buffer = event.buf,
         silent = true,
@@ -91,7 +91,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
   pattern = "config",
   callback = function() vim.bo.filetype = "config" end,
 })
@@ -99,13 +99,13 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 -- wrap and do not check for spell in text filetypes
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
-  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
+  pattern = {"text", "plaintex", "typst", "gitcommit", "markdown"},
   callback = function()
-    vim.opt_local.wrap = true -- ✅ Enable visual wrapping
-    vim.opt_local.linebreak = true -- ✅ Wrap at word boundaries
-    vim.opt_local.textwidth = 0 -- ❌ Disable automatic hard wrapping
+    vim.opt_local.wrap = true            -- ✅ Enable visual wrapping
+    vim.opt_local.linebreak = true       -- ✅ Wrap at word boundaries
+    vim.opt_local.textwidth = 0          -- ❌ Disable automatic hard wrapping
     vim.opt_local.relativenumber = false -- ✅ Disable line numbers
-    vim.opt_local.number = false -- ✅ Disable line numbers
+    vim.opt_local.number = false         -- ✅ Disable line numbers
   end,
 })
 

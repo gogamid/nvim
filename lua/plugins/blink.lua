@@ -18,8 +18,8 @@ return {
     },
     completion = {
       trigger = {
-        show_on_trigger_character = false, -- Disable trigger chars like '.'
-        show_on_keyword = true, -- Only show after typing keywords
+        show_on_trigger_character = false,           -- Disable trigger chars like '.'
+        show_on_keyword = true,                      -- Only show after typing keywords
         show_on_insert_on_trigger_character = false, -- Don't show immediately on '.'
       },
       accept = {
@@ -29,7 +29,7 @@ return {
       },
       menu = {
         draw = {
-          treesitter = { "lsp" },
+          treesitter = {"lsp"},
         },
       },
       documentation = {
@@ -41,7 +41,7 @@ return {
       },
     },
     sources = {
-      default = { "lsp", "path", "snippets", "buffer" },
+      default = {"lsp", "path", "snippets", "buffer"},
       min_keyword_length = 2,
       providers = {
         snippets = {
@@ -53,10 +53,10 @@ return {
         },
       },
     },
-    cmdline = { enabled = true },
+    cmdline = {enabled = true},
     keymap = {
       preset = "enter",
-      ["<C-y>"] = { "select_and_accept" },
+      ["<C-y>"] = {"select_and_accept"},
     },
   },
   config = function(_, opts) require("blink.cmp").setup(opts) end,

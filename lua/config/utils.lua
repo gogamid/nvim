@@ -28,10 +28,10 @@ local function add_import_to_go_file_if_not_exists(package_path, alias)
 
   if import_start and import_end then
     -- Add to existing import block at the bottom
-    vim.api.nvim_buf_set_lines(bufnr, import_end, import_end, false, { "\t" .. import_line })
+    vim.api.nvim_buf_set_lines(bufnr, import_end, import_end, false, {"\t" .. import_line})
   elseif package_line then
     -- Create new import block after package line
-    local new_block = { "", "import (", "\t" .. import_line, ")" }
+    local new_block = {"", "import (", "\t" .. import_line, ")"}
     vim.api.nvim_buf_set_lines(bufnr, package_line, package_line, false, new_block)
   end
 end
@@ -56,7 +56,7 @@ function M.compute_and_add_alias_import_snippets()
   end
 
   -- Find git root directory asynchronously
-  vim.system({ "git", "rev-parse", "--show-toplevel" }, { text = true }, function(result)
+  vim.system({"git", "rev-parse", "--show-toplevel"}, {text = true}, function(result)
     if result.code ~= 0 then
       vim.schedule(function()
         vim.notify("Not in a git repository", vim.log.levels.ERROR)
@@ -67,7 +67,7 @@ function M.compute_and_add_alias_import_snippets()
     local git_root = vim.trim(result.stdout)
 
     -- Find all service.go files asynchronously
-    vim.system({ "find", git_root, "-name", "service.go", "-type", "f" }, { text = true }, function(find_result)
+    vim.system({"find", git_root, "-name", "service.go", "-type", "f"}, {text = true}, function(find_result)
       if find_result.code ~= 0 then
         vim.schedule(function()
           vim.notify("Failed to find service.go files", vim.log.levels.ERROR)
@@ -75,7 +75,7 @@ function M.compute_and_add_alias_import_snippets()
         return
       end
 
-      local service_files = vim.split(vim.trim(find_result.stdout), "\n", { trimempty = true })
+      local service_files = vim.split(vim.trim(find_result.stdout), "\n", {trimempty = true})
       if #service_files == 0 then
         vim.schedule(function()
           vim.notify("No service.go files found", vim.log.levels.WARN)
@@ -115,10 +115,10 @@ function M.compute_and_add_alias_import_snippets()
                   -- Detect import block start
                   if trimmed:match("^import%s*%(") then
                     in_import_block = true
-                  -- Detect import block end
+                    -- Detect import block end
                   elseif in_import_block and trimmed == ")" then
                     in_import_block = false
-                  -- Extract aliased imports (lines with space before quoted path)
+                    -- Extract aliased imports (lines with space before quoted path)
                   elseif in_import_block and trimmed:match('^%w+%s+"') then
                     local alias, package_path = trimmed:match('^(%w+)%s+"([^"]+)"')
                     if alias and package_path and not seen_triggers[alias] then
@@ -147,7 +147,7 @@ function M.compute_and_add_alias_import_snippets()
 
                   -- Add snippets to Go filetype
                   if #snippets > 0 then
-                    ls.add_snippets("go", snippets, { key = "go_imports_dynamic" })
+                    ls.add_snippets("go", snippets, {key = "go_imports_dynamic"})
                     vim.notify("Added " .. #snippets .. " import snippets for Go files", vim.log.levels.INFO)
                   else
                     vim.notify("No aliased imports found in service.go files", vim.log.levels.WARN)

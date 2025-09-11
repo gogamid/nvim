@@ -5,19 +5,19 @@ return {
     lazy = true,
     ft = "markdown",
     keys = {
-      { "<leader>on", mode = { "n" }, "<cmd>Obsidian new<cr>", desc = "Obsidian new note" },
+      {"<leader>on", mode = {"n"},   "<cmd>Obsidian new<cr>",          desc = "Obsidian new note"},
 
       --search
-      { "<leader>os", mode = { "n" }, "<cmd>Obsidian search<cr>", desc = "Obsidian search" },
-      { "<leader>of", mode = { "n" }, "<cmd>Obsidian quick_switch<cr>", desc = "Obsidian Files" },
-      { "<leader>ob", mode = { "n" }, "<cmd>Obsidian backlinks<cr>", desc = "Obsidian Backlinks" },
+      {"<leader>os", mode = {"n"},   "<cmd>Obsidian search<cr>",       desc = "Obsidian search"},
+      {"<leader>of", mode = {"n"},   "<cmd>Obsidian quick_switch<cr>", desc = "Obsidian Files"},
+      {"<leader>ob", mode = {"n"},   "<cmd>Obsidian backlinks<cr>",    desc = "Obsidian Backlinks"},
 
       --editing
-      { "<leader>oi", mode = { "n" }, "<cmd>Obsidian paste_img<cr>", desc = "Obsidian Image paste" },
-      { "<leader>or", mode = { "n" }, "<cmd>Obsidian rename<cr>", desc = "Obsidian Rename note" },
+      {"<leader>oi", mode = {"n"},   "<cmd>Obsidian paste_img<cr>",    desc = "Obsidian Image paste"},
+      {"<leader>or", mode = {"n"},   "<cmd>Obsidian rename<cr>",       desc = "Obsidian Rename note"},
 
       --visual
-      { "<leader>ol", mode = { "v" }, "<cmd>Obsidian link_new<cr>", desc = "Obsidian Link to a note" },
+      {"<leader>ol", mode = {"v"},   "<cmd>Obsidian link_new<cr>",     desc = "Obsidian Link to a note"},
     },
     opts = {
       footer = {

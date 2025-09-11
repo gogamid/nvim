@@ -46,7 +46,7 @@ return {
       local toggle_dotfiles = function()
         show_dotfiles = not show_dotfiles
         local new_filter = show_dotfiles and filter_show or filter_hide
-        require("mini.files").refresh({ content = { filter = new_filter } })
+        require("mini.files").refresh({content = {filter = new_filter}})
       end
 
       local files_set_cwd = function()
@@ -65,7 +65,7 @@ return {
       -- Open path with system default handler (useful for non-text files)
       local ui_open = function() vim.ui.open(MiniFiles.get_fs_entry().path) end
 
-      local show_in_finder = function() vim.fn.system({ "open", "-R", MiniFiles.get_fs_entry().path }) end
+      local show_in_finder = function() vim.fn.system({"open", "-R", MiniFiles.get_fs_entry().path}) end
 
       vim.api.nvim_create_autocmd("User", {
         pattern = "MiniFilesBufferCreate",
@@ -76,18 +76,18 @@ return {
             "n",
             opts.mappings and opts.mappings.toggle_hidden or "g.",
             toggle_dotfiles,
-            { buffer = buf_id, desc = "Toggle hidden files" }
+            {buffer = buf_id, desc = "Toggle hidden files"}
           )
 
           vim.keymap.set(
             "n",
             opts.mappings and opts.mappings.change_cwd or "gc",
             files_set_cwd,
-            { buffer = args.data.buf_id, desc = "Set cwd" }
+            {buffer = args.data.buf_id, desc = "Set cwd"}
           )
-          vim.keymap.set("n", "go", ui_open, { buffer = args.data.buf_id, desc = "OS open" })
-          vim.keymap.set("n", "gf", show_in_finder, { buffer = args.data.buf_id, desc = "Show in finder" })
-          vim.keymap.set("n", "gy", yank_path, { buffer = args.data.buf_id, desc = "Yank path" })
+          vim.keymap.set("n", "go", ui_open, {buffer = args.data.buf_id, desc = "OS open"})
+          vim.keymap.set("n", "gf", show_in_finder, {buffer = args.data.buf_id, desc = "Show in finder"})
+          vim.keymap.set("n", "gy", yank_path, {buffer = args.data.buf_id, desc = "Yank path"})
         end,
       })
     end,
@@ -102,15 +102,15 @@ return {
       },
       highlighters = {
         -- Highlight standalone 'FIXME',  'TODO', 'NOTE'
-        fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
-        todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
-        note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
+        fixme = {pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme"},
+        todo = {pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo"},
+        note = {pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote"},
 
         hex_color = require("mini.hipatterns").gen_highlighter.hex_color(),
       },
     },
   },
-  { "nvim-mini/mini.icons" },
+  {"nvim-mini/mini.icons"},
   {
     "nvim-mini/mini.diff",
     event = "VeryLazy",

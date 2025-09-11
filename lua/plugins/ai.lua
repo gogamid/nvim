@@ -3,48 +3,49 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     enabled = true,
     keys = {
-      { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
-      { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
-      { "<leader>aM", ":CopilotChatModels<CR>", desc = "CopilotChat Models", mode = { "n" } },
+      {"<c-s>",      "<CR>",                   ft = "copilot-chat",         desc = "Submit Prompt", remap = true},
+      {"<leader>a",  "",                       desc = "+ai",                mode = {"n", "v"}},
+      {"<leader>aM", ":CopilotChatModels<CR>", desc = "CopilotChat Models", mode = {"n"}},
       {
         "<leader>ac",
         function() return require("CopilotChat").toggle() end,
         desc = "Toggle (CopilotChat)",
-        mode = { "n", "v" },
+        mode = {"n", "v"},
       },
       {
         "<leader>aq",
         function()
-          vim.ui.input({ prompt = "Quick Chat: " }, function(input)
-            input = vim.trim(input or "")
-            if input ~= "" then
-              require("CopilotChat").ask(input, {
-                { selection = require("CopilotChat.select").visual or require("CopilotChat.select").line },
-              })
-            else
-              vim.notify("No input provided for Quick Chat.", vim.log.levels.WARN)
-            end
-          end)
+          vim.ui.input({prompt = "Quick Chat: "},
+            function(input)
+              input = vim.trim(input or "")
+              if input ~= "" then
+                require("CopilotChat").ask(input,
+                  {{selection = require("CopilotChat.select").visual or require("CopilotChat.select").line},})
+              else
+                vim
+                  .notify("No input provided for Quick Chat.", vim.log.levels.WARN)
+              end
+            end)
         end,
         desc = "Quick Chat (CopilotChat)",
-        mode = { "n", "v" },
+        mode = {"n", "v"},
       },
       {
         "<leader>ap",
         function() require("CopilotChat").select_prompt() end,
         desc = "Prompt actions",
-        mode = { "n", "v" },
+        mode = {"n", "v"},
       },
       {
         "<leader>ad",
         function()
           require("CopilotChat").ask(
             "Please assist with the following diagnostic issue in file #diagnostics:current",
-            { selection = require("CopilotChat.select").visual or require("CopilotChat.select").line }
+            {selection = require("CopilotChat.select").visual or require("CopilotChat.select").line}
           )
         end,
         desc = "Diagnostics help",
-        mode = { "n", "v" },
+        mode = {"n", "v"},
       },
     },
     opts = {
@@ -71,7 +72,8 @@ return {
       prompts = {
         ReviewCode = {
           prompt = "Review code Feedback",
-          system_prompt = [[You are a developer tasked with providing detailed, constructive feedback on code snippets across various programming languages. Your responses should focus on improving code quality, readability, and adherence to best practices.
+          system_prompt =
+          [[You are a developer tasked with providing detailed, constructive feedback on code snippets across various programming languages. Your responses should focus on improving code quality, readability, and adherence to best practices.
 
 Here are the rules you must follow:
 - Analyze the code for potential errors and suggest corrections.
@@ -87,7 +89,8 @@ Here are the rules you must follow:
         },
         ReviewVueCode = {
           prompt = "Review Vue code",
-          system_prompt = [[You are a Vue 3 expert specializing in the Composition API. Provide expert-level insights, solutions, and best practices for modern Vue development.
+          system_prompt =
+          [[You are a Vue 3 expert specializing in the Composition API. Provide expert-level insights, solutions, and best practices for modern Vue development.
 
 Here are some rules:
 - Use Vue 3 with Composition API and <script setup> syntax.
@@ -135,7 +138,7 @@ Here are some rules:
         accept_word = "<C-o>",
         clear_suggestion = "<C-x>",
       },
-      ignore_filetypes = { "copilot-chat, opencode_ask" },
+      ignore_filetypes = {"copilot-chat, opencode_ask"},
       color = {
         suggestion_color = "#9198a1",
         cterm = 244,
@@ -147,7 +150,7 @@ Here are some rules:
     "NickvanDyke/opencode.nvim",
     dependencies = {
       -- Recommended for better prompt input, and required to use opencode.nvim's embedded terminal — otherwise optional
-      { "folke/snacks.nvim", opts = { input = { enabled = true } } },
+      {"folke/snacks.nvim", opts = {input = {enabled = true}}},
     },
     config = function()
       vim.g.opencode_opts = {
@@ -158,7 +161,7 @@ Here are some rules:
       vim.opt.autoread = true
     end,
     keys = {
-      { "<leader>ao", function() require("opencode").toggle() end, desc = "Toggle embedded opencode" },
+      {"<leader>ao", function() require("opencode").toggle() end, desc = "Toggle embedded opencode"},
       {
         "<leader>as",
         function() require("opencode").ask("@selection: ") end,
