@@ -27,6 +27,28 @@ local function overseer_status()
   return ""
 end
 
+local function formatter_status()
+  --get bufnr
+  local bufnr = vim.api.nvim_get_current_buf()
+  local formatters, use_lsp = require("conform").list_formatters_to_run(bufnr)
+
+  if #formatters > 0 then
+    local formatter_names = {}
+    for _, formatter_info in ipairs(formatters) do
+      table.insert(formatter_names, formatter_info.name)
+    end
+    local result = "󰉶 " .. table.concat(formatter_names, ", ")
+    if use_lsp then
+      result = result .. " + LSP"
+    end
+    return result
+  elseif use_lsp then
+    return "󰉶 LSP"
+  else
+    return "󰉶 "
+  end
+end
+
 return {
   "nvim-lualine/lualine.nvim",
   opts = {
@@ -68,6 +90,7 @@ return {
       lualine_b = {},
       lualine_c = {
         "filetype",
+        formatter_status,
         "lsp_status",
         "%=",
         {
