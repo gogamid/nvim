@@ -77,15 +77,15 @@
     "prefix": "pager",
     "body": [
       "pager := paging.NewPager(",
-      "\t(*pb${1:Var1}.List${2:Var2}Response).Get${2:Var2},",
-      "\tfunc(ctx context.Context, pageToken string) (*pb${1:Var1}.List${2:Var2}Response, error) {",
-      "\t\treturn retry.Backoff(ctx, retry.LongrunningConfig(), func(ctx context.Context) (*pb${1:Var1}.List${2:Var2}Response, error) {",
-      "\t\t\treturn svc.${1:Var1}.List${2:Var2}(ctx, &pb${1:Var1}.List${2:Var2}Request{",
+      "\t(*${1:pb}.List${2:Item}Response).Get${2:Item},",
+      "\tfunc(ctx context.Context, pageToken string) (*${1:pb}.List${2:Item}Response, error) {",
+      "\t\treturn retry.Backoff(ctx, retry.LongrunningConfig(), func(ctx context.Context) (*${1:pb}.List${2:Item}Response, error) {",
+      "\t\t\treturn svc.${1:pb}.List${2:Item}(ctx, &${1:pb}.List${2:Item}Request{",
       "\t\t\t\tPageSize:  paging.DefaultPageSize,",
       "\t\t\t\tPageToken: pageToken,",
-      "\t\t\t\tFilter: &pb${1:Var1}.List${2:Var2}Request_And{",
-      "\t\t\t\t\tAnd: &pb${1:Var1}.List${2:Var2}Request_FiltersOneOf{",
-      "\t\t\t\t\t\tFilters: []*pb${1:Var1}.${2:Var2}FilterOneOf{},",
+      "\t\t\t\tFilter: &${1:pb}.List${2:Item}Request_And{",
+      "\t\t\t\t\tAnd: &${1:pb}.List${2:Item}Request_FiltersOneOf{",
+      "\t\t\t\t\t\tFilters: []*${1:pb}.${2:Item}FilterOneOf{},",
       "\t\t\t\t\t},",
       "\t\t\t\t},",
       "\t\t\t})",
@@ -94,13 +94,13 @@
       ")",
       "for item, err := range pager.All(ctx, paging.AllPages) {",
       "\tif err != nil {",
-      "\t\treturn fmt.Errorf(\"error fetching ${2:Var2}: %w\", err)",
+      "\t\treturn fmt.Errorf(\"error fetching ${2:Item}: %w\", err)",
       "\t}",
       "}"
     ]
   },
-  "printfjson": {
-    "prefix": "printfjson",
+  "jsonprintf": {
+    "prefix": "jsonprintf",
     "body": [
       "${1:item}Json, _ := json.MarshalIndent(${1:item}, \"\", \"  \")",
       "fmt.Fprintf(os.Stderr, \"DEBUGPRINT: ${1:item}=%s\\n\", string(${1:item}Json))"
@@ -151,44 +151,46 @@
       "}"
     ]
   },
-  "service client mock": {
-    "prefix": "mock service client",
+  "external service call": {
+    "prefix": "external service call",
     "body": [
-      "// ${1:serviceName}ServiceClient",
-      "",
       "type ${1:serviceName}ServiceClient interface {",
-      "\t${2:Method1}(ctx context.Context, request *pb${3:PackageName}.${2:Method1}Request, opts ...grpc.CallOption) (*pb${3:PackageName}.${2:Method1}Response, error)",
+      "\t${2:Method1}(ctx context.Context, request *${3:PackageName}.${2:Method1}Request, opts ...grpc.CallOption) (*${3:PackageName}.${2:Method1}Response, error)",
       "}",
       "",
-      "// add this to the service",
+      "//TODO add this to the service",
       "",
       "\t${1:serviceName}ServiceClient             ${1:serviceName}ServiceClient",
       "",
-      "// create client",
+      "//TODO create client",
       "",
-      "\t${1:serviceName}ServiceClient, err := pb${3:PackageName}.NewClient(serviceUser)",
+      "\t${1:serviceName}ServiceClient, err := ${3:PackageName}.NewClient(serviceUser)",
       "\tif err != nil {",
       "\t\tpanic(err)",
       "\t}",
       "",
-      "// use it",
+      "//TODO use it",
       "",
       "\t\t${1:serviceName}ServiceClient:             ${1:serviceName}ServiceClient,",
+      "",
+      "//TODO add to _mock.go file",
       "",
       "// ${1:serviceName}ServiceClientMock",
       "",
       "var _ ${1:serviceName}ServiceClient = (*${1:serviceName}ServiceClientMock)(nil)",
       "",
       "type ${1:serviceName}ServiceClientMock struct {",
-      "\t${2:Method1}Func func(ctx context.Context, req *pb${3:PackageName}.${2:Method1}Request) (*pb${3:PackageName}.${2:Method1}Response, error)",
+      "\t${2:Method1}Func func(ctx context.Context, req *${3:PackageName}.${2:Method1}Request) (*${3:PackageName}.${2:Method1}Response, error)",
       "}",
       "",
-      "func (m *${1:serviceName}ServiceClientMock) ${2:Method1}(ctx context.Context, req *pb${3:PackageName}.${2:Method1}Request, opts ...grpc.CallOption) (*pb${3:PackageName}.${2:Method1}Response, error) {",
+      "func (m *${1:serviceName}ServiceClientMock) ${2:Method1}(ctx context.Context, req *${3:PackageName}.${2:Method1}Request, opts ...grpc.CallOption) (*${3:PackageName}.${2:Method1}Response, error) {",
       "\tif m.${2:Method1}Func == nil {",
       "\t\treturn nil, unimplementedError(\"${2:Method1}\", req)",
       "\t}",
       "\treturn m.${2:Method1}Func(ctx, req)",
-      "}"
+      "}",
+      "//TODO update Buildfile.yaml",
+      "//TODO add policy ${1:serviceName}${2:Method} to the domain_service_users.go"
     ]
   }
 }
