@@ -56,19 +56,13 @@ vim.keymap.set({ "n", "v" }, "-", "<C-x>", { desc = "Decrement numbers", noremap
 -- Better J behavior
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
 
-vim.keymap.set("n", "<leader>fP", function()
-  local path = vim.fn.expand("%:p")
-  vim.fn.setreg("+", path)
-  print("file:", path)
-end, { desc = "Copy Full File-Path" })
-
 -- Clear search and stop snippet on escape
 vim.keymap.set({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")
   return "<esc>"
 end, { expr = true, desc = "Escape and Clear hlsearch" })
 
-vim.keymap.set("n", "<leader>fu", function()
+vim.keymap.set("n", "gf", function()
   local url = vim.fn.expand("<cWORD>")
   if url:match("https?://") then
     url = url:match("https?://[%w%-%._~:/%?#%[%]@!$&'()*+,;=]+")
