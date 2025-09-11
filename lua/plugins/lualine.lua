@@ -49,6 +49,19 @@ local function formatter_status()
   end
 end
 
+local function lsp_status()
+  local clients = vim.lsp.get_clients({bufnr = 0})
+  if #clients > 0 then
+    local client_names = {}
+    for _, client in ipairs(clients) do
+      table.insert(client_names, client.name)
+    end
+    return "  " .. table.concat(client_names, ", ")
+  else
+    return "  "
+  end
+end
+
 return {
   "nvim-lualine/lualine.nvim",
   opts = {
@@ -91,7 +104,7 @@ return {
       lualine_c = {
         "filetype",
         formatter_status,
-        "lsp_status",
+        lsp_status,
         "%=",
         {
           "filename",
