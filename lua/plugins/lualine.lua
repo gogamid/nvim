@@ -62,6 +62,20 @@ local function lsp_status()
   end
 end
 
+local function filetype()
+  local ft = vim.bo.filetype
+  if ft and ft ~= "" then
+    local icon = require("nvim-web-devicons").get_icon_by_filetype(ft)
+    if icon then
+      return icon .. " " .. ft
+    else
+      return " " .. ft
+    end
+  else
+    return " "
+  end
+end
+
 return {
   "nvim-lualine/lualine.nvim",
   opts = {
@@ -102,7 +116,7 @@ return {
       lualine_a = {},
       lualine_b = {},
       lualine_c = {
-        "filetype",
+        filetype,
         formatter_status,
         lsp_status,
         "%=",
