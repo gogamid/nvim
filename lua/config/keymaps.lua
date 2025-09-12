@@ -90,3 +90,75 @@ vim.keymap.set("x", "<leader>p", [["_dP]])
 
 -- delete without yanking
 vim.keymap.set({"n", "v"}, "<leader>d", '"_d')
+
+-- Bionic Read: keep syntax highlighting and make first two letters bold
+local M = {on = false}
+local ns_id = vim.api.nvim_create_namespace("bionic_read")
+
+vim.g.bionic_strength = vim.g.bionic_strength or 0.7
+
+local function set_highlights()
+  vim.api.nvim_set_hl(0, "BionicPrefix", {bold = true, default = true})
+end
+
+set_highlights()
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  callback = set_highlights,
+})
+
+local function create()
+  M.on = true
+  local line_start = 0
+  local line_end = vim.api.nvim_buf_line_count(0)
+  local lines = vim.api.nvim_buf_get_lines(0, line_start, line_end, true)
+  local i = line_start - 1
+  for _, line in pairs(lines) do
+    local len = #line
+    i = i + 1
+    local st = nil
+    for j = 1, len do
+      local cur = string.sub(line, j, j)
+      local re = cur:match("[%w']+")
+      if st then
+        if j == len then
+          if re then
+            j = j + 1
+            re = nil
+          end
+        end
+        if not re then
+          local en = j - 1
+          local word_len = en - st + 1
+          if word_len >= 2 then
+            vim.api.nvim_buf_set_extmark(0, ns_id, i, st - 1, {
+              hl_group = "BionicPrefix",
+              end_col = st + 1,
+              priority = 100,
+            })
+          end
+          st = nil
+        end
+      elseif re then
+        st = j
+      end
+    end
+  end
+end
+
+local function clear()
+  M.on = false
+  vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
+  ns_id = vim.api.nvim_create_namespace("bionic_read")
+end
+
+local activateBionicRead = function()
+  M.on = not M.on
+  if M.on then
+    create()
+  else
+    clear()
+  end
+end
+vim.keymap.set("n", "<leader>uB", activateBionicRead, {desc = "Activate Bionic Read"})
