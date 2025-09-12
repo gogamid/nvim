@@ -12,6 +12,7 @@ return {
 
   {
     "nullchilly/fsread.nvim",
+    enabled = false,
     ft = "markdown",
     keys = {
       {"<leader>uB", ":FSToggle<CR>", desc = "Toggle Bionic Read"},

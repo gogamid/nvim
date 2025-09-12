@@ -192,5 +192,19 @@
       "//TODO update Buildfile.yaml",
       "//TODO add policy ${1:serviceName}${2:Method} to the domain_service_users.go"
     ]
+  },
+  "errgroup": {
+    "prefix": "errgroup",
+    "body": [
+      "g, ctx := errgroup.WithContext(ctx)",
+      "",
+      "g.Go(func() error {",
+      "\treturn function(ctx)",
+      "})",
+      "",
+      "if err := g.Wait(); err != nil {",
+      "\treturn err",
+      "}"
+    ]
   }
 }
