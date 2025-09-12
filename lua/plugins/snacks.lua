@@ -340,7 +340,7 @@ return {
       desc = "Git Browse (copy)",
       mode = {"n", "x"},
     },
-    {"<leader>gg", function() Snacks.lazygit() end,                                  desc = "Lazygit"},
+    -- {"<leader>gg", function() Snacks.lazygit() end,                                  desc = "Lazygit"},
 
     -- Grep
     {"<leader>/",  function() Snacks.picker.grep({cwd = Snacks.git.get_root()}) end, desc = "Grep Git Files"},
