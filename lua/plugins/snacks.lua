@@ -275,10 +275,20 @@ return {
     gitbrowse = {
       url_patterns = {
         ["dev%.azure%.com"] = {
-          file =
-          "?path=/{file}&version=GB{branch}&line={line_start}&lineEnd={line_end}&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+          branch = "?version=GB{branch}",
+          file = function(fields)
+            local line_end = fields.line_end and (fields.line_end + 1) or fields.line_start
+            return string.format(
+              "?path=/%s&version=GB%s&line=%s&lineEnd=%s&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+              fields.file or "", fields.branch or "", fields.line_start or "", line_end)
+          end,
+          permalink = function(fields)
+            local line_end = fields.line_end and (fields.line_end + 1) or fields.line_start
+            return string.format(
+              "?path=/%s&version=GC%s&line=%s&lineEnd=%s&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+              fields.file or "", fields.commit or "", fields.line_start or "", line_end)
+          end,
           commit = "/commit/{commit}",
-          branch = "",
         },
       },
     },
