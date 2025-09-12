@@ -15,6 +15,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 local function create()
    vim.b.bionic_on = true
+   vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
    local line_start = 0
   local line_end = vim.api.nvim_buf_line_count(0)
   local lines = vim.api.nvim_buf_get_lines(0, line_start, line_end, true)
@@ -79,6 +80,15 @@ M.setup = function(opts)
          end,
       })
    end
+
+   -- Add autocmds to refresh bionic highlighting on text changes
+   vim.api.nvim_create_autocmd({"TextChanged", "TextChangedI", "InsertLeave"}, {
+      callback = function()
+         if vim.b.bionic_on then
+            create()
+         end
+      end,
+   })
 end
 
 local toggleBionicRead = function()
