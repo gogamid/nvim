@@ -74,7 +74,7 @@ end, {desc = "Go to URL under cursor"})
 
 vim.keymap.set("n", "<leader>l", ":Lazy<CR>", {desc = "Lazy"})
 
-vim.keymap.set( "n", "<leader>cs", require("config.modules.pb_snips").compute_and_add_alias_import_snippets, {desc = "Copute and add alias import snippets"})
+vim.keymap.set( "n", "<leader>cs", require("modules.pb_snips").compute_and_add_alias_import_snippets, {desc = "Copute and add alias import snippets"})
 
 -- paste without yanking
 vim.keymap.set("x", "<leader>p", [["_dP]])
@@ -86,5 +86,5 @@ vim.keymap.set("x", "<leader>p", [["_dP]])
 -- delete without yanking
 vim.keymap.set({"n", "v"}, "<leader>d", '"_d')
 
-require("config.modules.bionic").setup({prefix_length = 2, auto_activate = true, filetypes = {"markdown"}})
+require("modules.bionic").setup({prefix_length = 2, auto_activate = true, filetypes = {"markdown"}})
 vim.keymap.set("n", "<leader>uB", ":BionicToggle<CR>", {desc = "Toggle Bionic Read"})

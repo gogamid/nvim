@@ -101,11 +101,11 @@ vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
   pattern = {"text", "plaintex", "typst", "gitcommit", "markdown"},
   callback = function()
-    vim.opt_local.wrap = true            -- ✅ Enable visual wrapping
-    vim.opt_local.linebreak = true       -- ✅ Wrap at word boundaries
-    vim.opt_local.textwidth = 0          -- ❌ Disable automatic hard wrapping
-    vim.opt_local.relativenumber = false -- ✅ Disable line numbers
-    vim.opt_local.number = false         -- ✅ Disable line numbers
+    vim.opt_local.wrap = true        
+    vim.opt_local.linebreak = true    
+    vim.opt_local.textwidth = 0        
+    vim.opt_local.relativenumber = false
+    vim.opt_local.number = false         
   end,
 })
 
@@ -119,11 +119,12 @@ vim.api.nvim_create_autocmd("TermOpen", {
     })
   end,
 })
+
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     -- Check if current working directory is within NEXUS_REPO
     if vim.fn.getcwd():find(vim.fn.expand("$NEXUS_REPO"), 1, true) == 1 then
-      require("config.utils").compute_and_add_alias_import_snippets()
+      require("modules.pb_snips").compute_and_add_alias_import_snippets()
     end
   end,
 })
