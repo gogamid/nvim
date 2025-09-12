@@ -13,25 +13,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
    callback = set_highlights,
 })
 
-M.setup = function(opts)
-   opts = opts or {}
-   vim.g.bionic_prefix_length = opts.prefix_length or 2
-   vim.g.bionic_auto_activate = opts.auto_activate or false
-   vim.g.bionic_filetypes = opts.filetypes or {}
-
-   if vim.g.bionic_auto_activate then
-      vim.api.nvim_create_autocmd("BufReadPost", {
-         callback = function()
-            if not vim.b.bionic_on then
-               if vim.tbl_isempty(vim.g.bionic_filetypes) or vim.tbl_contains(vim.g.bionic_filetypes, vim.bo.filetype) then
-                  create()
-               end
-            end
-         end,
-      })
-   end
-end
-
 local function create()
    vim.b.bionic_on = true
    local line_start = 0
@@ -78,8 +59,33 @@ local function clear()
    ns_id = vim.api.nvim_create_namespace("bionic_read")
 end
 
+M.setup = function(opts)
+   opts = opts or {}
+   vim.g.bionic_prefix_length = opts.prefix_length or 2
+   vim.g.bionic_auto_activate = opts.auto_activate ~= nil and opts.auto_activate or false
+   vim.g.bionic_filetypes = opts.filetypes or {}
+
+   if vim.g.bionic_auto_activate then
+      vim.api.nvim_create_autocmd("BufReadPost", {
+         callback = function()
+            if vim.b.bionic_on == nil then
+               vim.b.bionic_on = false
+            end
+            if not vim.b.bionic_on then
+               if vim.tbl_isempty(vim.g.bionic_filetypes) or vim.tbl_contains(vim.g.bionic_filetypes, vim.bo.filetype) then
+                  create()
+               end
+            end
+         end,
+      })
+   end
+end
+
 local toggleBionicRead = function()
-   local on = vim.b.bionic_on or false
+   if vim.b.bionic_on == nil then
+      vim.b.bionic_on = false
+   end
+   local on = vim.b.bionic_on
    on = not on
    if on then
      create()

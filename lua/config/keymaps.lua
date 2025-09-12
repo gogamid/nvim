@@ -74,12 +74,7 @@ end, {desc = "Go to URL under cursor"})
 
 vim.keymap.set("n", "<leader>l", ":Lazy<CR>", {desc = "Lazy"})
 
-vim.keymap.set(
-  "n",
-  "<leader>cs",
-  require("config.utils").compute_and_add_alias_import_snippets,
-  {desc = "Copute and add alias import snippets"}
-)
+vim.keymap.set( "n", "<leader>cs", require("config.modules.pb_snips").compute_and_add_alias_import_snippets, {desc = "Copute and add alias import snippets"})
 
 -- paste without yanking
 vim.keymap.set("x", "<leader>p", [["_dP]])
