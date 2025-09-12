@@ -24,7 +24,6 @@ vim.opt.incsearch = true  -- Show matches as you type
 vim.opt.termguicolors = true                      -- Enable 24-bit colors
 vim.opt.signcolumn = "yes"                        -- Always show sign column
 vim.opt.showmatch = false                         -- Highlight matching brackets
--- vim.opt.matchtime = 2                             -- How long to show matching bracket
 vim.opt.cmdheight = 1                             -- Command line height
 vim.opt.completeopt = "menuone,noinsert,noselect" -- Completion options
 vim.opt.showmode = false                          -- Don't show mode in command line
@@ -41,13 +40,18 @@ vim.opt.synmaxcol = 300                           -- Syntax highlighting limit
 vim.opt.backup = false                            -- Don't create backup files
 vim.opt.writebackup = false                       -- Don't create backup before writing
 vim.opt.swapfile = false                          -- Don't create swap files
+
 vim.opt.undofile = true                           -- Persistent undo
 vim.opt.undodir = vim.fn.expand("~/.vim/undodir") -- Undo directory
-vim.opt.updatetime = 300                          -- Faster completion
-vim.opt.timeoutlen = 500                          -- Key timeout duration
-vim.opt.ttimeoutlen = 0                           -- Key code timeout
-vim.opt.autoread = true                           -- Auto reload files changed outside vim
-vim.opt.autowrite = false                         -- Don't auto save
+-- Create undo directory if it doesn't exist
+local undodir = vim.fn.expand("~/.vim/undodir")
+if vim.fn.isdirectory(undodir) == 0 then vim.fn.mkdir(undodir, "p") end
+
+vim.opt.updatetime = 300  -- Faster completion
+vim.opt.timeoutlen = 500  -- Key timeout duration
+vim.opt.ttimeoutlen = 0   -- Key code timeout
+vim.opt.autoread = true   -- Auto reload files changed outside vim
+vim.opt.autowrite = false -- Don't auto save
 
 -- Behavior settings
 vim.opt.hidden = true                   -- Allow hidden buffers
@@ -103,10 +107,6 @@ vim.opt.diffopt:append("linematch:60")
 -- Performance improvements
 vim.opt.redrawtime = 10000
 vim.opt.maxmempattern = 20000
-
--- Create undo directory if it doesn't exist
-local undodir = vim.fn.expand("~/.vim/undodir")
-if vim.fn.isdirectory(undodir) == 0 then vim.fn.mkdir(undodir, "p") end
 
 -- Tab display settings
 vim.opt.showtabline = 1 -- Always show tabline (0=never, 1=when multiple tabs, 2=always)
