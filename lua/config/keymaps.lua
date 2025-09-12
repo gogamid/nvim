@@ -92,4 +92,4 @@ vim.keymap.set("x", "<leader>p", [["_dP]])
 vim.keymap.set({"n", "v"}, "<leader>d", '"_d')
 
 require("config.modules.bionic").setup({prefix_length = 2, auto_activate = true, filetypes = {"markdown"}})
-vim.keymap.set("n", "<leader>uB", require("config.modules.bionic").toggleBionicRead, {desc = "Toggle Bionic Read"})
+vim.keymap.set("n", "<leader>uB", ":BionicToggle<CR>", {desc = "Toggle Bionic Read"})

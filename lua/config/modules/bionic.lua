@@ -90,4 +90,6 @@ end
 
 M.toggleBionicRead = toggleBionicRead
 
+vim.api.nvim_create_user_command("BionicToggle", toggleBionicRead, {range = 2})
+
 return M
