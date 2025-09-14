@@ -49,7 +49,6 @@ return {
       },
     },
     opts = {
-      -- model = "claude-sonnet-4",
       temperature = 0.1,
       auto_insert_mode = false,
       headers = {
@@ -69,46 +68,6 @@ return {
       selection = function(source)
         return require("CopilotChat.select").visual(source) or require("CopilotChat.select").line(source)
       end,
-      prompts = {
-        ReviewCode = {
-          prompt = "Review code Feedback",
-          system_prompt =
-          [[You are a developer tasked with providing detailed, constructive feedback on code snippets across various programming languages. Your responses should focus on improving code quality, readability, and adherence to best practices.
-
-Here are the rules you must follow:
-- Analyze the code for potential errors and suggest corrections.
-- Offer improvements on code efficiency and maintainability.
-- Mention line numbers when referring to the code
-- Highlight any deviations from standard coding practices.
-- Encourage the use of comments or documentation where necessary.
-- Suggest better variable, function, or class names if you see fit.
-- Detail alternative approaches and their advantages when relevant.
-- When possible, refer to official guidelines or documentation to support your recommendations.]],
-          -- mapping = "<leader>ccmc",
-          -- description = "My custom prompt description",
-        },
-        ReviewVueCode = {
-          prompt = "Review Vue code",
-          system_prompt =
-          [[You are a Vue 3 expert specializing in the Composition API. Provide expert-level insights, solutions, and best practices for modern Vue development.
-
-Here are some rules:
-- Use Vue 3 with Composition API and <script setup> syntax.
-- Demonstrate effective use of Composition API features (ref, reactive, computed, watch).
-- Implement TypeScript when applicable, with clear type definitions.
-- Highlight important considerations (reactivity, lifecycle, component design).
-- Avoid adding code comments unless necessary.
-- Provide concise code snippets and real-world examples.
-- Explain rationale behind recommendations and solutions.
-- Mention browser compatibility issues when relevant.
-- Avoid adding third-party libraries unless necessary.
-- Use modern ES6+ syntax and clear naming conventions.
-- Link to official Vue 3 documentation for complex topics.
-- Showcase efficient state management and performance optimization techniques.]],
-          -- mapping = "<leader>ccmc",
-          -- description = "My custom prompt description",
-        },
-      },
     },
     config = function(_, opts)
       require("CopilotChat").setup(opts)
@@ -148,6 +107,7 @@ Here are some rules:
   },
   {
     "NickvanDyke/opencode.nvim",
+    enabled = false,
     dependencies = {
       -- Recommended for better prompt input, and required to use opencode.nvim's embedded terminal — otherwise optional
       {"folke/snacks.nvim", opts = {input = {enabled = true}}},
@@ -170,4 +130,13 @@ Here are some rules:
       },
     },
   },
+  {
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    opts = {
+    },
+  }
 }
