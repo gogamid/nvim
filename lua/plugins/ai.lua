@@ -133,10 +133,116 @@ return {
   {
     "olimorris/codecompanion.nvim",
     dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
+      {"nvim-treesitter/nvim-treesitter", build = ":TSUpdate"},
+      {"nvim-lua/plenary.nvim"},
+    },
+    keys = {
+      {"<leader>aa", ":CodeCompanionChat Toggle<CR>", mode = {"n", "v"}, {noremap = true, silent = true, desc = "CodeCompanion Toggle"}},
+      {"ga",         ":CodeCompanionChat Add<CR>",    mode = {"v"},      {noremap = true, silent = true, desc = "Add selection to CodeCompanionChat"}},
     },
     opts = {
-    },
+      strategies = {
+        chat = {
+          adapter = "githubmodels",
+          model = "grok-code",
+        },
+        inline = {
+          adapter = "githubmodels",
+          model = "grok-code",
+        },
+      },
+      display = {
+        chat = {
+          window = {
+            layout = "float",
+          },
+        },
+      },
+      adapters = {
+        http = {
+          acp = {
+            gemini_cli = function()
+              return require("codecompanion.adapters").extend("gemini_cli", {
+                defaults = {
+                  auth_method = "gemini-api-key", -- "oauth-personal"|"gemini-api-key"|"vertex-ai"
+                },
+                env = {
+                  api_key = os.getenv("GEMINI_API_KEY"),
+                },
+              })
+            end,
+            opencode = {
+              name = "opencode",
+              formatted_name = "Opencode",
+              type = "acp",
+              roles = {
+                llm = "assistant",
+                user = "user",
+              },
+              opts = {
+                vision = true,
+              },
+              commands = {
+                default = {
+                  "opencode-acp",
+                },
+              },
+              defaults = {
+                mcpServers = {},
+                timeout = 20000, -- 20 seconds
+              },
+              env = {
+              },
+              parameters = {
+                protocolVersion = 1,
+                clientCapabilities = {
+                  fs = {readTextFile = true, writeTextFile = true},
+                },
+                clientInfo = {
+                  name = "CodeCompanion.nvim",
+                  version = "1.0.0",
+                },
+              },
+              handlers = {
+                ---@param self CodeCompanion.ACPAdapter
+                ---@return boolean
+                setup = function(self)
+                  return true
+                end,
+
+                ---Manually handle authentication
+                ---@param self CodeCompanion.ACPAdapter
+                ---@return boolean
+                auth = function(self)
+                  return true
+                end,
+
+                ---@param self CodeCompanion.ACPAdapter
+                ---@param messages table
+                ---@param capabilities table
+                ---@return table
+                form_messages = function(self, messages, capabilities)
+                  local helpers = require("codecompanion.adapters.acp.helpers")
+                  return helpers.form_messages(self, messages, capabilities)
+                end,
+
+                ---Function to run when the request has completed. Useful to catch errors
+                ---@param self CodeCompanion.ACPAdapter
+                ---@param code number
+                ---@return nil
+                on_exit = function(self, code)
+                  if code ~= 0 then
+                    vim.notify("OpenCode ACP exited with code " .. code, vim.log.levels.ERROR)
+                  end
+                end,
+              },
+
+            },
+          },
+          opts = {
+          },
+        },
+      },
+    }
   }
 }

@@ -18,6 +18,7 @@ return {
       indent = {enable = true},
       auto_install = true,
       ensure_installed = {
+        "markdown", "markdown_inline", "yaml", "diff",
         "bash",
         "c",
         "html",

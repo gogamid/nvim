@@ -74,7 +74,6 @@ vim.api.nvim_create_autocmd("FileType", {
     "help",
     "markdown",
     "oil",
-    "codecompanion",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
@@ -126,5 +125,24 @@ vim.api.nvim_create_autocmd("VimEnter", {
     if vim.fn.getcwd():find(vim.fn.expand("$NEXUS_REPO"), 1, true) == 1 then
       require("modules.pb_snips").compute_and_add_alias_import_snippets()
     end
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup,
+  pattern = {
+    "codecompanion",
+  },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.schedule(function()
+      vim.keymap.set("n", "q", function()
+        vim.cmd("CodeCompanionChat Toggle")
+      end, {
+        buffer = event.buf,
+        silent = true,
+        desc = "Toggle CodeCompanion",
+      })
+    end)
   end,
 })

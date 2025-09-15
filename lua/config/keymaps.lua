@@ -73,3 +73,5 @@ vim.keymap.set("n", "<leader>cs", require("modules.pb_snips").compute_and_add_al
 
 require("modules.bionic").setup({prefix_length = 2, auto_activate = true, filetypes = {"markdown"}})
 vim.keymap.set("n", "<leader>uB", ":BionicToggle<CR>", {desc = "Toggle Bionic Read"})
+
+vim.cmd([[cab cc CodeCompanion]])
