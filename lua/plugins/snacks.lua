@@ -330,7 +330,7 @@ return {
     {"<leader>fz", function() Snacks.picker.zioxide() end,      desc = "Zoxide folders"},
     {
       "<leader>fc",
-      function() Snacks.picker.files({cwd = vim.fn.stdpath("config"), exclude = {"lsp/"}}) end,
+      function() Snacks.picker.files({dirs = {vim.fn.stdpath("config"), os.getenv("HOME") .. "/.config"}, exclude = {"lsp/"}}) end,
       desc = "Find Config File",
     },
 
