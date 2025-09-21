@@ -40,11 +40,11 @@ return {
   },
 
   keys = {
-    {"<leader>tt",  "<cmd>OverseerToggle<cr>",                                               desc = "Tasks Open"},
-    {"<leader>tr",  "<cmd>OverseerRun<cr>",                                                  desc = "Run task"},
+    {"<leader>tt",  "<cmd>OverseerToggle<cr>",                                             desc = "Tasks Open"},
+    {"<leader>tr",  "<cmd>OverseerRun<cr>",                                                desc = "Run task"},
 
-    {"<leader>tml", function() require("overseer").run_template({name = "make lint"}) end,   desc = "Make Lint"},
-    {"<leader>tmt", function() require("overseer").run_template({name = "make test"}) end,   desc = "Make Test"},
+    {"<leader>tml", function() require("overseer").run_template({name = "make lint"}) end, desc = "Make Lint"},
+    {"<leader>tmt", function() require("overseer").run_template({name = "make test"}) end, desc = "Make Test"},
     {
       "<leader>tmg",
       function() require("overseer").run_template({name = "make generate-models"}) end,
@@ -55,9 +55,9 @@ return {
       function() require("overseer").run_template({name = "make skaffold-dev"}) end,
       desc = "Make Skaffold Dev",
     },
-    {"<leader>ta", function() require("overseer").run_template({name = "make test"}) end,   desc = "Test All"},
-    {"<leader>tl", function() require("overseer").run_template({name = "test-line"}) end,   desc = "Test line"},
-    {"<leader>tf", function() require("overseer").run_template({name = "test-file"}) end,   desc = "Test file"},
+    {"<leader>ta", function() require("overseer").run_template({name = "make test"}) end, desc = "Test All"},
+    {"<leader>tl", function() require("overseer").run_template({name = "test-line"}) end, desc = "Test line"},
+    {"<leader>tf", function() require("overseer").run_template({name = "test-file"}) end, desc = "Test file"},
     {
       "<leader>tp",
       function()
@@ -197,6 +197,9 @@ return {
 
     overseer.register_template({
       name = "test-line",
+      condition = {
+        filetype = "go",
+      },
       builder = function()
         local config = get_test_config()
         if not config then
@@ -222,6 +225,9 @@ return {
 
     overseer.register_template({
       name = "test-file",
+      condition = {
+        filetype = "go",
+      },
       builder = function()
         local config = get_test_config()
         if not config then
@@ -241,6 +247,9 @@ return {
 
     overseer.register_template({
       name = "skaffold dev",
+      condition = {
+        dir = os.getenv("NEXUS_REPO")
+      },
       builder = function()
         local cwd = get_project_root()
         return {
@@ -266,6 +275,9 @@ return {
 
     overseer.register_template({
       name = "auth skaffold dev",
+      condition = {
+        dir = os.getenv("NEXUS_REPO")
+      },
       builder = function()
         return {
           name = "auth skaffold dev",
@@ -282,6 +294,9 @@ return {
 
     overseer.register_template({
       name = "",
+      condition = {
+        dir = os.getenv("NEXUS_REPO")
+      },
       builder = function()
         local cwd = get_project_root()
         return {
@@ -294,6 +309,9 @@ return {
 
     overseer.register_template({
       name = "make test",
+      condition = {
+        dir = os.getenv("NEXUS_REPO")
+      },
       builder = function()
         local cwd = get_project_root()
         return {

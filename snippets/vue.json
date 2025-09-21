@@ -1,0 +1,535 @@
+{
+  "Vue SFC <script setup>, TS, SCSS": {
+    "prefix": "vbase",
+    "body": [
+      "<script setup lang=\"ts\">",
+      "",
+      "</script>",
+      "",
+      "<template>",
+      "\t<div>",
+      "\t\t${0}",
+      "\t</div>",
+      "</template>",
+      "",
+      "<style lang=\"scss\" scoped>",
+      "",
+      "</style>"
+    ],
+    "description": "Base for Vue 3 File with <script setup>, TypeScript and SCSS"
+  },
+  "Vue SFC <script setup>, TS, SASS": {
+    "prefix": "vbase-sass",
+    "body": [
+      "<script setup lang=\"ts\">",
+      "",
+      "</script>",
+      "",
+      "<template>",
+      "\t<div>",
+      "\t\t${0}",
+      "\t</div>",
+      "</template>",
+      "",
+      "<style lang=\"sass\" scoped>",
+      "",
+      "</style>"
+    ],
+    "description": "Base for Vue 3 File with <script setup>, TypeScript and SASS"
+  },
+  "Vue SFC <script setup>, TS, LESS": {
+    "prefix": "vbase-less",
+    "body": [
+      "<script setup lang=\"ts\">",
+      "",
+      "</script>",
+      "",
+      "<template>",
+      "\t<div>",
+      "\t\t${0}",
+      "\t</div>",
+      "</template>",
+      "",
+      "<style lang=\"less\" scoped>",
+      "",
+      "</style>"
+    ],
+    "description": "Base for Vue 3 File with <script setup>, TypeScript and LESS"
+  },
+  "Vue SFC <script setup>, TS, PostCSS": {
+    "prefix": "vbase-pcss",
+    "body": [
+      "<script setup lang=\"ts\">",
+      "",
+      "</script>",
+      "",
+      "<template>",
+      "\t<div>",
+      "\t\t${0}",
+      "\t</div>",
+      "</template>",
+      "",
+      "<style lang=\"postcss\" scoped>",
+      "",
+      "</style>"
+    ],
+    "description": "Base for Vue 3 File with <script setup>, TypeScript and PostCSS"
+  },
+  "Vue SFC <script setup>, TS, CSS": {
+    "prefix": "vbase-css",
+    "body": [
+      "<script setup lang=\"ts\">",
+      "",
+      "</script>",
+      "",
+      "<template>",
+      "\t<div>",
+      "\t\t${0}",
+      "\t</div>",
+      "</template>",
+      "",
+      "<style lang=\"css\" scoped>",
+      "",
+      "</style>"
+    ],
+    "description": "Base for Vue 3 File with <script setup>, TypeScript and CSS"
+  },
+  "Vue SFC <script setup>, TS, Stylus": {
+    "prefix": "vbase-styl",
+    "body": [
+      "<script setup lang=\"ts\">",
+      "",
+      "</script>",
+      "",
+      "<template>",
+      "\t<div>",
+      "\t\t${0}",
+      "\t</div>",
+      "</template>",
+      "",
+      "<style lang=\"stylus\" scoped>",
+      "",
+      "</style>"
+    ],
+    "description": "Base for Vue 3 File with <script setup>, TypeScript and Stylus"
+  },
+  "Vue SFC <script setup>, TS, No Style": {
+    "prefix": "vbase-ns",
+    "body": [
+      "<script setup lang=\"ts\">",
+      "",
+      "</script>",
+      "",
+      "<template>",
+      "\t<div>",
+      "\t\t${0}",
+      "\t</div>",
+      "</template>"
+    ],
+    "description": "Base for Vue 3 File with <script setup>, TypeScript and no style"
+  },
+  "Vue v-for": {
+    "prefix": "vfor",
+    "body": [
+      "<${1:div} v-for=\"${2:item} in ${2:item}s\" :key=\"${2:item}.id\">",
+      "\t{{ ${2:item} }}",
+      "</${1:div}>"
+    ],
+    "description": "v-for statement"
+  },
+  "Vue v-model Directive": {
+    "prefix": "vmodel",
+    "body": ["<input v-model=\"${1:data}\" type=\"text\" />"],
+    "description": "v-model directive"
+  },
+  "Vue v-on Shortcut Directive": {
+    "prefix": "von",
+    "body": ["@click=\"${1:handler}(${2})\""],
+    "description": "v-on click handler"
+  },
+  "Vue Component with Props Binding": {
+    "prefix": "vel-props",
+    "body": ["<${1:component} :${1:propName}=\"${0}\"></${1:component}>"],
+    "description": "component element with props"
+  },
+  "Vue Named Slot": {
+    "prefix": "vslot-named",
+    "body": ["<template #${0:name}>${1:defaultcontent}</template>"],
+    "description": "named slot"
+  },
+  "Vue Image Source Binding": {
+    "prefix": "vimg",
+    "body": ["<img :src=\"${1:imageSrc}\" :alt=\"${2:altText}\"/>"],
+    "description": "image source binding"
+  },
+  "Vue Style Binding": {
+    "prefix": "vstyle",
+    "body": [":style=\"{ fontSize: ${2:data} + 'px' }\""],
+    "description": "vue inline style binding"
+  },
+  "Vue Style Binding Object": {
+    "prefix": "vstyle-obj",
+    "body": [":style=\"[${2:styleObjectA}, ${3:styleObjectB]}\""],
+    "description": "vue inline style binding, objects"
+  },
+  "Vue Class Binding": {
+    "prefix": "vclass",
+    "body": [":class=\"{ '${2:classList}': ${1:condition} }\""],
+    "description": "vue class binding"
+  },
+  "Vue Class Binding Ternary": {
+    "prefix": "vclass-ter",
+    "body": [
+      ":class=\"[${1:condition} ? '${2:classListOnTrue}' : '${3:classListOnFalse}']\""
+    ],
+    "description": "vue ternary class binding"
+  },
+  "Vue Transition (template)": {
+    "prefix": "vtrans",
+    "body": [
+      "<Transition name=\"${1:transitionName}\">",
+      "\t${0}",
+      "</Transition>"
+    ],
+    "description": "vue transition component"
+  },
+  "Vue Transition Group (template)": {
+    "prefix": "vtrans-group",
+    "body": [
+      "<TransitionGroup name=\"${1:transitionName}\">",
+      "\t${0}",
+      "</TransitionGroup>"
+    ],
+    "description": "vue transition group component"
+  },
+  "Vue Routing Link": {
+    "prefix": "vrlink",
+    "body": ["<router-link to=\"/${1:path}\">${2:linkTitle}</router-link>"],
+    "description": "vue router link"
+  },
+  "Vue Routing Link with param": {
+    "prefix": "vrlink-param",
+    "body": [
+      "<router-link :to=\"`/${1:path}/${${2:param}}`\">${3:linkTitle}</router-link>"
+    ],
+    "description": "vue router link with param"
+  },
+  "Vue Suspense Wrapper": {
+    "prefix": "vsuspense",
+    "body": [
+      "<Suspense>",
+      "  <template #fallback>",
+      "    ${1:Loading...}",
+      "  </template>",
+      "</Suspense>"
+    ],
+    "description": "Vue 3 Suspense component with fallback template"
+  },
+  "Vue Router": {
+    "prefix": "vrouter",
+    "body": [
+      "import Vue from 'vue';",
+      "import VueRouter from 'vue-router';",
+      "",
+      "Vue.use(VueRouter);",
+      "",
+      "export const router = new VueRouter({",
+      "\tbase: '/',",
+      "\tmode: 'history',",
+      "\troutes: [",
+      "\t\t{ path: '/path', component: component }",
+      "\t]",
+      "});"
+    ],
+    "description": "Base for Vue Router"
+  },
+  "Vue Router scrollBehavior": {
+    "prefix": "vscrollbehavior",
+    "body": [
+      "scrollBehavior(to, from, savedPosition) {",
+      "\tif(savedPosition) {",
+      "\t\treturn savedPosition;",
+      "\t} else {",
+      "\t\treturn { x: 0, y: 0 };",
+      "\t}",
+      "},"
+    ],
+    "description": "Vue Router scrollBehavior"
+  },
+  "Vue Router beforeEach": {
+    "prefix": "vbeforeeach",
+    "body": [
+      "router.beforeEach((to, from, next) => {",
+      "\t${1:next();}",
+      "});"
+    ],
+    "description": "Vue Router global guards beforeEach"
+  },
+  "Vue Router beforeResolve": {
+    "prefix": "vbeforeresolve",
+    "body": [
+      "router.beforeResolve((to, from, next) => {",
+      "\t${1:next();}",
+      "});"
+    ],
+    "description": "Vue Router global guards beforeResolve"
+  },
+  "Vue Router afterEach": {
+    "prefix": "vaftereach",
+    "body": ["router.afterEach((to, from) => {", "\t", "});"],
+    "description": "Vue Router global guards afterEach"
+  },
+  "Vue Router beforeEnter": {
+    "prefix": "vbeforeenter",
+    "body": ["beforeEnter(to, from, next) {", "\t${1:next();}", "},"],
+    "description": "Vue Router per-route guard beforeEnter"
+  },
+  "Vue Router beforeRouteEnter": {
+    "prefix": "vbeforerouteenter",
+    "body": [
+      "beforeRouteEnter(to, from, next) {",
+      "\tnext(vm => {${1:}});",
+      "},"
+    ],
+    "description": "Vue Router component guards beforeRouteEnter"
+  },
+  "Vue Router beforeRouteUpdate": {
+    "prefix": "vbeforerouteupdate",
+    "body": ["beforeRouteUpdate(to, from, next) {", "\t${1:next();}", "},"],
+    "description": "Vue Router component guards beforeRouteUpdate"
+  },
+  "Vue Router beforeRouteLeave": {
+    "prefix": "vbeforerouteleave",
+    "body": ["beforeRouteLeave(to, from, next) {", "\t${1:next();}", "},"],
+    "description": "Vue Router component guards beforeRouteLeave"
+  },
+  "Vue Router Route": {
+    "prefix": "vroute-named",
+    "body": [
+      "{",
+      "\tpath: '${1:pathName}',",
+      "\tname: '${2:routeName}',",
+      "\tcomponent: () => import('./${3:pathToComponent}'),",
+      "},"
+    ],
+    "description": "Vue Router route with per route code-splitting"
+  },
+  "Vue Ref": {
+    "prefix": "vref",
+    "body": ["const ${1:name} = ref(${2:initialValue})"],
+    "description": "Vue Ref"
+  },
+  "Vue Ref typed": {
+    "prefix": "vref-typed",
+    "body": ["const ${1:name} = ref<${2:type}>(${3:initialValue})"],
+    "description": "Vue Ref with generic type argument"
+  },
+  "Vue Reactive": {
+    "prefix": "vreactive",
+    "body": ["const ${1:name} = reactive({", "\t${2:count}: ${3:0}", "})"],
+    "description": "Vue reactive"
+  },
+  "Vue Computed": {
+    "prefix": "vcomputed",
+    "body": ["const ${1:name} = computed(() => {", "\treturn ${2}", "})"],
+    "description": "Vue computed"
+  },
+  "Vue Watch": {
+    "prefix": "vwatch",
+    "body": [
+      "watch(",
+      "\t() => ${1:name},",
+      "\t() => {",
+      "\t\t${2}",
+      "\t}",
+      ")"
+    ],
+    "description": "Vue watcher"
+  },
+  "Vue Watch Effect": {
+    "prefix": "vwatcheffect",
+    "body": ["watchEffect(() => {", "\t${1}", "})"],
+    "description": "Vue Watch Effect"
+  },
+  "Vue Lifecycle Hooks - onMounted": {
+    "prefix": "vonmounted",
+    "body": ["onMounted(() => {", "\t${1}", "})"],
+    "description": "Vue onMounted Lifecycle hook"
+  },
+  "Vue Lifecycle Hooks - onBeforeMount": {
+    "prefix": "vonbeforemount",
+    "body": ["onBeforeMount(() => {", "\t${1}", "})"],
+    "description": "Vue onBeforeMount Lifecycle hook"
+  },
+  "Vue Lifecycle Hooks - onBeforeUpdate": {
+    "prefix": "vonbeforeupdate",
+    "body": ["onBeforeUpdate(() => {", "\t${1}", "})"],
+    "description": "Vue onBeforeUpdate Lifecycle hook"
+  },
+  "Vue Lifecycle Hooks - onUpdated": {
+    "prefix": "vonupdated",
+    "body": ["onUpdated(() => {", "\t${1}", "})"],
+    "description": "Vue onUpdated Lifecycle hook"
+  },
+  "Vue Lifecycle Hooks - onErrorCaptured": {
+    "prefix": "vonerrorcaptured",
+    "body": ["onErrorCaptured(() => {", "\t${1}", "})"],
+    "description": "Vue onErrorCaptured Lifecycle hook"
+  },
+  "Vue Lifecycle Hooks - onUnmounted": {
+    "prefix": "vonunmounted",
+    "body": ["onUnmounted(() => {", "\t${1}", "})"],
+    "description": "Vue onUnmounted Lifecycle hook"
+  },
+  "Vue Lifecycle Hooks - onBeforeUnmount": {
+    "prefix": "vonbeforeunmount",
+    "body": ["onBeforeUnmount(() => {", "\t${1}", "})"],
+    "description": "Vue onBeforeUnmount Lifecycle hook"
+  },
+  "Vue Define Props": {
+    "prefix": "vdefineprops",
+    "body": ["defineProps<{", "\t${1:name}: ${2:type}", "}>()"],
+    "description": "Vue defineProps"
+  },
+  "Vue Define Props with defaults": {
+    "prefix": "vdefineprops-withdefaults",
+    "body": [
+      "withDefaults(defineProps<{",
+      "\t${1:name}: ${2:type}",
+      "}>(), {",
+      "\t${1:name}: ${3:default}",
+      "})"
+    ],
+    "description": "Vue withDefaults(defineProps)"
+  },
+  "Vue Define Emits": {
+    "prefix": "vdefineemits",
+    "body": ["const emit = defineEmits<{", "\t${1:eventName}: [${0}]", "}>()"],
+    "description": "Vue defineEmits"
+  },
+  "Vue Single Emit": {
+    "prefix": "vsingleemit",
+    "body": ["${1:eventName}: [${0}]"],
+    "description": "Vue single emit for defineEmits"
+  },
+  "Vue Define Slots": {
+    "prefix": "vdefineslots",
+    "body": ["defineSlots<{", "\tdefault: (props: { ${0} }) => any", "}>()"],
+    "description": "Vue defineSlots"
+  },
+  "Vue Single Slot": {
+    "prefix": "vsingleslot",
+    "body": ["\t${1:slotName}: (props: { ${0} }) => any"],
+    "description": "Vue single slot for defineSlots"
+  },
+  "Vue Define Options": {
+    "prefix": "vdefineoptions",
+    "body": ["defineOptions({", "\t${0}", "})"],
+    "description": "Vue defineOptions"
+  },
+  "Vue Define Model": {
+    "prefix": "vdefinemodel",
+    "body": ["const modelValue = defineModel()"],
+    "description": "Vue defineModel"
+  },
+  "Vue Transition": {
+    "prefix": "vcss-transition",
+    "body": [
+      ".v-enter-active,",
+      ".v-leave-active {",
+      "\ttransition: opacity 0.5s ease;",
+      "}",
+      "",
+      ".v-enter-from,",
+      ".v-leave-to {",
+      "\topacity: 0;",
+      "}"
+    ],
+    "description": "Vue Transition styles"
+  },
+  "Vue Named Transition": {
+    "prefix": "vcss-transition-named",
+    "body": [
+      ".${1:transitionName}-enter-active,",
+      ".${1:transitionName}-leave-active {",
+      "\ttransition: opacity 0.5s ease;",
+      "}",
+      "",
+      ".${1:transitionName}-enter-from,",
+      ".${1:transitionName}-leave-to {",
+      "\topacity: 0;",
+      "}"
+    ],
+    "description": "Vue Named Transition styles"
+  },
+  "Vue Transition - Tailwind": {
+    "prefix": "vcss-transition-tailwind",
+    "body": [
+      ".v-enter-active,",
+      ".v-leave-active {",
+      "\t@apply transition duration-500;",
+      "}",
+      "",
+      ".v-enter-from,",
+      ".v-leave-to {",
+      "\t@apply opacity-0;",
+      "}"
+    ],
+    "description": "Vue Transition styles for Tailwind CSS"
+  },
+  "Vue Named Transition - Tailwind": {
+    "prefix": "vcss-transition-named-tailwind",
+    "body": [
+      ".${1:transitionName}-enter-active,",
+      ".${1:transitionName}-leave-active {",
+      "\t@apply transition duration-500;",
+      "}",
+      "",
+      ".${1:transitionName}-enter-from,",
+      ".${1:transitionName}-leave-to {",
+      "\t@apply opacity-0;",
+      "}"
+    ],
+    "description": "Vue Named Transition styles for Tailwind CSS"
+  },
+  "Vue Transition Group": {
+    "prefix": "vcss-transition-group",
+    "body": [
+      ".${1:transitionName}-move,",
+      ".${1:transitionName}-enter-active,",
+      ".${1:transitionName}-leave-active {",
+      "\ttransition: opacity 0.5s ease;",
+      "}",
+      "",
+      ".${1:transitionName}-enter-from,",
+      ".${1:transitionName}-leave-to {",
+      "\topacity: 0;",
+      "}",
+      "",
+      ".${1:transitionName}-leave-active {",
+      "\tposition: absolute;",
+      "}"
+    ],
+    "description": "Vue Transition Group styles"
+  },
+  "Vue Transition Group - Tailwind": {
+    "prefix": "vcss-transition-group-tailwind",
+    "body": [
+      ".${1:transitionName}-move,",
+      ".${1:transitionName}-enter-active,",
+      ".${1:transitionName}-leave-active {",
+      "\t@apply transition duration-500;",
+      "}",
+      "",
+      ".${1:transitionName}-enter-from,",
+      ".${1:transitionName}-leave-to {",
+      "\t@apply opacity-0;",
+      "}",
+      "",
+      ".${1:transitionName}-leave-active {",
+      "\t@apply absolute;",
+      "}"
+    ],
+    "description": "Vue Transition Group styles for Tailwind CSS"
+  }
+}

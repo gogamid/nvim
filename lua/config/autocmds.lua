@@ -90,11 +90,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
-  pattern = "config",
-  callback = function() vim.bo.filetype = "config" end,
-})
-
 -- wrap and do not check for spell in text filetypes
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
@@ -129,6 +124,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  desc = "Toggle CodeCompanion with q",
   group = augroup,
   pattern = {
     "codecompanion",
@@ -144,5 +140,30 @@ vim.api.nvim_create_autocmd("FileType", {
         desc = "Toggle CodeCompanion",
       })
     end)
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  desc = "Organize imports for Go files",
+  pattern = "*.go",
+  callback = function()
+    vim.lsp.buf.code_action({apply = true, context = {only = {"source.organizeImports"}, diagnostics = {}}})
+  end,
+})
+
+-- LSP keymaps
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(event)
+    local opts = {buffer = event.buf}
+    -- Information
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, {buffer = event.buf, desc = "Hover"})
+
+    -- Code actions
+    vim.keymap.set({"n", "v"}, "<leader>ca", vim.lsp.buf.code_action, {buffer = event.buf, desc = "Code Action"})
+    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, {buffer = event.buf, desc = "Rename"})
+
+    -- Diagnostics
+    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, {buffer = event.buf, desc = "Open Diagnostic"})
+    vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, {buffer = event.buf, desc = "Quickfix Diagnostics"})
   end,
 })

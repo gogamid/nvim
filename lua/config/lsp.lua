@@ -1,19 +1,14 @@
--- LSP keymaps
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(event)
-    local opts = {buffer = event.buf}
-    -- Information
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, {buffer = event.buf, desc = "Hover"})
+vim.api.nvim_create_user_command("LspInfo", function()
+  local clients = vim.lsp.get_clients({bufnr = 0})
+  if #clients == 0 then
+    print("No LSP clients attached to current buffer")
+  else
+    for _, client in ipairs(clients) do
+      print("LSP: " .. client.name .. " (ID: " .. client.id .. ")")
+    end
+  end
+end, {desc = "Show LSP client info"})
 
-    -- Code actions
-    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {buffer = event.buf, desc = "Code Action"})
-    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, {buffer = event.buf, desc = "Rename"})
-
-    -- Diagnostics
-    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, {buffer = event.buf, desc = "Open Diagnostic"})
-    vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, {buffer = event.buf, desc = "Quickfix Diagnostics"})
-  end,
-})
 
 -- Better LSP UI
 vim.diagnostic.config({
@@ -38,38 +33,6 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.WARN] = "WarningMsg",
     },
   },
-})
-
-vim.api.nvim_create_user_command("LspInfo", function()
-  local clients = vim.lsp.get_clients({bufnr = 0})
-  if #clients == 0 then
-    print("No LSP clients attached to current buffer")
-  else
-    for _, client in ipairs(clients) do
-      print("LSP: " .. client.name .. " (ID: " .. client.id .. ")")
-    end
-  end
-end, {desc = "Show LSP client info"})
-
-local function organize_imports_if_available()
-  local params = vim.lsp.util.make_range_params(0, "utf-8")
-  vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, result, _)
-    if err or not result or vim.tbl_isempty(result) then return end
-    for _, action in pairs(result) do
-      if action.kind == "source.organizeImports" then
-        if action.command then
-          vim.lsp.buf.code_action({apply = true, context = {only = {"source.organizeImports"}, diagnostics = {}}})
-        elseif action.edit then
-          vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
-        end
-        return
-      end
-    end
-  end)
-end
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = {"go"},
-  callback = function(_) organize_imports_if_available() end,
 })
 
 vim.lsp.enable({
@@ -188,7 +151,7 @@ vim.lsp.enable({
   -- "erg_language_server",
   -- "erlangls",
   -- "esbonio",
-  -- "eslint",
+  "eslint",
   -- "facility_language_server",
   -- "fennel_language_server",
   -- "fennel_ls",
