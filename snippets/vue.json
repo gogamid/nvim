@@ -1,4 +1,8 @@
 {
+  "todo": {
+    "prefix": "todo",
+    "body": ["// TODO(ig): "]
+  },
   "Vue SFC <script setup>, TS, SCSS": {
     "prefix": "vbase",
     "body": [

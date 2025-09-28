@@ -16,6 +16,12 @@
           "go"
         ],
         "path": "./go.json"
+      },
+      {
+        "language": [
+          "vue"
+        ],
+        "path": "./vue.json"
       }
     ]
   },
