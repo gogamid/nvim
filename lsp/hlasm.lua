@@ -4,7 +4,7 @@
 ---
 --- To learn how to configure the HLASM language server, see the [HLASM Language Support documentation](https://github.com/eclipse-che4z/che-che4z-lsp-for-hlasm).
 return {
-  cmd = { 'hlasm_language_server' },
-  filetypes = { 'hlasm' },
-  root_markers = { '.hlasmplugin' },
+  cmd = { "hlasm_language_server" },
+  filetypes = { "hlasm" },
+  root_markers = { ".hlasmplugin" },
 }

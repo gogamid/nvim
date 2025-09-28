@@ -13,7 +13,7 @@
 --- ```
 
 return {
-  cmd = { 'ntt', 'langserver' },
-  filetypes = { 'ttcn' },
-  root_markers = { '.git' },
+  cmd = { "ntt", "langserver" },
+  filetypes = { "ttcn" },
+  root_markers = { ".git" },
 }

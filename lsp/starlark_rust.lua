@@ -8,7 +8,7 @@
 ---
 --- It can be installed with cargo: https://crates.io/crates/starlark
 return {
-  cmd = { 'starlark', '--lsp' },
-  filetypes = { 'star', 'bzl', 'BUILD.bazel' },
-  root_markers = { '.git' },
+  cmd = { "starlark", "--lsp" },
+  filetypes = { "star", "bzl", "BUILD.bazel" },
+  root_markers = { ".git" },
 }

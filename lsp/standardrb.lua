@@ -4,7 +4,7 @@
 ---
 --- Ruby Style Guide, with linter & automatic code fixer.
 return {
-  cmd = { 'standardrb', '--lsp' },
-  filetypes = { 'ruby' },
-  root_markers = { 'Gemfile', '.git' },
+  cmd = { "standardrb", "--lsp" },
+  filetypes = { "ruby" },
+  root_markers = { "Gemfile", ".git" },
 }

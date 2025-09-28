@@ -5,16 +5,16 @@
 --- Language Server Protocol server for SWI-Prolog
 return {
   cmd = {
-    'swipl',
-    '-g',
-    'use_module(library(lsp_server)).',
-    '-g',
-    'lsp_server:main',
-    '-t',
-    'halt',
-    '--',
-    'stdio',
+    "swipl",
+    "-g",
+    "use_module(library(lsp_server)).",
+    "-g",
+    "lsp_server:main",
+    "-t",
+    "halt",
+    "--",
+    "stdio",
   },
-  filetypes = { 'prolog' },
-  root_markers = { 'pack.pl' },
+  filetypes = { "prolog" },
+  root_markers = { "pack.pl" },
 }

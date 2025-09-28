@@ -29,16 +29,16 @@
 --- npm install remark-preset-lint-recommended
 --- ```
 return {
-  cmd = { 'remark-language-server', '--stdio' },
-  filetypes = { 'markdown' },
+  cmd = { "remark-language-server", "--stdio" },
+  filetypes = { "markdown" },
   root_markers = {
-    '.remarkrc',
-    '.remarkrc.json',
-    '.remarkrc.js',
-    '.remarkrc.cjs',
-    '.remarkrc.mjs',
-    '.remarkrc.yml',
-    '.remarkrc.yaml',
-    '.remarkignore',
+    ".remarkrc",
+    ".remarkrc.json",
+    ".remarkrc.js",
+    ".remarkrc.cjs",
+    ".remarkrc.mjs",
+    ".remarkrc.yml",
+    ".remarkrc.yaml",
+    ".remarkignore",
   },
 }

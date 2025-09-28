@@ -7,7 +7,7 @@
 -- [dafny-lang/language-server-csharp](https://github.com/dafny-lang/language-server-csharp)
 -- and set `cmd = {"dotnet", "<Path to your language server>"}`.
 return {
-  cmd = { 'dafny', 'server' },
-  filetypes = { 'dfy', 'dafny' },
-  root_markers = { '.git' },
+  cmd = { "dafny", "server" },
+  filetypes = { "dfy", "dafny" },
+  root_markers = { ".git" },
 }

@@ -21,6 +21,6 @@
 --- settings have a reasonable default, but, at minimum, you may want to point `raku_navigator` at your `raku_tidy` and `raku_critic` configurations.
 return {
   cmd = {},
-  filetypes = { 'raku' },
-  root_markers = { '.git' },
+  filetypes = { "raku" },
+  root_markers = { ".git" },
 }

@@ -26,14 +26,14 @@
 --- })
 --- ```
 return {
-  cmd = { 'ts_query_ls' },
-  filetypes = { 'query' },
-  root_markers = { 'queries', '.git' },
+  cmd = { "ts_query_ls" },
+  filetypes = { "query" },
+  root_markers = { "queries", ".git" },
   settings = {
     parser_aliases = {
-      ecma = 'javascript',
-      jsx = 'javascript',
-      php_only = 'php',
+      ecma = "javascript",
+      jsx = "javascript",
+      php_only = "php",
     },
   },
 }

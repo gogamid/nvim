@@ -32,15 +32,15 @@
 --- vim.treesitter.language.register('xml', { 'msbuild' })
 --- ```
 
-local host_dll_name = 'MSBuildProjectTools.LanguageServer.Host.dll'
-local util = require 'lspconfig.util'
+local host_dll_name = "MSBuildProjectTools.LanguageServer.Host.dll"
+local util = require("lspconfig.util")
 
 return {
-  filetypes = { 'msbuild' },
+  filetypes = { "msbuild" },
   root_dir = function(bufnr, on_dir)
     local fname = vim.api.nvim_buf_get_name(bufnr)
-    on_dir(util.root_pattern('*.sln', '*.slnx', '*.*proj', '.git')(fname))
+    on_dir(util.root_pattern("*.sln", "*.slnx", "*.*proj", ".git")(fname))
   end,
   init_options = {},
-  cmd = { 'dotnet', host_dll_name },
+  cmd = { "dotnet", host_dll_name },
 }

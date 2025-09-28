@@ -15,7 +15,7 @@
 --- vim.cmd([[au BufRead,BufNewFile *.uvl setfiletype uvl]])
 --- ```
 return {
-  cmd = { 'uvls' },
-  filetypes = { 'uvl' },
-  root_markers = { '.git' },
+  cmd = { "uvls" },
+  filetypes = { "uvl" },
+  root_markers = { ".git" },
 }

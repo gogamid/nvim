@@ -9,7 +9,7 @@
 --- cargo install --features="lsp" lelwel
 --- ```
 return {
-  cmd = { 'lelwel-ls' },
-  filetypes = { 'llw' },
-  root_markers = { '.git' },
+  cmd = { "lelwel-ls" },
+  filetypes = { "llw" },
+  root_markers = { ".git" },
 }

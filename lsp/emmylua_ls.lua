@@ -11,13 +11,13 @@
 --- It might require you to provide cargo binaries installation path in it.
 
 return {
-  cmd = { 'emmylua_ls' },
-  filetypes = { 'lua' },
+  cmd = { "emmylua_ls" },
+  filetypes = { "lua" },
   root_markers = {
-    '.luarc.json',
-    '.emmyrc.json',
-    '.luacheckrc',
-    '.git',
+    ".luarc.json",
+    ".emmyrc.json",
+    ".luacheckrc",
+    ".git",
   },
   workspace_required = false,
 }

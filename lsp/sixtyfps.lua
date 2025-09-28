@@ -18,6 +18,6 @@
 ---
 --- or by installing a filetype plugin such as https://github.com/RustemB/sixtyfps-vim
 return {
-  cmd = { 'sixtyfps-lsp' },
-  filetypes = { 'sixtyfps' },
+  cmd = { "sixtyfps-lsp" },
+  filetypes = { "sixtyfps" },
 }

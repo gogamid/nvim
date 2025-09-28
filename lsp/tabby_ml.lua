@@ -10,7 +10,7 @@
 --- npm install --global tabby-agent
 --- ```
 return {
-  cmd = { 'tabby-agent', '--lsp', '--stdio' },
+  cmd = { "tabby-agent", "--lsp", "--stdio" },
   filetypes = {},
-  root_markers = { '.git' },
+  root_markers = { ".git" },
 }

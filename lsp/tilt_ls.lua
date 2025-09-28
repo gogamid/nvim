@@ -10,7 +10,7 @@
 --- autocmd BufRead Tiltfile setf=tiltfile
 --- ```
 return {
-  cmd = { 'tilt', 'lsp', 'start' },
-  filetypes = { 'tiltfile' },
-  root_markers = { '.git' },
+  cmd = { "tilt", "lsp", "start" },
+  filetypes = { "tiltfile" },
+  root_markers = { ".git" },
 }

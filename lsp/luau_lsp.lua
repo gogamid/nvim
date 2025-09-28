@@ -12,7 +12,7 @@
 --- autocmd BufRead,BufNewFile *.luau setf luau
 --- ```
 return {
-  cmd = { 'luau-lsp', 'lsp' },
-  filetypes = { 'luau' },
-  root_markers = { '.git' },
+  cmd = { "luau-lsp", "lsp" },
+  filetypes = { "luau" },
+  root_markers = { ".git" },
 }

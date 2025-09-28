@@ -8,7 +8,7 @@
 --- npm install -g basics-language-server
 --- ```
 return {
-  cmd = { 'basics-language-server' },
+  cmd = { "basics-language-server" },
   settings = {
     buffer = {
       enable = true,

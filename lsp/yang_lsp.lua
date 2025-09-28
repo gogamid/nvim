@@ -4,7 +4,7 @@
 ---
 --- A Language Server for the YANG data modeling language.
 return {
-  cmd = { 'yang-language-server' },
-  filetypes = { 'yang' },
-  root_markers = { '.git' },
+  cmd = { "yang-language-server" },
+  filetypes = { "yang" },
+  root_markers = { ".git" },
 }

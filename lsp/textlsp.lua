@@ -11,9 +11,9 @@
 ---
 --- To install run: `pip install textLSP`
 return {
-  cmd = { 'textlsp' },
-  filetypes = { 'text', 'tex', 'org' },
-  root_markers = { '.git' },
+  cmd = { "textlsp" },
+  filetypes = { "text", "tex", "org" },
+  root_markers = { ".git" },
   settings = {
     textLSP = {
       analysers = {
@@ -32,9 +32,9 @@ return {
       documents = {
         org = {
           org_todo_keywords = {
-            'TODO',
-            'IN_PROGRESS',
-            'DONE',
+            "TODO",
+            "IN_PROGRESS",
+            "DONE",
           },
         },
       },

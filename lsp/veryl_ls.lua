@@ -9,7 +9,7 @@
 ---  cargo install veryl-ls
 ---  ```
 return {
-  cmd = { 'veryl-ls' },
-  filetypes = { 'veryl' },
-  root_markers = { '.git' },
+  cmd = { "veryl-ls" },
+  filetypes = { "veryl" },
+  root_markers = { ".git" },
 }

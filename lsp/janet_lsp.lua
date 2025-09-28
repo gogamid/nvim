@@ -5,9 +5,9 @@
 --- A Language Server Protocol implementation for Janet.
 return {
   cmd = {
-    'janet-lsp',
-    '--stdio',
+    "janet-lsp",
+    "--stdio",
   },
-  filetypes = { 'janet' },
-  root_markers = { 'project.janet', '.git' },
+  filetypes = { "janet" },
+  root_markers = { "project.janet", ".git" },
 }

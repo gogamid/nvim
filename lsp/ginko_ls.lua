@@ -8,8 +8,8 @@
 ---
 --- `ginko_ls` doesn't require any configuration.
 return {
-  cmd = { 'ginko_ls' },
-  filetypes = { 'dts' },
-  root_markers = { '.git' },
+  cmd = { "ginko_ls" },
+  filetypes = { "dts" },
+  root_markers = { ".git" },
   settings = {},
 }

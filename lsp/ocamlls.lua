@@ -7,13 +7,13 @@
 --- npm install -g ocaml-language-server
 --- ```
 
-local util = require 'lspconfig.util'
+local util = require("lspconfig.util")
 
 return {
-  cmd = { 'ocaml-language-server', '--stdio' },
-  filetypes = { 'ocaml', 'reason' },
+  cmd = { "ocaml-language-server", "--stdio" },
+  filetypes = { "ocaml", "reason" },
   root_dir = function(bufnr, on_dir)
     local fname = vim.api.nvim_buf_get_name(bufnr)
-    on_dir(util.root_pattern('*.opam', 'esy.json', 'package.json')(fname))
+    on_dir(util.root_pattern("*.opam", "esy.json", "package.json")(fname))
   end,
 }

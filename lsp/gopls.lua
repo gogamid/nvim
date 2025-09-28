@@ -2,6 +2,31 @@ return {
   cmd = { "gopls" },
   filetypes = { "go", "gomod", "gowork", "gotmpl" },
   root_markers = { "go.work", "go.mod", ".git" },
+  capabilities = {
+    textDocument = {
+      codeAction = {
+        dynamicRegistration = true,
+        codeActionLiteralSupport = {
+          codeActionKind = {
+            valueSet = {
+              "quickfix",
+              "refactor",
+              "refactor.extract",
+              "refactor.inline",
+              "refactor.move",
+              "refactor.rewrite",
+              "source",
+              "source.organizeImports",
+              "source.fixAll",
+            },
+          },
+        },
+        resolveSupport = {
+          properties = { "edit" },
+        },
+      },
+    },
+  },
   settings = {
     gopls = {
       gofumpt = true,

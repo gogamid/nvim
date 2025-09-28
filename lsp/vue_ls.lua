@@ -19,14 +19,14 @@
 --- NOTE: Since v3.0.0, the Vue Language Server [no longer supports takeover mode](https://github.com/vuejs/language-tools/pull/5248).
 
 return {
-  cmd = { 'vue-language-server', '--stdio' },
-  filetypes = { 'vue' },
-  root_markers = { 'package.json' },
+  cmd = { "vue-language-server", "--stdio" },
+  filetypes = { "vue" },
+  root_markers = { "package.json" },
   on_init = function(client)
-    client.handlers['tsserver/request'] = function(_, result, context)
-      local clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = 'vtsls' })
+    client.handlers["tsserver/request"] = function(_, result, context)
+      local clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "vtsls" })
       if #clients == 0 then
-        vim.notify('Could not find `vtsls` lsp client, required by `vue_ls`.', vim.log.levels.ERROR)
+        vim.notify("Could not find `vtsls` lsp client, required by `vue_ls`.", vim.log.levels.ERROR)
         return
       end
       local ts_client = clients[1]
@@ -34,8 +34,8 @@ return {
       local param = unpack(result)
       local id, command, payload = unpack(param)
       ts_client:exec_cmd({
-        title = 'vue_request_forward', -- You can give title anything as it's used to represent a command in the UI, `:h Client:exec_cmd`
-        command = 'typescript.tsserverRequest',
+        title = "vue_request_forward", -- You can give title anything as it's used to represent a command in the UI, `:h Client:exec_cmd`
+        command = "typescript.tsserverRequest",
         arguments = {
           command,
           payload,
@@ -43,7 +43,7 @@ return {
       }, { bufnr = context.bufnr }, function(_, r)
         local response_data = { { id, r and r.body } }
         ---@diagnostic disable-next-line: param-type-mismatch
-        client:notify('tsserver/response', response_data)
+        client:notify("tsserver/response", response_data)
       end)
     end
   end,

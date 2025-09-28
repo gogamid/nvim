@@ -10,7 +10,7 @@
 --- npm i -g @neo4j-cypher/language-server
 --- ```
 return {
-  cmd = { 'cypher-language-server', '--stdio' },
-  filetypes = { 'cypher' },
-  root_markers = { '.git' },
+  cmd = { "cypher-language-server", "--stdio" },
+  filetypes = { "cypher" },
+  root_markers = { ".git" },
 }

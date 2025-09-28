@@ -4,7 +4,7 @@
 ---
 --- 3rd party Language Server for Selene lua linter
 return {
-  cmd = { 'selene-3p-language-server' },
-  filetypes = { 'lua' },
-  root_markers = { 'selene.toml' },
+  cmd = { "selene-3p-language-server" },
+  filetypes = { "lua" },
+  root_markers = { "selene.toml" },
 }

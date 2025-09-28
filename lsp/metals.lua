@@ -12,11 +12,11 @@
 ---
 --- To install Metals, make sure to have [coursier](https://get-coursier.io/docs/cli-installation) installed, and once you do you can install the latest Metals with `cs install metals`.
 return {
-  cmd = { 'metals' },
-  filetypes = { 'scala' },
-  root_markers = { 'build.sbt', 'build.sc', 'build.gradle', 'pom.xml' },
+  cmd = { "metals" },
+  filetypes = { "scala" },
+  root_markers = { "build.sbt", "build.sc", "build.gradle", "pom.xml" },
   init_options = {
-    statusBarProvider = 'show-message',
+    statusBarProvider = "show-message",
     isHttpEnabled = true,
     compilerOptions = {
       snippetAutoIndent = false,

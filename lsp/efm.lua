@@ -19,6 +19,6 @@
 --- ```
 
 return {
-  cmd = { 'efm-langserver' },
-  root_markers = { '.git' },
+  cmd = { "efm-langserver" },
+  root_markers = { ".git" },
 }

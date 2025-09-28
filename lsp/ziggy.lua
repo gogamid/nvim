@@ -4,7 +4,7 @@
 ---
 --- Language server for the Ziggy data serialization format
 return {
-  cmd = { 'ziggy', 'lsp' },
-  filetypes = { 'ziggy' },
-  root_markers = { '.git' },
+  cmd = { "ziggy", "lsp" },
+  filetypes = { "ziggy" },
+  root_markers = { ".git" },
 }

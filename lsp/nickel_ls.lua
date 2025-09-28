@@ -24,7 +24,7 @@
 --- In order to have lspconfig detect Nickel filetypes (a prerequisite for autostarting a server),
 --- install the [Nickel vim plugin](https://github.com/nickel-lang/vim-nickel).
 return {
-  cmd = { 'nls' },
-  filetypes = { 'ncl', 'nickel' },
-  root_markers = { '.git' },
+  cmd = { "nls" },
+  filetypes = { "ncl", "nickel" },
+  root_markers = { ".git" },
 }

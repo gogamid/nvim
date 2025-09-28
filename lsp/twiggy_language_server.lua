@@ -7,7 +7,7 @@
 --- npm install -g twiggy-language-server
 --- ```
 return {
-  cmd = { 'twiggy-language-server', '--stdio' },
-  filetypes = { 'twig' },
-  root_markers = { 'composer.json', '.git' },
+  cmd = { "twiggy-language-server", "--stdio" },
+  filetypes = { "twig" },
+  root_markers = { "composer.json", ".git" },
 }

@@ -17,15 +17,15 @@
 --- This is automatically done by plugins such as [PhilT/vim-fsharp](https://github.com/PhilT/vim-fsharp), [fsharp/vim-fsharp](https://github.com/fsharp/vim-fsharp), and [adelarsq/neofsharp.vim](https://github.com/adelarsq/neofsharp.vim).
 ---
 
-local util = require 'lspconfig.util'
+local util = require("lspconfig.util")
 
 return {
-  cmd = { 'fsautocomplete', '--adaptive-lsp-server-enabled' },
+  cmd = { "fsautocomplete", "--adaptive-lsp-server-enabled" },
   root_dir = function(bufnr, on_dir)
     local fname = vim.api.nvim_buf_get_name(bufnr)
-    on_dir(util.root_pattern('*.sln', '*.fsproj', '.git')(fname))
+    on_dir(util.root_pattern("*.sln", "*.fsproj", ".git")(fname))
   end,
-  filetypes = { 'fsharp' },
+  filetypes = { "fsharp" },
   init_options = {
     AutomaticWorkspaceInit = true,
   },
@@ -40,7 +40,7 @@ return {
       RecordStubGeneration = true,
       RecordStubGenerationBody = 'failwith "Not Implemented"',
       InterfaceStubGeneration = true,
-      InterfaceStubGenerationObjectIdentifier = 'this',
+      InterfaceStubGenerationObjectIdentifier = "this",
       InterfaceStubGenerationMethodBody = 'failwith "Not Implemented"',
       UnusedOpensAnalyzer = true,
       UnusedDeclarationsAnalyzer = true,

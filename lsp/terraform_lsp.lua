@@ -28,7 +28,7 @@
 ---     - configs designed for other 0.12 versions may work, but interpretation may be inaccurate
 ---   - less stability (due to reliance on Terraform's own internal packages)
 return {
-  cmd = { 'terraform-lsp' },
-  filetypes = { 'terraform', 'hcl' },
-  root_markers = { '.terraform', '.git' },
+  cmd = { "terraform-lsp" },
+  filetypes = { "terraform", "hcl" },
+  root_markers = { ".terraform", ".git" },
 }

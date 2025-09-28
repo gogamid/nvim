@@ -6,7 +6,7 @@
 ---
 --- `mlir-lsp-server` can be installed at the llvm-project repository (https://github.com/llvm/llvm-project)
 return {
-  cmd = { 'mlir-lsp-server' },
-  filetypes = { 'mlir' },
-  root_markers = { '.git' },
+  cmd = { "mlir-lsp-server" },
+  filetypes = { "mlir" },
+  root_markers = { ".git" },
 }

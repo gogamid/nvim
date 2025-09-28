@@ -9,15 +9,15 @@
 --- To install Erg, simply extract tarball/zip from [Erg releases](https://github.com/erg-lang/erg/releases/latest)
 --- to the the path where you want to install it, e.g. `~/.erg`.
 return {
-  cmd = { 'pylyzer', '--server' },
-  filetypes = { 'python' },
+  cmd = { "pylyzer", "--server" },
+  filetypes = { "python" },
   root_markers = {
-    'setup.py',
-    'tox.ini',
-    'requirements.txt',
-    'Pipfile',
-    'pyproject.toml',
-    '.git',
+    "setup.py",
+    "tox.ini",
+    "requirements.txt",
+    "Pipfile",
+    "pyproject.toml",
+    ".git",
   },
   settings = {
     python = {
@@ -28,6 +28,6 @@ return {
     },
   },
   cmd_env = {
-    ERG_PATH = vim.env.ERG_PATH or vim.fs.joinpath(vim.uv.os_homedir(), '.erg'),
+    ERG_PATH = vim.env.ERG_PATH or vim.fs.joinpath(vim.uv.os_homedir(), ".erg"),
   },
 }

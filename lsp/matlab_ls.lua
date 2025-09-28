@@ -15,17 +15,17 @@
 --- },
 --- ```
 return {
-  cmd = { 'matlab-language-server', '--stdio' },
-  filetypes = { 'matlab' },
+  cmd = { "matlab-language-server", "--stdio" },
+  filetypes = { "matlab" },
   root_dir = function(bufnr, on_dir)
-    local root_dir = vim.fs.root(bufnr, '.git')
+    local root_dir = vim.fs.root(bufnr, ".git")
     on_dir(root_dir or vim.fn.getcwd())
   end,
   settings = {
     MATLAB = {
       indexWorkspace = true,
-      installPath = '', -- NOTE: Set this to your MATLAB installation path.
-      matlabConnectionTiming = 'onStart',
+      installPath = "", -- NOTE: Set this to your MATLAB installation path.
+      matlabConnectionTiming = "onStart",
       telemetry = true,
     },
   },

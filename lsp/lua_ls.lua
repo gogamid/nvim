@@ -68,8 +68,8 @@
 --- * [Lua.workspace.library](https://luals.github.io/wiki/settings/#workspacelibrary)
 ---
 return {
-  cmd = {"lua-language-server"},
-  filetypes = {"lua"},
+  cmd = { "lua-language-server" },
+  filetypes = { "lua" },
   root_markers = {
     ".luarc.json",
     ".luarc.jsonc",
@@ -106,7 +106,7 @@ return {
         },
       },
       diagnostics = {
-        globals = {"vim", "Snacks", "MiniFiles"},
+        globals = { "vim", "Snacks", "MiniFiles" },
       },
     })
   end,

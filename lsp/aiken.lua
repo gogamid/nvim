@@ -7,7 +7,7 @@
 ---
 --- It can be i
 return {
-  cmd = { 'aiken', 'lsp' },
-  filetypes = { 'aiken' },
-  root_markers = { 'aiken.toml', '.git' },
+  cmd = { "aiken", "lsp" },
+  filetypes = { "aiken" },
+  root_markers = { "aiken.toml", ".git" },
 }

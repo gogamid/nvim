@@ -7,7 +7,7 @@
 --- go install github.com/ewen-lbh/hyprls/cmd/hyprls@latest
 --- ```
 return {
-  cmd = { 'hyprls', '--stdio' },
-  filetypes = { 'hyprlang' },
-  root_markers = { '.git' },
+  cmd = { "hyprls", "--stdio" },
+  filetypes = { "hyprlang" },
+  root_markers = { ".git" },
 }

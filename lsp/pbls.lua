@@ -11,7 +11,7 @@
 ---
 --- pbls is a Language Server for protobuf
 return {
-  cmd = { 'pbls' },
-  filetypes = { 'proto' },
-  root_markers = { '.pbls.toml', '.git' },
+  cmd = { "pbls" },
+  filetypes = { "proto" },
+  root_markers = { ".pbls.toml", ".git" },
 }

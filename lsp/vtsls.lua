@@ -58,18 +58,18 @@
 ---
 --- See `vue_ls` section and https://github.com/vuejs/language-tools/wiki/Neovim for more information.
 
-local vue_language_server_path = os.getenv("HOME") ..
-  "/.local/bin/packages/vue-language-server/node_modules/@vue/language-server"
+local vue_language_server_path = os.getenv("HOME")
+  .. "/.local/bin/packages/vue-language-server/node_modules/@vue/language-server"
 
 local vue_plugin = {
   name = "@vue/typescript-plugin",
   location = vue_language_server_path,
-  languages = {"vue"},
+  languages = { "vue" },
   configNamespace = "typescript",
 }
 
 return {
-  cmd = {"vtsls", "--stdio"},
+  cmd = { "vtsls", "--stdio" },
   filetypes = {
     "javascript",
     "javascriptreact",
@@ -79,7 +79,7 @@ return {
     "typescript.tsx",
     "vue",
   },
-  root_markers = {"tsconfig.json", "package.json", "jsconfig.json", ".git"},
+  root_markers = { "tsconfig.json", "package.json", "jsconfig.json", ".git" },
   single_file_support = true,
   settings = {
     vtsls = {

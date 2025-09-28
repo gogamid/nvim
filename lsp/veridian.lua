@@ -16,7 +16,7 @@
 --- cargo install --git https://github.com/vivekmalneedi/veridian.git
 --- ```
 return {
-  cmd = { 'veridian' },
-  filetypes = { 'systemverilog', 'verilog' },
-  root_markers = { '.git' },
+  cmd = { "veridian" },
+  filetypes = { "systemverilog", "verilog" },
+  root_markers = { ".git" },
 }

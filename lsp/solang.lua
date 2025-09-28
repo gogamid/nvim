@@ -11,7 +11,7 @@
 ---
 --- There is currently no support for completion, goto definition, references, or other functionality.
 return {
-  cmd = { 'solang', 'language-server', '--target', 'evm' },
-  filetypes = { 'solidity' },
-  root_markers = { '.git' },
+  cmd = { "solang", "language-server", "--target", "evm" },
+  filetypes = { "solidity" },
+  root_markers = { ".git" },
 }

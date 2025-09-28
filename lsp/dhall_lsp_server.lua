@@ -11,7 +11,7 @@
 --- prebuilt binaries can be found [here](https://github.com/dhall-lang/dhall-haskell/releases).
 
 return {
-  cmd = { 'dhall-lsp-server' },
-  filetypes = { 'dhall' },
-  root_markers = { '.git' },
+  cmd = { "dhall-lsp-server" },
+  filetypes = { "dhall" },
+  root_markers = { ".git" },
 }

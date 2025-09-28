@@ -30,8 +30,8 @@
 --- ```
 --- The Azure Pipelines LSP is a fork of `yaml-language-server` and as such the same settings can be passed to it as `yaml-language-server`.
 return {
-  cmd = { 'azure-pipelines-language-server', '--stdio' },
-  filetypes = { 'yaml' },
-  root_markers = { 'azure-pipelines.yml' },
+  cmd = { "azure-pipelines-language-server", "--stdio" },
+  filetypes = { "yaml" },
+  root_markers = { "azure-pipelines.yml" },
   settings = {},
 }

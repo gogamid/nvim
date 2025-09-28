@@ -7,7 +7,7 @@
 --- npm install -g brighterscript
 --- ```
 return {
-  cmd = { 'bsc', '--lsp', '--stdio' },
-  filetypes = { 'brs' },
-  root_markers = { 'makefile', 'Makefile', '.git' },
+  cmd = { "bsc", "--lsp", "--stdio" },
+  filetypes = { "brs" },
+  root_markers = { "makefile", "Makefile", ".git" },
 }

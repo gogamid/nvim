@@ -4,7 +4,7 @@
 ---
 --- The Pact language server
 return {
-  cmd = { 'pact-lsp' },
-  filetypes = { 'pact' },
-  root_markers = { '.git' },
+  cmd = { "pact-lsp" },
+  filetypes = { "pact" },
+  root_markers = { ".git" },
 }

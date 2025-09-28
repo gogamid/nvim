@@ -6,7 +6,7 @@
 ---
 --- Source in the [QtDeclarative repository](https://code.qt.io/cgit/qt/qtdeclarative.git/)
 return {
-  cmd = { 'qmlls' },
-  filetypes = { 'qml', 'qmljs' },
-  root_markers = { '.git' },
+  cmd = { "qmlls" },
+  filetypes = { "qml", "qmljs" },
+  root_markers = { ".git" },
 }

@@ -32,7 +32,7 @@
 --- Instead you should use `init_options` which passes the settings as part of the LSP initialize call
 --- [as is required by terraform-ls](https://github.com/hashicorp/terraform-ls/blob/main/docs/SETTINGS.md#how-to-pass-settings).
 return {
-  cmd = { 'terraform-ls', 'serve' },
-  filetypes = { 'terraform', 'terraform-vars' },
-  root_markers = { '.terraform', '.git' },
+  cmd = { "terraform-ls", "serve" },
+  filetypes = { "terraform", "terraform-vars" },
+  root_markers = { ".terraform", ".git" },
 }

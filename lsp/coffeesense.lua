@@ -8,7 +8,7 @@
 --- npm install -g coffeesense-language-server
 --- ```
 return {
-  cmd = { 'coffeesense-language-server', '--stdio' },
-  filetypes = { 'coffee' },
-  root_markers = { 'package.json' },
+  cmd = { "coffeesense-language-server", "--stdio" },
+  filetypes = { "coffee" },
+  root_markers = { "package.json" },
 }

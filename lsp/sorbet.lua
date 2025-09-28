@@ -11,7 +11,7 @@
 --- gem install sorbet
 --- ```
 return {
-  cmd = { 'srb', 'tc', '--lsp' },
-  filetypes = { 'ruby' },
-  root_markers = { 'Gemfile', '.git' },
+  cmd = { "srb", "tc", "--lsp" },
+  filetypes = { "ruby" },
+  root_markers = { "Gemfile", ".git" },
 }

@@ -7,7 +7,7 @@
 --- The default `cmd` assumes that the `laravel-ls` binary can be found in `$PATH`.
 
 return {
-  cmd = { 'laravel-ls' },
-  filetypes = { 'php', 'blade' },
-  root_markers = { 'artisan' },
+  cmd = { "laravel-ls" },
+  filetypes = { "php", "blade" },
+  root_markers = { "artisan" },
 }

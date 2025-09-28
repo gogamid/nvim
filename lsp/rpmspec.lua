@@ -10,8 +10,8 @@
 --- pip install rpm-spec-language-server
 --- ```
 return {
-  cmd = { 'rpm_lsp_server', '--stdio' },
-  filetypes = { 'spec' },
-  root_markers = { '.git' },
+  cmd = { "rpm_lsp_server", "--stdio" },
+  filetypes = { "spec" },
+  root_markers = { ".git" },
   settings = {},
 }

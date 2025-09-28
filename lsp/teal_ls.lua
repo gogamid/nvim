@@ -13,10 +13,10 @@
 --- * "--verbose=true" - Increases log level.  Does nothing unless log-mode is set
 return {
   cmd = {
-    'teal-language-server',
+    "teal-language-server",
   },
   filetypes = {
-    'teal',
+    "teal",
   },
-  root_markers = { 'tlconfig.lua' },
+  root_markers = { "tlconfig.lua" },
 }

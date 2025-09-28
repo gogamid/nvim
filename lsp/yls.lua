@@ -8,7 +8,7 @@
 ---
 --- Language Server: https://github.com/avast/yls
 return {
-  cmd = { 'yls', '-vv' },
-  filetypes = { 'yar', 'yara' },
-  root_markers = { '.git' },
+  cmd = { "yls", "-vv" },
+  filetypes = { "yar", "yara" },
+  root_markers = { ".git" },
 }

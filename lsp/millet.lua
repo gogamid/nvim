@@ -11,7 +11,7 @@
 --- 3. Run `cargo build --release --bin millet-ls`
 --- 4. Move `target/release/millet-ls` to somewhere on your $PATH as `millet`
 return {
-  cmd = { 'millet' },
-  filetypes = { 'sml' },
-  root_markers = { 'millet.toml' },
+  cmd = { "millet" },
+  filetypes = { "sml" },
+  root_markers = { "millet.toml" },
 }

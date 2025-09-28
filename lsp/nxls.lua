@@ -9,7 +9,7 @@
 --- npm i -g nxls
 --- ```
 return {
-  cmd = { 'nxls', '--stdio' },
-  filetypes = { 'json', 'jsonc' },
-  root_markers = { 'nx.json', '.git' },
+  cmd = { "nxls", "--stdio" },
+  filetypes = { "json", "jsonc" },
+  root_markers = { "nx.json", ".git" },
 }

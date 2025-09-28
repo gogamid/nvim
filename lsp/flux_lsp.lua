@@ -6,7 +6,7 @@
 --- cargo install --git https://github.com/influxdata/flux-lsp
 --- ```
 return {
-  cmd = { 'flux-lsp' },
-  filetypes = { 'flux' },
-  root_markers = { '.git' },
+  cmd = { "flux-lsp" },
+  filetypes = { "flux" },
+  root_markers = { ".git" },
 }

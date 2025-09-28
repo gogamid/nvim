@@ -22,7 +22,7 @@
 ---
 --- Alternatively, you may use a syntax plugin like https://github.com/runoshun/vim-alloy.
 return {
-  cmd = { 'alloy', 'lsp' },
-  filetypes = { 'alloy' },
-  root_markers = { '.git' },
+  cmd = { "alloy", "lsp" },
+  filetypes = { "alloy" },
+  root_markers = { ".git" },
 }

@@ -9,7 +9,7 @@
 ---
 --- bufls is a Protobuf language server compatible with Buf modules and workspaces
 return {
-  cmd = { 'bufls', 'serve' },
-  filetypes = { 'proto' },
-  root_markers = { 'buf.work.yaml', '.git' },
+  cmd = { "bufls", "serve" },
+  filetypes = { "proto" },
+  root_markers = { "buf.work.yaml", ".git" },
 }

@@ -5,7 +5,7 @@
 --- A fast language server for earthly.
 
 return {
-  cmd = { 'earthlyls' },
-  filetypes = { 'earthfile' },
-  root_markers = { 'Earthfile' },
+  cmd = { "earthlyls" },
+  filetypes = { "earthfile" },
+  root_markers = { "Earthfile" },
 }

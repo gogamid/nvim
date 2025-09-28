@@ -8,9 +8,9 @@
 --- npm i ungrammar-languageserver -g
 --- ```
 return {
-  cmd = { 'ungrammar-languageserver', '--stdio' },
-  filetypes = { 'ungrammar' },
-  root_markers = { '.git' },
+  cmd = { "ungrammar-languageserver", "--stdio" },
+  filetypes = { "ungrammar" },
+  root_markers = { ".git" },
   settings = {
     ungrammar = {
       validate = {

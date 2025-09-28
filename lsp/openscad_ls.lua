@@ -19,7 +19,7 @@
 ---
 --- or by installing a filetype plugin such as https://github.com/sirtaj/vim-openscad
 return {
-  cmd = { 'openscad-language-server' },
-  filetypes = { 'openscad' },
-  root_markers = { '.git' },
+  cmd = { "openscad-language-server" },
+  filetypes = { "openscad" },
+  root_markers = { ".git" },
 }

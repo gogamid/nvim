@@ -6,7 +6,7 @@
 ---
 --- Prebuilt binaries are available for Linux, macOS and Windows [here](https://github.com/Galarius/opencl-language-server/releases).
 return {
-  cmd = { 'opencl-language-server' },
-  filetypes = { 'opencl' },
-  root_markers = { '.git' },
+  cmd = { "opencl-language-server" },
+  filetypes = { "opencl" },
+  root_markers = { ".git" },
 }

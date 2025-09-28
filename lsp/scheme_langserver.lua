@@ -4,13 +4,13 @@
 --- `scheme-langserver`, a language server protocol implementation for scheme.
 --- And for nvim user, please add .sls to scheme file extension list.
 
-local cmd = { 'scheme-langserver', '~/.scheme-langserver.log', 'enable', 'disable' }
+local cmd = { "scheme-langserver", "~/.scheme-langserver.log", "enable", "disable" }
 
 return {
   cmd = cmd,
-  filetypes = { 'scheme' },
+  filetypes = { "scheme" },
   root_markers = {
-    'Akku.manifest',
-    '.git',
+    "Akku.manifest",
+    ".git",
   },
 }

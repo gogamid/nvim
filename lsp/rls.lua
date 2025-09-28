@@ -27,7 +27,7 @@
 --- cmd = {"rustup", "run", "nightly", "rls"}
 --- ```
 return {
-  cmd = { 'rls' },
-  filetypes = { 'rust' },
-  root_markers = { 'Cargo.toml' },
+  cmd = { "rls" },
+  filetypes = { "rust" },
+  root_markers = { "Cargo.toml" },
 }

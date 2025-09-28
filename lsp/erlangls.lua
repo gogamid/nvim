@@ -13,7 +13,7 @@
 ---     - [Erlang OTP 21+](https://github.com/erlang/otp)
 ---     - [rebar3 3.9.1+](https://github.com/erlang/rebar3)
 return {
-  cmd = { 'erlang_ls' },
-  filetypes = { 'erlang' },
-  root_markers = { 'rebar.config', 'erlang.mk', '.git' },
+  cmd = { "erlang_ls" },
+  filetypes = { "erlang" },
+  root_markers = { "rebar.config", "erlang.mk", ".git" },
 }

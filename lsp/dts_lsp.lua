@@ -13,9 +13,9 @@
 --- https://docs.zephyrproject.org/latest/build/dts/index.html
 
 return {
-  name = 'dts_lsp',
-  cmd = { 'dts-lsp' },
-  filetypes = { 'dts', 'dtsi', 'overlay' },
-  root_markers = { '.git' },
+  name = "dts_lsp",
+  cmd = { "dts-lsp" },
+  filetypes = { "dts", "dtsi", "overlay" },
+  root_markers = { ".git" },
   settings = {},
 }

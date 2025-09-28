@@ -8,7 +8,7 @@
 ---
 --- text editor that speaks the LSP protocol.
 return {
-  cmd = { 'digestif' },
-  filetypes = { 'tex', 'plaintex', 'context' },
-  root_markers = { '.git' },
+  cmd = { "digestif" },
+  filetypes = { "tex", "plaintex", "context" },
+  root_markers = { ".git" },
 }

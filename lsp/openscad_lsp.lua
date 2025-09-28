@@ -9,7 +9,7 @@
 --- cargo install openscad-lsp
 --- ```
 return {
-  cmd = { 'openscad-lsp', '--stdio' },
-  filetypes = { 'openscad' },
-  root_markers = { '.git' },
+  cmd = { "openscad-lsp", "--stdio" },
+  filetypes = { "openscad" },
+  root_markers = { ".git" },
 }

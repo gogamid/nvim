@@ -8,8 +8,8 @@
 --- $ go install github.com/kitagry/bqls@latest
 --- ```
 return {
-  cmd = { 'bqls' },
-  filetypes = { 'sql' },
-  root_markers = { '.git' },
+  cmd = { "bqls" },
+  filetypes = { "sql" },
+  root_markers = { ".git" },
   settings = {},
 }

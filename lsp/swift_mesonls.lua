@@ -4,7 +4,7 @@
 ---
 --- Meson language server written in Swift
 return {
-  cmd = { 'Swift-MesonLSP', '--lsp' },
-  filetypes = { 'meson' },
-  root_markers = { 'meson.build', 'meson_options.txt', 'meson.options', '.git' },
+  cmd = { "Swift-MesonLSP", "--lsp" },
+  filetypes = { "meson" },
+  root_markers = { "meson.build", "meson_options.txt", "meson.options", ".git" },
 }

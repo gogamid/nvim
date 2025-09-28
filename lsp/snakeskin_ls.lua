@@ -7,7 +7,7 @@
 --- npm install -g @snakeskin/cli
 --- ```
 return {
-  cmd = { 'snakeskin-cli', 'lsp', '--stdio' },
-  filetypes = { 'ss' },
-  root_markers = { 'package.json' },
+  cmd = { "snakeskin-cli", "lsp", "--stdio" },
+  filetypes = { "ss" },
+  root_markers = { "package.json" },
 }
