@@ -1,5 +1,21 @@
+-- LSP keymaps
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(event)
+    -- Information
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = event.buf, desc = "Hover" })
+
+    -- Code actions
+    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { buffer = event.buf, desc = "Code Action" })
+    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = event.buf, desc = "Rename" })
+
+    -- Diagnostics
+    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = event.buf, desc = "Open Diagnostic" })
+    vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, { buffer = event.buf, desc = "Quickfix Diagnostics" })
+  end,
+})
+
 vim.api.nvim_create_user_command("LspInfo", function()
-  local clients = vim.lsp.get_clients({bufnr = 0})
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
   if #clients == 0 then
     print("No LSP clients attached to current buffer")
   else
@@ -7,8 +23,7 @@ vim.api.nvim_create_user_command("LspInfo", function()
       print("LSP: " .. client.name .. " (ID: " .. client.id .. ")")
     end
   end
-end, {desc = "Show LSP client info"})
-
+end, { desc = "Show LSP client info" })
 
 -- Better LSP UI
 vim.diagnostic.config({
@@ -36,28 +51,6 @@ vim.diagnostic.config({
 })
 
 vim.lsp.enable({
-  --vue with ts
-  "vtsls",
-  "vue_ls",
-
-  -- proto
-  "buf_ls",
-
-  --lua
-  "lua_ls",
-
-  --bash
-  "bashls",
-
-  --yaml
-  "taplo",
-
-  --go
-  "gopls",
-
-  --json
-  "jsonls",
-
   -- "ada_ls",
   -- "agda_ls",
   -- "aiken",
@@ -79,7 +72,7 @@ vim.lsp.enable({
   -- "bacon_ls",
   -- "ballerina",
   -- "basedpyright",
-  -- "bashls",
+  "bashls",
   -- "basics_ls",
   -- "bazelrc_lsp",
   -- "beancount",
@@ -92,7 +85,7 @@ vim.lsp.enable({
   -- "bsl_ls",
   -- "buck2",
   -- "buddy_ls",
-  -- "buf_ls",
+  "buf_ls", -- for proto files
   -- "bufls",
   -- "bzl",
   -- "c3_lsp",
@@ -178,7 +171,7 @@ vim.lsp.enable({
   -- "glslls",
   -- "gnls",
   -- "golangci_lint_ls",
-  -- "gopls",
+  "gopls",
   -- "gradle_ls",
   -- "grammarly",
   -- "graphql",
@@ -205,7 +198,7 @@ vim.lsp.enable({
   -- "jedi_language_server",
   -- "jinja_lsp",
   -- "jqls",
-  -- "jsonls",
+  "jsonls",
   -- "jsonnet_ls",
   -- "julials",
   -- "just",
@@ -222,6 +215,7 @@ vim.lsp.enable({
   -- "lsp_ai",
   -- "ltex",
   -- "ltex_plus",
+  "lua_ls",
   -- "lwc_ls",
   -- "m68k",
   -- "markdown_oxide",
@@ -360,7 +354,7 @@ vim.lsp.enable({
   -- "systemd_ls",
   -- "tabby_ml",
   -- "tailwindcss",
-  -- "taplo",
+  "taplo", -- for toml files
   -- "tblgen_lsp_server",
   -- "teal_ls",
   -- "templ",
@@ -408,11 +402,11 @@ vim.lsp.enable({
   -- "vls",
   -- "volar",
   -- "vscoqtop",
-  -- "vtsls",
-  -- "vue_ls",
+  "vtsls",
+  "vue_ls",
   -- "wasm_language_tools",
   -- "wgsl_analyzer",
-  -- "yamlls",
+  "yamlls",
   -- "yang_lsp",
   -- "yls",
   -- "ziggy",
