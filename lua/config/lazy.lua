@@ -1,21 +1,21 @@
 -- Key mappings
-vim.g.mapleader = " "      -- Set leader key to space
-vim.g.maplocalleader = " " -- Set local leader key (NEW)
+vim.g.mapleader = " " -- Set leader key to space
+vim.g.maplocalleader = "\\" -- Set local leader key (NEW)
 
 -- plugin manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({"git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath})
-  if vim.v.shell_error ~= 0 then error("Error cloning lazy.nvim:\n" .. out) end
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    error("Error cloning lazy.nvim:\n" .. out)
+  end
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup({import = "plugins"}, {
-  install = {
-    missing = true,
-    colorscheme = {"catppuccin-frappe"},
-  },
+vim.keymap.set("n", "<leader>L", ":Lazy<CR>", { desc = "Lazy" })
+
+require("lazy").setup({ import = "plugins" }, {
   checker = {
     enabled = true,
     notify = false,
@@ -33,7 +33,7 @@ require("lazy").setup({import = "plugins"}, {
         "gzip",
         "tarPlugin",
         "tohtml",
-        -- "tutor",
+        "tutor",
         "zipPlugin",
       },
     },
