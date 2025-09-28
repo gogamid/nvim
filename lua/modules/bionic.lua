@@ -2,7 +2,7 @@ local M = {}
 local ns_id = vim.api.nvim_create_namespace("bionic_read")
 
 local function setup_highlights()
-  vim.api.nvim_set_hl(0, "BionicPrefix", {bold = true, default = true})
+  vim.api.nvim_set_hl(0, "BionicPrefix", { bold = true, default = true })
 end
 
 local function is_word_char(char)
@@ -104,7 +104,7 @@ M.setup = function(opts)
     })
   end
 
-  vim.api.nvim_create_autocmd({"TextChanged", "TextChangedI", "InsertLeave"}, {
+  vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "InsertLeave" }, {
     callback = function()
       if vim.b.bionic_on then
         apply_bionic_highlighting()
@@ -115,6 +115,6 @@ end
 
 M.toggle = toggle_bionic_read
 
-vim.api.nvim_create_user_command("BionicToggle", toggle_bionic_read, {range = 2})
+vim.api.nvim_create_user_command("BionicToggle", toggle_bionic_read, { range = 2 })
 
 return M
