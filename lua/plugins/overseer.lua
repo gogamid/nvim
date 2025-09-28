@@ -3,7 +3,7 @@ return {
   opts = {
     dap = false,
     task_list = {
-      min_height = {15, 0.3},
+      min_height = { 15, 0.3 },
       bindings = {
         ["<C-h>"] = false,
         ["<C-j>"] = false,
@@ -28,8 +28,8 @@ return {
     },
     component_aliases = {
       default = {
-        {"open_output",      direction = "dock", on_complete = "failure", on_start = "never", focus = false},
-        {"display_duration", detail_level = 1},
+        { "open_output", direction = "dock", on_complete = "failure", on_start = "never", focus = false },
+        { "display_duration", detail_level = 1 },
         "on_output_summarize",
         "on_exit_set_status",
         "on_complete_notify",
@@ -38,31 +38,64 @@ return {
       },
     },
   },
-
   keys = {
-    {"<leader>tt",  "<cmd>OverseerToggle<cr>",                                             desc = "Tasks Open"},
-    {"<leader>tr",  "<cmd>OverseerRun<cr>",                                                desc = "Run task"},
+    { "<leader>tt", "<cmd>OverseerToggle<cr>", desc = "Tasks Open" },
+    { "<leader>tr", "<cmd>OverseerRun<cr>", desc = "Run task" },
 
-    {"<leader>tml", function() require("overseer").run_template({name = "make lint"}) end, desc = "Make Lint"},
-    {"<leader>tmt", function() require("overseer").run_template({name = "make test"}) end, desc = "Make Test"},
+    {
+      "<leader>tml",
+      function()
+        require("overseer").run_template({ name = "make lint" })
+      end,
+      desc = "Make Lint",
+    },
+    {
+      "<leader>tmt",
+      function()
+        require("overseer").run_template({ name = "make test" })
+      end,
+      desc = "Make Test",
+    },
     {
       "<leader>tmg",
-      function() require("overseer").run_template({name = "make generate-models"}) end,
+      function()
+        require("overseer").run_template({ name = "make generate-models" })
+      end,
       desc = "Make Generate Models",
     },
     {
       "<leader>tms",
-      function() require("overseer").run_template({name = "make skaffold-dev"}) end,
+      function()
+        require("overseer").run_template({ name = "make skaffold-dev" })
+      end,
       desc = "Make Skaffold Dev",
     },
-    {"<leader>ta", function() require("overseer").run_template({name = "make test"}) end, desc = "Test All"},
-    {"<leader>tl", function() require("overseer").run_template({name = "test-line"}) end, desc = "Test line"},
-    {"<leader>tf", function() require("overseer").run_template({name = "test-file"}) end, desc = "Test file"},
+    {
+      "<leader>ta",
+      function()
+        require("overseer").run_template({ name = "make test" })
+      end,
+      desc = "Test All",
+    },
+    {
+      "<leader>tl",
+      function()
+        require("overseer").run_template({ name = "test-line" })
+      end,
+      desc = "Test line",
+    },
+    {
+      "<leader>tf",
+      function()
+        require("overseer").run_template({ name = "test-file" })
+      end,
+      desc = "Test file",
+    },
     {
       "<leader>tp",
       function()
         local overseer = require("overseer")
-        local task_list = overseer.list_tasks({recent_first = true})
+        local task_list = overseer.list_tasks({ recent_first = true })
 
         -- Find most recent test task
         for _, task in ipairs(task_list) do
@@ -84,9 +117,26 @@ return {
     local overseer = require("overseer")
     overseer.setup(opts)
 
+    vim.api.nvim_create_autocmd("FileType", {
+      desc = "Toggle Overseer with q",
+      pattern = "OverseerList",
+      callback = function(event)
+        vim.bo[event.buf].buflisted = false
+        vim.schedule(function()
+          vim.keymap.set("n", "q", function()
+            vim.cmd("OverseerToggle")
+          end, {
+            buffer = event.buf,
+            silent = true,
+            desc = "Toggle Overseer",
+          })
+        end)
+      end,
+    })
+
     -- Function to get the project root
     local function get_project_root()
-      return vim.fs.root(vim.api.nvim_get_current_buf(), {"service.yaml", ".git"}) or vim.fn.getcwd()
+      return vim.fs.root(vim.api.nvim_get_current_buf(), { "service.yaml", ".git" }) or vim.fn.getcwd()
     end
 
     -- Treesitter-based test function detection
@@ -95,13 +145,19 @@ return {
       local bufnr = vim.api.nvim_get_current_buf()
       local filetype = vim.bo[bufnr].filetype
 
-      if filetype ~= "go" then return nil end
+      if filetype ~= "go" then
+        return nil
+      end
 
       local parser = ts.get_parser(bufnr)
-      if not parser then return nil end
+      if not parser then
+        return nil
+      end
 
       local tree = parser:parse()[1]
-      if not tree then return nil end
+      if not tree then
+        return nil
+      end
 
       local root = tree:root()
       local cursor = vim.api.nvim_win_get_cursor(0)
@@ -145,7 +201,9 @@ return {
           local name_node = node:field("name")[1]
           if name_node then
             local func_name = ts.get_node_text(name_node, bufnr)
-            if func_name and func_name:match("^Test") then main_func = func_name end
+            if func_name and func_name:match("^Test") then
+              main_func = func_name
+            end
           end
         end
 
@@ -167,7 +225,7 @@ return {
       go = {
         test_line_cmd = function(file, func_name)
           -- Handle subtest patterns (e.g., "Test_Integration/testBNL005Operation")
-          local cmd = {"go", "test", "-tags=manual_test", "-count=1", "-v", "-run"}
+          local cmd = { "go", "test", "-tags=manual_test", "-count=1", "-v", "-run" }
 
           if func_name:match("/") then
             -- Subtest pattern: convert "Test_Integration/testBNL005Operation" to "^Test_Integration$/^testBNL005Operation$"
@@ -182,7 +240,7 @@ return {
           return cmd
         end,
         test_file_cmd = function(file)
-          return {"go", "test", "-tags=manual_test", "-count=1", "-v", vim.fn.fnamemodify(file, ":h")}
+          return { "go", "test", "-tags=manual_test", "-count=1", "-v", vim.fn.fnamemodify(file, ":h") }
         end,
         get_test_function = find_test_function_ts,
       },
@@ -248,19 +306,19 @@ return {
     overseer.register_template({
       name = "skaffold dev",
       condition = {
-        dir = os.getenv("NEXUS_REPO")
+        dir = os.getenv("NEXUS_REPO"),
       },
       builder = function()
         local cwd = get_project_root()
         return {
-          cmd = {"make", "skaffold-dev-remotedev", "ALIAS=" .. (os.getenv("USER") or "user")},
+          cmd = { "make", "skaffold-dev-remotedev", "ALIAS=" .. (os.getenv("USER") or "user") },
           cwd = cwd,
           name = "sk " .. vim.fn.fnamemodify(cwd, ":t"),
           components = {
-            {"unique", replace = false},
+            { "unique", replace = false },
             {
               "restart_on_save",
-              paths = {cwd .. "/main/**"},
+              paths = { cwd .. "/main/**" },
               delay = 10,
               interrupt = true,
             },
@@ -276,7 +334,7 @@ return {
     overseer.register_template({
       name = "auth skaffold dev",
       condition = {
-        dir = os.getenv("NEXUS_REPO")
+        dir = os.getenv("NEXUS_REPO"),
       },
       builder = function()
         return {
@@ -295,13 +353,13 @@ return {
     overseer.register_template({
       name = "",
       condition = {
-        dir = os.getenv("NEXUS_REPO")
+        dir = os.getenv("NEXUS_REPO"),
       },
       builder = function()
         local cwd = get_project_root()
         return {
           name = "make lint " .. vim.fn.fnamemodify(cwd, ":t"),
-          cmd = {"make", "lint"},
+          cmd = { "make", "lint" },
           cwd = cwd,
         }
       end,
@@ -310,13 +368,13 @@ return {
     overseer.register_template({
       name = "make test",
       condition = {
-        dir = os.getenv("NEXUS_REPO")
+        dir = os.getenv("NEXUS_REPO"),
       },
       builder = function()
         local cwd = get_project_root()
         return {
           name = "make test " .. vim.fn.fnamemodify(cwd, ":t"),
-          cmd = {"make", "test"},
+          cmd = { "make", "test" },
           cwd = cwd,
         }
       end,
@@ -326,7 +384,7 @@ return {
       name = "colima start",
       builder = function()
         return {
-          cmd = {"colima", "start"},
+          cmd = { "colima", "start" },
         }
       end,
     })
@@ -335,7 +393,7 @@ return {
       name = "activate pim roles",
       builder = function()
         return {
-          cmd = {os.getenv("HOME") .. "/work/nexus-tools/azurelogin.sh", "all"},
+          cmd = { os.getenv("HOME") .. "/work/nexus-tools/azurelogin.sh", "all" },
         }
       end,
     })

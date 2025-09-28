@@ -5,19 +5,19 @@ return {
     lazy = true,
     ft = "markdown",
     keys = {
-      {"<leader>on", mode = {"n"},   "<cmd>Obsidian new<cr>",          desc = "Obsidian new note"},
+      { "<leader>on", mode = { "n" }, "<cmd>Obsidian new<cr>", desc = "Obsidian new note" },
 
       --search
-      {"<leader>os", mode = {"n"},   "<cmd>Obsidian search<cr>",       desc = "Obsidian search"},
-      {"<leader>of", mode = {"n"},   "<cmd>Obsidian quick_switch<cr>", desc = "Obsidian Files"},
-      {"<leader>ob", mode = {"n"},   "<cmd>Obsidian backlinks<cr>",    desc = "Obsidian Backlinks"},
+      { "<leader>os", mode = { "n" }, "<cmd>Obsidian search<cr>", desc = "Obsidian search" },
+      { "<leader>of", mode = { "n" }, "<cmd>Obsidian quick_switch<cr>", desc = "Obsidian Files" },
+      { "<leader>ob", mode = { "n" }, "<cmd>Obsidian backlinks<cr>", desc = "Obsidian Backlinks" },
 
       --editing
-      {"<leader>oi", mode = {"n"},   "<cmd>Obsidian paste_img<cr>",    desc = "Obsidian Image paste"},
-      {"<leader>or", mode = {"n"},   "<cmd>Obsidian rename<cr>",       desc = "Obsidian Rename note"},
+      { "<leader>oi", mode = { "n" }, "<cmd>Obsidian paste_img<cr>", desc = "Obsidian Image paste" },
+      { "<leader>or", mode = { "n" }, "<cmd>Obsidian rename<cr>", desc = "Obsidian Rename note" },
 
       --visual
-      {"<leader>ol", mode = {"v"},   "<cmd>Obsidian link_new<cr>",     desc = "Obsidian Link to a note"},
+      { "<leader>ol", mode = { "v" }, "<cmd>Obsidian link_new<cr>", desc = "Obsidian Link to a note" },
     },
     opts = {
       footer = {
@@ -44,11 +44,15 @@ return {
       -- other  defaults
       -- Sets how you follow URLs
       ---@param url string
-      follow_url_func = function(url) vim.ui.open(url) end,
+      follow_url_func = function(url)
+        vim.ui.open(url)
+      end,
 
       -- Sets how you follow images
       ---@param img string
-      follow_img_func = function(img) vim.ui.open(img) end,
+      follow_img_func = function(img)
+        vim.ui.open(img)
+      end,
 
       -- Optional, customize how note IDs are generated given an optional title.
       ---@param title string|?
@@ -81,7 +85,9 @@ return {
       opts.directory = "~/work/obsidian/work"
       opts.title = "Scratchpad"
 
-      opts.post_open = function(_, _) vim.cmd("normal! Gzz") end
+      opts.post_open = function(_, _)
+        vim.cmd("normal! Gzz")
+      end
       global_note.setup(opts)
       vim.keymap.set("n", "<leader>n", global_note.toggle_note, {
         desc = "Toggle global note",

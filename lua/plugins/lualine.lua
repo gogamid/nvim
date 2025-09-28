@@ -8,9 +8,11 @@ end
 
 local function overseer_status()
   local ok, overseer = pcall(require, "overseer")
-  if not ok then return "" end
+  if not ok then
+    return ""
+  end
 
-  local tasks = overseer.list_tasks({status = "RUNNING"})
+  local tasks = overseer.list_tasks({ status = "RUNNING" })
   if #tasks > 0 then
     local task_names = {}
     for _, task in ipairs(tasks) do
@@ -49,8 +51,9 @@ local function formatter_status()
   end
 end
 
+-- TODO(ig): show progress too
 local function lsp_status()
-  local clients = vim.lsp.get_clients({bufnr = 0})
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
   if #clients > 0 then
     local client_names = {}
     for _, client in ipairs(clients) do
@@ -81,10 +84,10 @@ return {
   opts = {
     options = {
       theme = "everforest", -- Use your current colorscheme's theme or set a specific one
-      globalstatus = true,  -- Use a single statusline for all windows
+      globalstatus = true, -- Use a single statusline for all windows
       icons_enabled = true,
-      component_separators = {left = "", right = ""},
-      section_separators = {left = "", right = ""},
+      component_separators = { left = "", right = "" },
+      section_separators = { left = "", right = "" },
       disabled_filetypes = {
         statusline = {},
         winbar = {},
@@ -135,15 +138,15 @@ return {
           end,
         },
       },
-      lualine_x = {supermaven, "overseer", overseer_status, "diagnostics", "diff", "progress"},
+      lualine_x = { supermaven, "overseer", overseer_status, "diagnostics", "diff", "progress" },
       lualine_y = {},
       lualine_z = {},
     },
     inactive_sections = {
       lualine_a = {},
       lualine_b = {},
-      lualine_c = {"filename"},
-      lualine_x = {"location"},
+      lualine_c = { "filename" },
+      lualine_x = { "location" },
       lualine_y = {},
       lualine_z = {},
     },

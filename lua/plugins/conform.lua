@@ -2,18 +2,18 @@ return {
   "stevearc/conform.nvim",
   opts = {
     formatters_by_ft = {
-      lua = {lsp_format = "prefer"},
-      proto = {"buf"},
-      go = {"goimports", "gofumpt"},
-      yaml = {"prettier"},
-      markdown = {"prettier"},
-      json = {"prettier"},
-      vue = {"prettier", lsp_format = "last"},
-      typescript = {"prettier", lsp_format = "last"},
-      javascript = {"prettier", lsp_format = "last"},
-      toml = {"taplo"},
-      sh = {"shfmt"},
-      xml = {"xmlformatter"},
+      lua = { "stylua" },
+      proto = { "buf" },
+      go = { "goimports", "gofumpt" },
+      yaml = { "prettier" },
+      markdown = { "prettier" },
+      json = { "prettier" },
+      vue = { "prettier", lsp_format = "last" },
+      typescript = { "prettier", lsp_format = "last" },
+      javascript = { "prettier", lsp_format = "last" },
+      toml = { "taplo" },
+      sh = { "shfmt" },
+      xml = { "xmlformatter" },
     },
     default_format_opts = {
       lsp_format = "fallback",
@@ -33,8 +33,12 @@ return {
 
     Snacks.toggle({
       name = "Autoformat",
-      get = function() return not vim.g.autoformat end,
-      set = function(state) vim.g.autoformat = not state end,
+      get = function()
+        return not vim.g.autoformat
+      end,
+      set = function(state)
+        vim.g.autoformat = not state
+      end,
     }):map("<leader>uf")
   end,
 }

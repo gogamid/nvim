@@ -1,8 +1,12 @@
 ---@param background? "dark" | "light
 ---@param contrast? "hard" | "medium" | "soft"
 local function everforest(background, contrast)
-  if not background then background = "dark" end
-  if not contrast then contrast = "soft" end
+  if not background then
+    background = "dark"
+  end
+  if not contrast then
+    contrast = "soft"
+  end
 
   vim.cmd("set background=" .. background)
   vim.cmd(string.format("let g:everforest_background='%s'", contrast))
@@ -39,7 +43,7 @@ return {
         -- vim.cmd("colorscheme catppuccin-latte")
         everforest("light", "medium")
 
-        vim.api.nvim_set_hl(0, "Visual", {bg = "#A7C080", fg = "#2B3339"})
+        vim.api.nvim_set_hl(0, "Visual", { bg = "#A7C080", fg = "#2B3339" })
       end,
     },
   },

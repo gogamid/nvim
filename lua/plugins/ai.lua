@@ -3,49 +3,52 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     enabled = true,
     keys = {
-      {"<c-s>",      "<CR>",                   ft = "copilot-chat",         desc = "Submit Prompt", remap = true},
-      {"<leader>a",  "",                       desc = "+ai",                mode = {"n", "v"}},
-      {"<leader>aM", ":CopilotChatModels<CR>", desc = "CopilotChat Models", mode = {"n"}},
+      { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
+      { "<leader>aM", ":CopilotChatModels<CR>", desc = "CopilotChat Models", mode = { "n" } },
       {
         "<leader>ac",
-        function() return require("CopilotChat").toggle() end,
+        function()
+          return require("CopilotChat").toggle()
+        end,
         desc = "Toggle (CopilotChat)",
-        mode = {"n", "v"},
+        mode = { "n", "v" },
       },
       {
         "<leader>aq",
         function()
-          vim.ui.input({prompt = "Quick Chat: "},
-            function(input)
-              input = vim.trim(input or "")
-              if input ~= "" then
-                require("CopilotChat").ask(input,
-                  {{selection = require("CopilotChat.select").visual or require("CopilotChat.select").line},})
-              else
-                vim
-                  .notify("No input provided for Quick Chat.", vim.log.levels.WARN)
-              end
-            end)
+          vim.ui.input({ prompt = "Quick Chat: " }, function(input)
+            input = vim.trim(input or "")
+            if input ~= "" then
+              require("CopilotChat").ask(
+                input,
+                { { selection = require("CopilotChat.select").visual or require("CopilotChat.select").line } }
+              )
+            else
+              vim.notify("No input provided for Quick Chat.", vim.log.levels.WARN)
+            end
+          end)
         end,
         desc = "Quick Chat (CopilotChat)",
-        mode = {"n", "v"},
+        mode = { "n", "v" },
       },
       {
         "<leader>ap",
-        function() require("CopilotChat").select_prompt() end,
+        function()
+          require("CopilotChat").select_prompt()
+        end,
         desc = "Prompt actions",
-        mode = {"n", "v"},
+        mode = { "n", "v" },
       },
       {
         "<leader>ad",
         function()
           require("CopilotChat").ask(
             "Please assist with the following diagnostic issue in file #diagnostics:current",
-            {selection = require("CopilotChat.select").visual or require("CopilotChat.select").line}
+            { selection = require("CopilotChat.select").visual or require("CopilotChat.select").line }
           )
         end,
         desc = "Diagnostics help",
-        mode = {"n", "v"},
+        mode = { "n", "v" },
       },
     },
     opts = {
@@ -87,7 +90,9 @@ return {
     keys = {
       {
         "<leader>aS",
-        function() require("supermaven-nvim.api").toggle() end,
+        function()
+          require("supermaven-nvim.api").toggle()
+        end,
         desc = "Toggle Supermaven",
       },
     },
@@ -97,7 +102,7 @@ return {
         accept_word = "<C-o>",
         clear_suggestion = "<C-x>",
       },
-      ignore_filetypes = {"copilot-chat, opencode_ask"},
+      ignore_filetypes = { "copilot-chat, opencode_ask" },
       color = {
         suggestion_color = "#9198a1",
         cterm = 244,
@@ -110,7 +115,7 @@ return {
     enabled = false,
     dependencies = {
       -- Recommended for better prompt input, and required to use opencode.nvim's embedded terminal — otherwise optional
-      {"folke/snacks.nvim", opts = {input = {enabled = true}}},
+      { "folke/snacks.nvim", opts = { input = { enabled = true } } },
     },
     config = function()
       vim.g.opencode_opts = {
@@ -121,10 +126,18 @@ return {
       vim.opt.autoread = true
     end,
     keys = {
-      {"<leader>ao", function() require("opencode").toggle() end, desc = "Toggle embedded opencode"},
+      {
+        "<leader>ao",
+        function()
+          require("opencode").toggle()
+        end,
+        desc = "Toggle embedded opencode",
+      },
       {
         "<leader>as",
-        function() require("opencode").ask("@selection: ") end,
+        function()
+          require("opencode").ask("@selection: ")
+        end,
         desc = "Ask opencode about selection",
         mode = "v",
       },
@@ -133,12 +146,22 @@ return {
   {
     "olimorris/codecompanion.nvim",
     dependencies = {
-      {"nvim-treesitter/nvim-treesitter", build = ":TSUpdate"},
-      {"nvim-lua/plenary.nvim"},
+      { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+      { "nvim-lua/plenary.nvim" },
     },
     keys = {
-      {"<leader>aa", ":CodeCompanionChat Toggle<CR>", mode = {"n", "v"}, {noremap = true, silent = true, desc = "CodeCompanion Toggle"}},
-      {"ga",         ":CodeCompanionChat Add<CR>",    mode = {"v"},      {noremap = true, silent = true, desc = "Add selection to CodeCompanionChat"}},
+      {
+        "<leader>aa",
+        ":CodeCompanionChat Toggle<CR>",
+        mode = { "n", "v" },
+        { noremap = true, silent = true, desc = "CodeCompanion Toggle" },
+      },
+      {
+        "ga",
+        ":CodeCompanionChat Add<CR>",
+        mode = { "v" },
+        { noremap = true, silent = true, desc = "Add selection to CodeCompanionChat" },
+      },
     },
     opts = {
       strategies = {
@@ -191,12 +214,11 @@ return {
                 mcpServers = {},
                 timeout = 20000, -- 20 seconds
               },
-              env = {
-              },
+              env = {},
               parameters = {
                 protocolVersion = 1,
                 clientCapabilities = {
-                  fs = {readTextFile = true, writeTextFile = true},
+                  fs = { readTextFile = true, writeTextFile = true },
                 },
                 clientInfo = {
                   name = "CodeCompanion.nvim",
@@ -236,13 +258,77 @@ return {
                   end
                 end,
               },
-
             },
           },
-          opts = {
-          },
+          opts = {},
         },
       },
-    }
-  }
+    },
+    config = function(_, opts)
+      require("codecompanion").setup(opts)
+
+      vim.cmd([[cab cc CodeCompanion]])
+      vim.api.nvim_create_autocmd("FileType", {
+        desc = "Toggle CodeCompanion with q",
+        pattern = {
+          "codecompanion",
+        },
+        callback = function(event)
+          vim.bo[event.buf].buflisted = false
+          vim.schedule(function()
+            vim.keymap.set("n", "q", function()
+              vim.cmd("CodeCompanionChat Toggle")
+            end, {
+              buffer = event.buf,
+              silent = true,
+              desc = "Toggle CodeCompanion",
+            })
+          end)
+        end,
+      })
+    end,
+  },
+  {
+    "folke/sidekick.nvim",
+    enabled = false,
+    init = function()
+      vim.lsp.enable("copilot_ls", true)
+    end,
+    opts = {
+      -- add any options here
+    },
+    keys = {
+      {
+        "<tab>",
+        function()
+          -- if there is a next edit, jump to it, otherwise apply it if any
+          if not require("sidekick").nes_jump_or_apply() then
+            return "<Tab>" -- fallback to normal tab
+          end
+        end,
+        expr = true,
+        desc = "Goto/Apply Next Edit Suggestion",
+      },
+    },
+  },
+  {
+    "copilotlsp-nvim/copilot-lsp",
+    enabled = false,
+    init = function()
+      vim.g.copilot_nes_debounce = 500
+      vim.lsp.enable("copilot_ls", true)
+    end,
+    config = function(_, opts)
+      require("copilot-lsp").setup(opts)
+      Snacks.toggle({
+        name = "Toggle Copilot LSP",
+        get = function()
+          return vim.lsp.is_enabled("copilot_ls")
+        end,
+        set = function(state)
+          vim.lsp.enable("copilot_ls", state and true or false)
+        end,
+      }):map("<leader>aC")
+    end,
+  },
 }

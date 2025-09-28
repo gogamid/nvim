@@ -7,11 +7,11 @@ return {
           display_mode = "border",
         },
         parser = {
-          delimiter = {default = ";", ft = {tsv = "\t"}},
+          delimiter = { default = ";", ft = { tsv = "\t" } },
         },
       })
     end,
-    ft = {"csv"},
+    ft = { "csv" },
     keys = {
       {
         "<leader>ue",

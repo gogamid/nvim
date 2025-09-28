@@ -9,17 +9,20 @@ return {
   event = "InsertEnter",
 
   opts = {
-    snippets = {
-      preset = "luasnip",
-    },
+    snippets = { preset = "luasnip" },
     appearance = {
       use_nvim_cmp_as_default = false,
       nerd_font_variant = "mono",
     },
     completion = {
+      list = {
+        selection = {
+          preselect = false,
+        },
+      },
       trigger = {
-        show_on_trigger_character = false,           -- Disable trigger chars like '.'
-        show_on_keyword = true,                      -- Only show after typing keywords
+        show_on_trigger_character = false, -- Disable trigger chars like '.'
+        show_on_keyword = true, -- Only show after typing keywords
         show_on_insert_on_trigger_character = false, -- Don't show immediately on '.'
       },
       accept = {
@@ -29,7 +32,7 @@ return {
       },
       menu = {
         draw = {
-          treesitter = {"lsp"},
+          treesitter = { "lsp" },
         },
       },
       documentation = {
@@ -41,23 +44,23 @@ return {
       },
     },
     sources = {
-      default = {"lsp", "path", "snippets", "buffer"},
+      default = { "lsp", "path", "snippets", "buffer" },
       min_keyword_length = 2,
       providers = {
         snippets = {
           min_keyword_length = 2,
         },
         buffer = {
-          min_keyword_length = 2,
+          min_keyword_length = 3,
           max_items = 2, -- Limit buffer suggestions
         },
       },
     },
-    cmdline = {enabled = true},
     keymap = {
       preset = "enter",
-      ["<C-y>"] = {"select_and_accept"},
     },
   },
-  config = function(_, opts) require("blink.cmp").setup(opts) end,
+  config = function(_, opts)
+    require("blink.cmp").setup(opts)
+  end,
 }
