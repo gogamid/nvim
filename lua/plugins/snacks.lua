@@ -43,7 +43,6 @@ local git_options = {
   actions = {
     ["diffview"] = function(picker)
       local currentCommit = picker:current().commit
-      picker:close()
       if currentCommit then
         local args = { currentCommit .. "^" .. "!" }
         require("diffview").open(args)
@@ -767,6 +766,13 @@ return {
     },
 
     -- Other
+    {
+      "<leader>bd",
+      function()
+        Snacks.bufdelete()
+      end,
+      desc = "Delete Buffer",
+    },
     {
       "<leader>z",
       function()

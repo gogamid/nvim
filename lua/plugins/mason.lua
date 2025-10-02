@@ -8,9 +8,9 @@ return {
     keys = {
       { "<leader>M", "<cmd>Mason<cr>", desc = "Mason Menu" },
     },
-    config = function(_, opts)
-      require("mason").setup(opts)
-      -- vim.cmd[[MasonInstall buf bash-language-server gofumpt goimports gopls json-lsp lua-language-server prettier shfmt sqlls sqls stylua taplo vtsls vue-language-server yaml-language-server yamlfmt]]
-    end,
+    -- config = function(_, opts)
+    --   require("mason").setup(opts)
+    --   -- vim.cmd[[MasonInstall buf bash-language-server gofumpt goimports gopls json-lsp lua-language-server prettier shfmt sqlls sqls stylua taplo vtsls vue-language-server yaml-language-server yamlfmt]]
+    -- end,
   },
 }

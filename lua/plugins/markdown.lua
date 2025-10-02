@@ -8,7 +8,6 @@ return {
     -- },
     heading = {
       sign = false,
-      icons = { "# ", "## ", "### ", "󱂋", "󱂌", "󱂍", "󱂎" },
     },
     -- checkbox = {
     --   enabled = false,

@@ -111,39 +111,6 @@ return {
     },
   },
   {
-    "NickvanDyke/opencode.nvim",
-    enabled = false,
-    dependencies = {
-      -- Recommended for better prompt input, and required to use opencode.nvim's embedded terminal — otherwise optional
-      { "folke/snacks.nvim", opts = { input = { enabled = true } } },
-    },
-    config = function()
-      vim.g.opencode_opts = {
-        -- Your configuration, if any — see `lua/opencode/config.lua`
-      }
-
-      -- Required for `opts.auto_reload`
-      vim.opt.autoread = true
-    end,
-    keys = {
-      {
-        "<leader>ao",
-        function()
-          require("opencode").toggle()
-        end,
-        desc = "Toggle embedded opencode",
-      },
-      {
-        "<leader>as",
-        function()
-          require("opencode").ask("@selection: ")
-        end,
-        desc = "Ask opencode about selection",
-        mode = "v",
-      },
-    },
-  },
-  {
     "olimorris/codecompanion.nvim",
     dependencies = {
       { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
@@ -290,12 +257,8 @@ return {
   },
   {
     "folke/sidekick.nvim",
-    enabled = false,
-    init = function()
-      vim.lsp.enable("copilot_ls", true)
-    end,
     opts = {
-      -- add any options here
+      cli = {},
     },
     keys = {
       {
@@ -309,26 +272,30 @@ return {
         expr = true,
         desc = "Goto/Apply Next Edit Suggestion",
       },
+      {
+        "<c-.>",
+        function()
+          require("sidekick.cli").focus()
+        end,
+        desc = "Sidekick Switch Focus",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>ao",
+        function()
+          require("sidekick.cli").toggle({ name = "opencode", focus = true })
+        end,
+        desc = "Sidekick Claude Toggle",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>at",
+        function()
+          require("sidekick.cli").select_prompt()
+        end,
+        desc = "Sidekick Ask Prompt",
+        mode = { "n", "v" },
+      },
     },
-  },
-  {
-    "copilotlsp-nvim/copilot-lsp",
-    enabled = false,
-    init = function()
-      vim.g.copilot_nes_debounce = 500
-      vim.lsp.enable("copilot_ls", true)
-    end,
-    config = function(_, opts)
-      require("copilot-lsp").setup(opts)
-      Snacks.toggle({
-        name = "Toggle Copilot LSP",
-        get = function()
-          return vim.lsp.is_enabled("copilot_ls")
-        end,
-        set = function(state)
-          vim.lsp.enable("copilot_ls", state and true or false)
-        end,
-      }):map("<leader>aC")
-    end,
   },
 }
