@@ -73,26 +73,21 @@
       "}"
     ]
   },
-  "pager": {
-    "prefix": "pager",
+  "pager all pages": {
+    "prefix": "pagerAll",
     "body": [
       "pager := paging.NewPager(",
       "\t(*${1:pb}.List${2:Item}Response).Get${2:Item},",
       "\tfunc(ctx context.Context, pageToken string) (*${1:pb}.List${2:Item}Response, error) {",
       "\t\treturn retry.Backoff(ctx, retry.LongrunningConfig(), func(ctx context.Context) (*${1:pb}.List${2:Item}Response, error) {",
-      "\t\t\treturn svc.${1:pb}.List${2:Item}(ctx, &${1:pb}.List${2:Item}Request{",
+      "\t\t\treturn svc.${3:client}.List${2:Item}(ctx, &${1:pb}.List${2:Item}Request{",
       "\t\t\t\tPageSize:  paging.DefaultPageSize,",
       "\t\t\t\tPageToken: pageToken,",
-      "\t\t\t\tFilter: &${1:pb}.List${2:Item}Request_And{",
-      "\t\t\t\t\tAnd: &${1:pb}.List${2:Item}Request_FiltersOneOf{",
-      "\t\t\t\t\t\tFilters: []*${1:pb}.${2:Item}FilterOneOf{},",
-      "\t\t\t\t\t},",
-      "\t\t\t\t},",
       "\t\t\t})",
       "\t\t})",
       "\t},",
       ")",
-      "for item, err := range pager.All(ctx, paging.AllPages) {",
+      "for _, err := range pager.All(ctx, paging.AllPages) {",
       "\tif err != nil {",
       "\t\treturn fmt.Errorf(\"error fetching ${2:Item}: %w\", err)",
       "\t}",
@@ -151,8 +146,8 @@
       "}"
     ]
   },
-  "external service call": {
-    "prefix": "external service call",
+  "service call and mock": {
+    "prefix": "service call and mock",
     "body": [
       "type ${1:serviceName}ServiceClient interface {",
       "\t${2:Method1}(ctx context.Context, request *${3:PackageName}.${2:Method1}Request, opts ...grpc.CallOption) (*${3:PackageName}.${2:Method1}Response, error)",

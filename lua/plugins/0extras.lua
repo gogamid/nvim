@@ -7,5 +7,4 @@ return {
   { "kmonad/kmonad-vim" },
   { "rafamadriz/friendly-snippets" },
   { "sainnhe/everforest" },
-  { "dmmulroy/ts-error-translator.nvim" },
 }

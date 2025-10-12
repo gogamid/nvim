@@ -2,6 +2,7 @@ return {
   "stevearc/conform.nvim",
   opts = {
     formatters_by_ft = {
+      sql = { "csqlfmt" },
       lua = { "stylua" },
       proto = { "buf" },
       go = { "goimports", "gofumpt" },
@@ -14,6 +15,12 @@ return {
       toml = { "taplo" },
       sh = { "shfmt" },
       xml = { "xmlformatter" },
+    },
+    formatters = {
+      csqlfmt = {
+        command = "sql-formatter",
+        args = { "--language", "plsql" },
+      },
     },
     default_format_opts = {
       lsp_format = "fallback",

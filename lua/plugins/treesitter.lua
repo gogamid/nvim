@@ -40,7 +40,7 @@ return {
         "gomod",
         "gowork",
         "gosum",
-        "swift",
+        -- "swift",
         "objc",
       },
       -- incremental_selection = {

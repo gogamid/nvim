@@ -250,7 +250,7 @@ return {
       enabled = true,
       preset = {
         keys = {},
-        header = require("modules.headers").neovim,
+        header = require("modules.headers").hello_papi,
       },
       formats = { key = { "" } },
       sections = {
@@ -260,7 +260,7 @@ return {
       },
     },
     lazygit = {
-      enabled = false,
+      enabled = true,
       win = {
         width = 0.99,
         height = 0.99,
@@ -404,6 +404,13 @@ return {
     },
 
     -- git
+    {
+      "<leader>gg",
+      function()
+        Snacks.lazygit()
+      end,
+      desc = "Lazygit",
+    },
     { "<leader>ga", git_log_by_author, desc = "Author Logs" },
     {
       "<leader>gl",
@@ -662,63 +669,11 @@ return {
     },
     {
       "<leader>st",
-      desc = "Search Markdown Toc",
       function()
-        local buf = vim.api.nvim_get_current_buf()
-
-        -- Only work in markdown files
-        if vim.bo[buf].filetype ~= "markdown" then
-          vim.notify("This command only works in markdown files", vim.log.levels.WARN)
-          return
-        end
-
-        -- Get all lines from the buffer
-        local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-        local items = {}
-
-        -- Parse markdown headings
-        for line_num, line in ipairs(lines) do
-          local heading_level, heading_text = line:match("^(#+)%s+(.+)")
-          if heading_level then
-            local level = #heading_level
-            local indent = string.rep("  ", level - 1) -- Indent based on heading level
-
-            table.insert(items, {
-              text = indent .. heading_text,
-              name = heading_text,
-              level = level,
-              buf = buf,
-              pos = { line_num, 0 }, -- Line number, column 0
-            })
-          end
-        end
-
-        if #items == 0 then
-          vim.notify("No markdown headings found", vim.log.levels.INFO)
-          return
-        end
-
-        -- Create the picker
-        require("snacks").picker({
-          items = items,
-          layout = "default",
-          prompt = "TOC: ",
-          format = function(item)
-            return {
-              { item.text, "Normal" },
-            }
-          end,
-          actions = {
-            default = function(item)
-              -- Navigate to the heading
-              vim.api.nvim_win_set_cursor(0, { item.pos[1], item.pos[2] })
-              vim.cmd("normal! zz") -- Center the line
-            end,
-          },
-        })
+        Snacks.picker.lsp_symbols()
       end,
+      desc = "LSP Symbols",
     },
-    -- { "<leader>ss", function() Snacks.picker.lsp_symbols() end,                                                                                  desc = "LSP Symbols" },
     {
       "<leader>sS",
       function()

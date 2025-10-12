@@ -1,3 +1,5 @@
+-- Store last selected CLI tool/session in memory
+vim.g.last_session_id = nil
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
@@ -112,6 +114,7 @@ return {
   },
   {
     "olimorris/codecompanion.nvim",
+    enabled = false,
     dependencies = {
       { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
       { "nvim-lua/plenary.nvim" },
@@ -256,45 +259,72 @@ return {
     end,
   },
   {
+    -- HEAD is now at c262b25 fix(qwen): set `mux_focus = true` since qwen doesnt process input if unfocused. Fixes #104
     "folke/sidekick.nvim",
+    enabled = true,
     opts = {
-      cli = {},
+      cli = {
+        mux = {
+          backend = "tmux",
+          create = "window",
+          enabled = false,
+        },
+        win = {
+          layout = "float",
+          float = {
+            width = 0.6,
+            height = 0.7,
+          },
+        },
+      },
+      nes = {
+        enabled = false,
+      },
     },
     keys = {
       {
-        "<tab>",
+        "<leader>as",
         function()
-          -- if there is a next edit, jump to it, otherwise apply it if any
-          if not require("sidekick").nes_jump_or_apply() then
-            return "<Tab>" -- fallback to normal tab
-          end
+          require("sidekick.cli").select({
+            filter = { name = "opencode" },
+            cb = function(state)
+              local dirName = vim.fs.dirname(vim.api.nvim_buf_get_name(0))
+              local cwd = vim.fs.root(0, { "service.yaml", ".git", dirName })
+              vim.cmd("tcd " .. cwd)
+              if state then
+                require("sidekick.cli.state").attach(state, { show = true, focus = true })
+                if state.session then
+                  vim.g.last_session_id = state.session.id
+                end
+              end
+            end,
+          })
         end,
-        expr = true,
-        desc = "Goto/Apply Next Edit Suggestion",
+        desc = "Select or create CLI",
       },
       {
         "<c-.>",
         function()
-          require("sidekick.cli").focus()
+          require("sidekick.cli").toggle({ filter = { session = vim.g.last_session_id } })
         end,
-        desc = "Sidekick Switch Focus",
-        mode = { "n", "v" },
+        desc = "Sidekick Toggle Last Session",
+        mode = { "n", "t", "i", "x" },
       },
       {
-        "<leader>ao",
+        "<leader>av",
         function()
-          require("sidekick.cli").toggle({ name = "opencode", focus = true })
+          require("sidekick.cli").send({ msg = "{selection}" })
         end,
-        desc = "Sidekick Claude Toggle",
-        mode = { "n", "v" },
+        mode = { "x" },
+        desc = "Send Visual Selection",
       },
       {
-        "<leader>at",
+        "<leader>ap",
         function()
-          require("sidekick.cli").select_prompt()
+          require("sidekick.cli").prompt()
         end,
-        desc = "Sidekick Ask Prompt",
-        mode = { "n", "v" },
+        mode = { "n", "x" },
+        desc = "Sidekick Select Prompt",
       },
     },
   },

@@ -280,7 +280,7 @@ vim.lsp.enable({
   -- "ocamlls",
   -- "ocamllsp",
   -- "ols",
-  -- "omnisharp",
+  "omnisharp",
   -- "opencl_ls",
   -- "openscad_ls",
   -- "openscad_lsp",
