@@ -17,7 +17,7 @@ return {
       { "<leader>v", "", desc = "visual(todo)", mode = { "n", "v" } },
       { "<leader>w", "", desc = "window(todo)", mode = { "n", "v" } },
       { "<leader>b", "", desc = "buffer(todo)", mode = { "n", "v" } },
-      -- { "g", "", desc = "goto", mode = { "n", "v" } },
+      { "<leader>h", "", desc = "hunks", mode = { "n", "v" } },
     },
   },
   keys = {},

@@ -79,6 +79,15 @@ local function filetype()
   end
 end
 
+local function current_dir()
+  local cwd = vim.fn.getcwd()
+  if #cwd > 40 then
+    cwd = "..." .. string.sub(cwd, -50)
+  else
+    return cwd
+  end
+end
+
 return {
   "nvim-lualine/lualine.nvim",
   opts = {
@@ -125,19 +134,37 @@ return {
         "%=",
         {
           "filename",
-          path = 3,
+          path = 1,
           fmt = function(str)
-            local max = 60
-            if #str < max then
-              return str .. string.rep(" ", max - #str)
-            elseif #str > max then
+            local max = 40
+            if #str > max then
               return "..." .. str:sub(-max)
             else
               return str
             end
           end,
         },
+        current_dir,
       },
+      -- "location"
+      -- - `branch` (git branch)
+      -- - `buffers` (shows currently available buffers)
+      -- - `diagnostics` (diagnostics count from your preferred source)
+      -- - `diff` (git diff status)
+      -- - `encoding` (file encoding)
+      -- - `fileformat` (file format)
+      -- - `filename`
+      -- - `filesize`
+      -- - `filetype`
+      -- - `hostname`
+      -- - `location` (location in file in line:column format)
+      -- - `mode` (vim mode)
+      -- - `progress` (%progress in file)
+      -- - `searchcount` (number of search matches when hlsearch is active)
+      -- - `selectioncount` (number of selected characters or lines)
+      -- - `tabs` (shows currently available tabs)
+      -- - `windows` (shows currently available windows)
+      -- - `lsp_status` (shows active LSPs in the current buffer and a progress spinner)
       lualine_x = { supermaven, "overseer", overseer_status, "diagnostics", "diff", "progress" },
       lualine_y = {},
       lualine_z = {},

@@ -125,49 +125,49 @@ return {
     },
   },
   { "nvim-mini/mini.icons" },
-  {
-    "nvim-mini/mini.diff",
-    event = "VeryLazy",
-    keys = {
-      {
-        "<leader>gt",
-        function()
-          require("mini.diff").toggle_overlay(0)
-        end,
-        desc = "Toggle mini.diff",
-      },
-    },
-    opts = {
-      view = {
-        style = "sign",
-        signs = {
-          add = "▎",
-          change = "▎",
-          delete = "",
-        },
-      },
-    },
-  },
-  {
-    "mini.diff",
-    opts = function()
-      Snacks.toggle({
-        name = "Mini Diff Signs",
-        get = function()
-          return vim.g.minidiff_disable ~= true
-        end,
-        set = function(state)
-          vim.g.minidiff_disable = not state
-          if state then
-            require("mini.diff").enable(0)
-          else
-            require("mini.diff").disable(0)
-          end
-          vim.defer_fn(function()
-            vim.cmd([[redraw!]])
-          end, 200)
-        end,
-      }):map("<leader>uG")
-    end,
-  },
+  -- {
+  --   "nvim-mini/mini.diff",
+  --   event = "VeryLazy",
+  --   keys = {
+  --     {
+  --       "<leader>gt",
+  --       function()
+  --         require("mini.diff").toggle_overlay(0)
+  --       end,
+  --       desc = "Toggle mini.diff",
+  --     },
+  --   },
+  --   opts = {
+  --     view = {
+  --       style = "sign",
+  --       signs = {
+  --         add = "▎",
+  --         change = "▎",
+  --         delete = "",
+  --       },
+  --     },
+  --   },
+  -- },
+  -- {
+  --   "mini.diff",
+  --   opts = function()
+  --     Snacks.toggle({
+  --       name = "Mini Diff Signs",
+  --       get = function()
+  --         return vim.g.minidiff_disable ~= true
+  --       end,
+  --       set = function(state)
+  --         vim.g.minidiff_disable = not state
+  --         if state then
+  --           require("mini.diff").enable(0)
+  --         else
+  --           require("mini.diff").disable(0)
+  --         end
+  --         vim.defer_fn(function()
+  --           vim.cmd([[redraw!]])
+  --         end, 200)
+  --       end,
+  --     }):map("<leader>uG")
+  --   end,
+  -- },
 }

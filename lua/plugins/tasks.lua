@@ -222,6 +222,10 @@ return {
           unknown = "",
         },
       })
+      vim.api.nvim_create_autocmd("BufWinEnter", {
+        pattern = { "*neotest*" },
+        command = "normal! G",
+      })
     end,
     keys = {
       {
@@ -260,18 +264,18 @@ return {
         desc = "[t]est [s]ummary",
       },
       {
-        "<leader>to",
+        "<leader>tO",
         function()
           require("neotest").output.open({ enter = true, auto_close = true })
         end,
-        desc = "[t]est [o]utput",
+        desc = "[t]est [O]utput",
       },
       {
-        "<leader>tO",
+        "<leader>to",
         function()
           require("neotest").output_panel.toggle()
         end,
-        desc = "[t]est [O]utput panel",
+        desc = "[t]est [o]utput panel",
       },
     },
   },

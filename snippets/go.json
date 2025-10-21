@@ -76,7 +76,7 @@
   "pager all pages": {
     "prefix": "pagerAll",
     "body": [
-      "pager := paging.NewPager(",
+      "${4:pager} := paging.NewPager(",
       "\t(*${1:pb}.List${2:Item}Response).Get${2:Item},",
       "\tfunc(ctx context.Context, pageToken string) (*${1:pb}.List${2:Item}Response, error) {",
       "\t\treturn retry.Backoff(ctx, retry.LongrunningConfig(), func(ctx context.Context) (*${1:pb}.List${2:Item}Response, error) {",
@@ -87,7 +87,7 @@
       "\t\t})",
       "\t},",
       ")",
-      "for _, err := range pager.All(ctx, paging.AllPages) {",
+      "for _, err := range ${4:pager}.All(ctx, paging.AllPages) {",
       "\tif err != nil {",
       "\t\treturn fmt.Errorf(\"error fetching ${2:Item}: %w\", err)",
       "\t}",

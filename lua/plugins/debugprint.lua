@@ -1,7 +1,7 @@
 return {
   "andrewferrier/debugprint.nvim",
   dependencies = {
-    "echasnovski/mini.hipatterns", -- Optional: Needed for line highlighting ('fine-grained' hipatterns plugin)
+    "nvim-mini/mini.hipatterns", -- Optional: Needed for line highlighting ('fine-grained' hipatterns plugin)
     "folke/snacks.nvim", -- Optional: If you want to use the `:Debugprint search` command with snacks.nvim
   },
   lazy = false, -- Required to make line highlighting work before debugprint is first used
