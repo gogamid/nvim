@@ -79,15 +79,6 @@ local function filetype()
   end
 end
 
-local function current_dir()
-  local cwd = vim.fn.getcwd()
-  if #cwd > 40 then
-    cwd = "..." .. string.sub(cwd, -50)
-  else
-    return cwd
-  end
-end
-
 return {
   "nvim-lualine/lualine.nvim",
   opts = {
@@ -144,7 +135,6 @@ return {
             end
           end,
         },
-        current_dir,
       },
       -- "location"
       -- - `branch` (git branch)
