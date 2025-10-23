@@ -3,7 +3,7 @@ return {
     "lewis6991/gitsigns.nvim",
     opts = {
       signs = {
-        delete = {text = ""},
+        delete = { text = "" },
       },
 
       on_attach = function(bufnr)
@@ -65,8 +65,8 @@ return {
         map("n", "<leader>hq", gitsigns.setqflist)
 
         -- Toggles
-        map("n", "<leader>tb", gitsigns.toggle_current_line_blame)
-        map("n", "<leader>tw", gitsigns.toggle_word_diff)
+        map("n", "<leader>gv", gitsigns.toggle_current_line_blame)
+        map("n", "<leader>gw", gitsigns.toggle_word_diff)
 
         -- Text object
         map({ "o", "x" }, "ih", gitsigns.select_hunk)
