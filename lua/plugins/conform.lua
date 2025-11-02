@@ -15,11 +15,24 @@ return {
       toml = { "taplo" },
       sh = { "shfmt" },
       xml = { "xmlformatter" },
+      terraform = { "terraform" },
+      hcl = { "terragrunt" },
     },
     formatters = {
       csqlfmt = {
         command = "sql-formatter",
+        enabled = vim.fn.executable("sql-formatter"),
         args = { "--language", "plsql" },
+      },
+      terraform = {
+        command = "terraform",
+        enabled = vim.fn.executable("terraform"),
+        args = { "fmt", "-no-color", "-" },
+      },
+      terragrunt = {
+        command = "terragrunt",
+        enabled = vim.fn.executable("terragrunt"),
+        args = { "hclfmt", "-no-color", "-" },
       },
     },
     default_format_opts = {

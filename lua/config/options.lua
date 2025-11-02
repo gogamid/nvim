@@ -35,7 +35,8 @@ vim.o.cmdheight      = 1          -- Command line height
 vim.o.showmode       = false      -- Don't show mode in command line
 vim.o.pumblend       = 10         -- Popup menu transparency
 vim.o.winblend       = 0          -- Floating window transparency
-vim.o.conceallevel   = 0          -- Don't hide markup
+-- vim.o.conceallevel   = 0          -- Don't hide markup
+vim.o.conceallevel   = 2          -- replace conceal  switch with 🎮
 vim.o.concealcursor  = ""         -- Don't hide cursor line markup
 vim.o.lazyredraw     = true       -- Don't redraw during macros
 

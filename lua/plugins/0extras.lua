@@ -5,5 +5,4 @@ return {
   { "nvim-tree/nvim-web-devicons" },
   { "kmonad/kmonad-vim" },
   { "rafamadriz/friendly-snippets" },
-  { "sainnhe/everforest" },
 }

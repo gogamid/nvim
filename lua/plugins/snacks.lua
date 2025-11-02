@@ -118,84 +118,112 @@ local marks_options = {
   ["local"] = false,
 }
 
-local picker_input_keys = {
-  ["<a-d>"] = false,
-  ["<c-i>"] = { "inspect", mode = { "n", "i" } },
-
-  ["<c-l>"] = { "select_and_next", mode = { "n", "i" } },
-  ["<c-a>"] = { "select_all", mode = { "n", "i" } },
-
-  ["<a-m>"] = false,
-  ["<c-z>"] = { "toggle_maximize", mode = { "n", "i" } },
-
-  ["<a-p>"] = false,
-  ["<c-t>"] = { "toggle_preview", mode = { "i", "n" } },
-
-  ["<a-w>"] = false,
-  ["<c-e>"] = { "cycle_win", mode = { "i", "n" } },
-  ["<C-w>"] = { "<c-s-w>", mode = { "i" }, expr = true, desc = "delete word" },
-
-  ["<C-Up>"] = false,
-  ["<C-Down>"] = false,
-  ["<c-j>"] = { "history_back", mode = { "i", "n" } },
-  ["<c-k>"] = { "history_forward", mode = { "i", "n" } },
-
-  ["<Tab>"] = false,
-  ["<S-Tab>"] = false,
-  --
-  ["<Down>"] = false,
-  ["<Up>"] = false,
-
-  -- ["<c-j>"] = { "list_down", mode = { "i", "n" } },
-  -- ["<c-k>"] = { "list_up", mode = { "i", "n" } },
-
-  ["<a-i>"] = false,
-  ["<a-h>"] = false,
-  ["<c-,>"] = { "toggle_ignored", mode = { "i", "n" } },
-  ["<c-.>"] = { "toggle_hidden", mode = { "i", "n" } },
-}
 local picker_options = {
   sources = {
-    explorer = {
-      -- layout = { layout = { position = "float", preview = true } },
-      layout = { preset = "telescope", preview = true, reverse = false },
-      auto_close = true,
-      -- jump = { close = true },
-      formatters = { file = { filename_only = true } },
-      matcher = {
-        regex = true,
-        fuzzy = false, -- use fuzzy matching
-      },
-    },
     git_log = git_options,
     git_log_file = git_options,
     git_log_line = git_options,
     marks = marks_options,
   },
   win = {
-    -- input window
     input = {
-      keys = picker_input_keys,
+      keys = {
+        -- disable unnecessary keys since we want the help menu to be usefult
+        ["/"] = false,
+        ["<C-Down>"] = false,
+        ["<C-Up>"] = false,
+        -- ["<C-c>"] = false,
+        -- ["<C-w>"] = false,
+        -- ["<CR>"] = false,
+        ["<Down>"] = false,
+        -- ["<Esc>"] = false,
+        ["<S-CR>"] = false,
+        ["<S-Tab>"] = false,
+        ["<Tab>"] = false,
+        ["<Up>"] = false,
+        ["<a-d>"] = false,
+        ["<a-f>"] = false,
+        ["<a-h>"] = false,
+        ["<a-i>"] = false,
+        ["<a-r>"] = false,
+        ["<a-m>"] = false,
+        ["<a-p>"] = false,
+        ["<a-w>"] = false,
+        -- ["<c-a>"] = false,
+        -- ["<c-b>"] = false,
+        -- ["<c-d>"] = false,
+        -- ["<c-f>"] = false,
+        -- ["<c-g>"] = false,
+        -- ["<c-j>"] = false,
+        -- ["<c-k>"] = false,
+        -- ["<c-n>"] = false,
+        -- ["<c-p>"] = false,
+        ["<c-q>"] = false,
+        -- ["<c-s>"] = false,
+        ["<c-t>"] = false,
+        -- ["<c-u>"] = false,
+        -- ["<c-v>"] = false,
+        ["<c-r>#"] = false,
+        ["<c-r>%"] = false,
+        ["<c-r><c-a>"] = false,
+        ["<c-r><c-f>"] = false,
+        ["<c-r><c-l>"] = false,
+        ["<c-r><c-p>"] = false,
+        ["<c-r><c-w>"] = false,
+        ["<c-w>H"] = false,
+        ["<c-w>J"] = false,
+        ["<c-w>K"] = false,
+        ["<c-w>L"] = false,
+        -- ["?"] = false,
+        ["G"] = false,
+        ["gg"] = false,
+        ["j"] = false,
+        ["k"] = false,
+        ["q"] = false,
+
+        -- used keys
+
+        ["<C-c>"] = { "cancel", mode = "i" },
+        ["<CR>"] = { "confirm", mode = { "n", "i" } },
+
+        ["<c-s>"] = { "edit_split", mode = { "i", "n" } },
+        ["<c-v>"] = { "edit_vsplit", mode = { "i", "n" } },
+
+        ["<c-z>"] = { "toggle_maximize", mode = { "n", "i" } },
+        ["<c-h>"] = { "toggle_help_input", mode = { "i", "n" } },
+        ["<c-e>"] = { "cycle_win", mode = { "i", "n" } },
+
+        ["<c-,>"] = { "toggle_ignored", mode = { "i", "n" } },
+        ["<c-.>"] = { "toggle_hidden", mode = { "i", "n" } },
+        ["<c-g>"] = { "toggle_live", mode = { "i", "n" } },
+        ["<c-r>"] = { "toggle_regex", mode = { "i", "n" } },
+
+        ["<c-k>"] = { "history_back", mode = { "i", "n" } },
+        ["<c-j>"] = { "history_forward", mode = { "i", "n" } },
+
+        ["<c-l>"] = { "select_and_next", mode = { "n", "i" } },
+        ["<c-a>"] = { "select_all", mode = { "n", "i" } },
+
+        ["<c-w>"] = { "<c-s-w>", mode = { "i" }, expr = true, desc = "delete word" },
+
+        ["<c-n>"] = { "list_down", mode = { "i", "n" } },
+        ["<c-p>"] = { "list_up", mode = { "i", "n" } },
+        ["<c-u>"] = { "list_scroll_up", mode = { "i", "n" } },
+        ["<c-d>"] = { "list_scroll_down", mode = { "i", "n" } },
+        ["<c-b>"] = { "preview_scroll_up", mode = { "i", "n" } },
+        ["<c-f>"] = { "preview_scroll_down", mode = { "i", "n" } },
+
+        ["<c-i>"] = { "inspect", mode = { "n", "i" } },
+      },
       b = {
         minipairs_disable = true,
       },
     },
-    -- result list window
     list = {
       keys = {
-
-        ["<Tab>"] = false,
-        ["<S-Tab>"] = false,
-        --
-        ["<Down>"] = false,
-        ["<Up>"] = false,
-        ["<c-i>"] = "inspect",
-        -- ["<c-l>"] = "select_all",
-        ["<c-f>"] = "preview_scroll_down",
-        ["<c-b>"] = "preview_scroll_up",
+        ["<c-e>"] = "cycle_win",
       },
     },
-    -- preview window
     preview = {
       minimal = false,
       wo = {
@@ -207,10 +235,9 @@ local picker_options = {
       },
     },
   },
-  -- layout = { preset = "telescope", preview = true },
-  layout = { preset = "default" },
+  layout = { preset = "custom" },
   layouts = {
-    default = {
+    custom = {
       layout = {
         backdrop = false,
         row = 1,

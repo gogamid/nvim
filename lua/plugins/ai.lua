@@ -73,6 +73,88 @@ return {
       selection = function(source)
         return require("CopilotChat.select").visual(source) or require("CopilotChat.select").line(source)
       end,
+      providers = {
+        copilot = {
+          disabled = true,
+        },
+        github_models = {
+          disabled = true,
+        },
+        github_embeddings = {
+          disabled = true,
+        },
+        gemini = {
+
+          prepare_input = function(inputs, opts)
+            return require("CopilotChat.config.providers").copilot.prepare_input(inputs, opts)
+          end,
+
+          prepare_output = function(output)
+            return require("CopilotChat.config.providers").copilot.prepare_output(output)
+          end,
+
+          get_headers = function()
+            local gemini_key = os.getenv("GEMINI_API_KEY")
+            return {
+              ["Authorization"] = "Bearer " .. gemini_key,
+            }, nil
+          end,
+
+          get_models = function(headers)
+            local response, err =
+              require("CopilotChat.utils").curl_get("https://generativelanguage.googleapis.com/v1beta/openai/models", {
+                headers = headers,
+                json_response = true,
+              })
+
+            if err then
+              error(err)
+            end
+
+            return vim.tbl_map(function(model)
+              return {
+                id = model.id,
+                name = model.id,
+              }
+            end, response.body.data)
+          end,
+
+          embed = function(inputs, headers)
+            local response, err = require("CopilotChat.utils").curl_post(
+              "https://generativelanguage.googleapis.com/v1beta/openai/embeddings",
+              {
+                headers = headers,
+                json_request = true,
+                json_response = true,
+                body = {
+                  input = inputs,
+                  model = "gemini-embedding-001",
+                },
+              }
+            )
+
+            if err then
+              error(err)
+            end
+
+            local data = {}
+            for i, embed in ipairs(response.body.data) do
+              table.insert(data, {
+                index = i - 1,
+                embedding = embed.embedding,
+                object = embed.object,
+              })
+            end
+
+            return data
+          end,
+
+          get_url = function()
+            return "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+          end,
+        },
+      },
+      model = "models/gemini-2.5-flash",
     },
     config = function(_, opts)
       require("CopilotChat").setup(opts)
@@ -152,10 +234,6 @@ return {
   {
     "olimorris/codecompanion.nvim",
     enabled = false,
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
-      { "nvim-lua/plenary.nvim" },
-    },
     keys = {
       {
         "<leader>aa",
@@ -173,13 +251,14 @@ return {
     opts = {
       strategies = {
         chat = {
-          adapter = "githubmodels",
-          model = "grok-code",
+          -- adapter = "githubmodels",
+          -- model = "grok-code",
           -- adapter = "opencode",
         },
         inline = {
-          adapter = "githubmodels",
-          model = "grok-code",
+          -- adapter = "opencode",
+          -- adapter = "githubmodels",
+          -- model = "grok-code",
         },
       },
       display = {
@@ -195,7 +274,7 @@ return {
             gemini_cli = function()
               return require("codecompanion.adapters").extend("gemini_cli", {
                 defaults = {
-                  auth_method = "gemini-api-key", -- "oauth-personal"|"gemini-api-key"|"vertex-ai"
+                  auth_method = "oauth-personal", -- "oauth-personal"|"gemini-api-key"|"vertex-ai"
                 },
                 env = {
                   api_key = os.getenv("GEMINI_API_KEY"),
@@ -204,7 +283,7 @@ return {
             end,
             opencode = {
               name = "opencode",
-              formatted_name = "Opencode",
+              formatted_name = "OpenCode",
               type = "acp",
               roles = {
                 llm = "assistant",
@@ -217,12 +296,15 @@ return {
                 default = {
                   "opencode acp",
                 },
+                grok = {
+                  "opencode acp",
+                  "--model opencode/grok-code",
+                },
               },
               defaults = {
                 mcpServers = {},
                 timeout = 20000, -- 20 seconds
               },
-              env = {},
               parameters = {
                 protocolVersion = 1,
                 clientCapabilities = {
@@ -240,31 +322,19 @@ return {
                   return true
                 end,
 
-                ---Manually handle authentication
-                ---@param self CodeCompanion.ACPAdapter
-                ---@return boolean
-                auth = function(self)
-                  return true
-                end,
-
                 ---@param self CodeCompanion.ACPAdapter
                 ---@param messages table
                 ---@param capabilities table
                 ---@return table
                 form_messages = function(self, messages, capabilities)
-                  local helpers = require("codecompanion.adapters.acp.helpers")
-                  return helpers.form_messages(self, messages, capabilities)
+                  return require("codecompanion.adapters.acp.helpers").form_messages(self, messages, capabilities)
                 end,
 
                 ---Function to run when the request has completed. Useful to catch errors
                 ---@param self CodeCompanion.ACPAdapter
                 ---@param code number
                 ---@return nil
-                on_exit = function(self, code)
-                  if code ~= 0 then
-                    vim.notify("OpenCode ACP exited with code " .. code, vim.log.levels.ERROR)
-                  end
-                end,
+                on_exit = function(self, code) end,
               },
             },
           },
@@ -297,7 +367,6 @@ return {
     end,
   },
   {
-    -- HEAD is now at c262b25 fix(qwen): set `mux_focus = true` since qwen doesnt process input if unfocused. Fixes #104
     "folke/sidekick.nvim",
     enabled = false,
     opts = {
@@ -368,38 +437,63 @@ return {
   },
   {
     "yetone/avante.nvim",
-    enabeld = false,
     build = vim.fn.has("win32") ~= 0 and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
       or "make",
     event = "VeryLazy",
-    version = false, -- Never set this value to "*"! Never!
+    enabled = false,
     opts = {
+      provider = "gemini",
+      mode = "legacy", -- Switch from "agentic" to "legacy"
+      providers = {
+        copilot = nil,
+        ollama = {
+          model = "gpt-oss:latest",
+        },
+        gemini = {
+          -- @see https://ai.google.dev/gemini-api/docs/models/gemini
+          model = "gemini-2.5-pro",
+          timeout = 30000, -- timeout in milliseconds
+          temperature = 0, -- adjust if needed
+          max_tokens = 4096,
+        },
+      },
       selection = {
         hint_display = "none",
       },
       behaviour = {
-        auto_set_highlight_group = false,
         auto_set_keymaps = true,
-      },
-      provider = "copilot",
-      selector = {
-        provider = "snacks",
+        enable_token_counting = false,
       },
     },
-    cmd = {
-      "AvanteAsk",
-      "AvanteBuild",
-      "AvanteChat",
-      "AvanteClear",
-      "AvanteEdit",
-      "AvanteFocus",
-      "AvanteHistory",
-      "AvanteModels",
-      "AvanteRefresh",
-      "AvanteShowRepoMap",
-      "AvanteStop",
-      "AvanteSwitchProvider",
-      "AvanteToggle",
+    config = function(_, opts)
+      require("avante").setup(opts)
+      vim.cmd("AvanteSwitchProvider gemini")
+    end,
+    keys = {
+      {
+        "<leader>ad",
+        function()
+          require("avante.api").ask({
+            new_chat = true,
+            question = "Please shortly explain the following diagnostic issue in file @diagnostics",
+            project_root = vim.fs.root(0, { "service.yaml", ".git" }) or vim.fn.getcwd(),
+          })
+        end,
+        mode = { "n", "v" },
+        desc = "Diagnostics help",
+      },
+      {
+        "<leader>aq",
+        function()
+          require("avante.api").ask({
+            new_chat = true,
+            floating = true,
+            project_root = vim.fs.root(0, { "service.yaml", ".git" }) or vim.fn.getcwd(),
+          })
+        end,
+        mode = { "n", "v" },
+        desc = "Quick Chat",
+      },
     },
   },
 }

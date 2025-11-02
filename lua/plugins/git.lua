@@ -65,8 +65,8 @@ return {
         map("n", "<leader>hq", gitsigns.setqflist)
 
         -- Toggles
-        map("n", "<leader>gv", gitsigns.toggle_current_line_blame)
-        map("n", "<leader>gw", gitsigns.toggle_word_diff)
+        map("n", "<leader>gB", gitsigns.toggle_current_line_blame)
+        map("n", "<leader>gW", gitsigns.toggle_word_diff)
 
         -- Text object
         map({ "o", "x" }, "ih", gitsigns.select_hunk)
@@ -78,13 +78,13 @@ return {
   },
   {
     "sindrets/diffview.nvim",
-    opts = {
-      view = {
-        default = {
-          -- Config for changed files, and staged files in diff views.
-          layout = "diff2_vertical",
-        },
-      },
-    },
+    -- opts = {
+    --   view = {
+    --     default = {
+    --       -- Config for changed files, and staged files in diff views.
+    --       -- layout = "diff2_vertical",
+    --     },
+    --   },
+    -- },
   },
 }

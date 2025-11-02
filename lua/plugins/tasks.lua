@@ -1,6 +1,7 @@
 return {
   {
     "stevearc/overseer.nvim",
+    version = "1.6.0", -- before major refactoring
     opts = {
       dap = false,
       task_list = {
@@ -190,10 +191,9 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-neotest/nvim-nio",
-      "nvim-treesitter/nvim-treesitter",
       "antoinemadec/FixCursorHold.nvim",
 
-      "fredrikaverpil/neotest-golang",
+      { "fredrikaverpil/neotest-golang", version = "2.4.0" },
       "marilari88/neotest-vitest",
     },
     config = function()

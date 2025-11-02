@@ -1,16 +1,14 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    version = false,
     build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
+      "nvim-treesitter/nvim-treesitter-context",
     },
     config = function()
       require("nvim-treesitter.configs").setup({
-        sync_install = false,
-        ignore_install = { "javascript" },
+        sync_install = true,
         modules = {},
         highlight = {
           enable = true,
@@ -18,111 +16,32 @@ return {
         },
         indent = { enable = true },
         auto_install = true,
-        ensure_installed = {
-          "markdown",
-          "markdown_inline",
-          "yaml",
-          "diff",
-          "bash",
-          "c",
-          "html",
-          "javascript",
-          "json",
-          "lua",
-          "luadoc",
-          "luap",
-          "query",
-          "regex",
-          "vim",
-          "vimdoc",
-          "yaml",
-          "rust",
-          "go",
-          "gomod",
-          "gowork",
-          "gosum",
-          -- "swift",
-          "objc",
+        textobjects = {
+          enable = true,
+          select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+              ["af"] = { query = "@function.outer", desc = "around a function" },
+              ["if"] = { query = "@function.inner", desc = "inner part of a function" },
+            },
+            selection_modes = {
+              ["@function.outer"] = "v",
+            },
+            include_surrounding_whitespace = false,
+          },
+          move = {
+            enable = true,
+            set_jumps = true,
+            goto_previous_start = {
+              ["[f"] = { query = "@function.outer", desc = "Previous function" },
+            },
+            goto_next_start = {
+              ["]f"] = { query = "@function.outer", desc = "Next function" },
+            },
+          },
         },
-        -- incremental_selection = {
-        --   enable = true,
-        --   keymaps = {
-        --     init_selection = "<leader>vv",
-        --     node_incremental = "+",
-        --     scope_incremental = false,
-        --     node_decremental = "-",
-        --   },
-        -- },
-        -- textobjects = {
-        --   select = {
-        --     enable = true,
-        --     lookahead = true,
-        --
-        --     keymaps = {
-        --       -- You can use the capture groups defined in textobjects.scm
-        --       ["af"] = { query = "@function.outer", desc = "around a function" },
-        --       ["if"] = { query = "@function.inner", desc = "inner part of a function" },
-        --       ["ac"] = { query = "@class.outer", desc = "around a class" },
-        --       ["ic"] = { query = "@class.inner", desc = "inner part of a class" },
-        --       ["ai"] = { query = "@conditional.outer", desc = "around an if statement" },
-        --       ["ii"] = { query = "@conditional.inner", desc = "inner part of an if statement" },
-        --       ["al"] = { query = "@loop.outer", desc = "around a loop" },
-        --       ["il"] = { query = "@loop.inner", desc = "inner part of a loop" },
-        --       -- ["ap"] = { query = "@parameter.outer", desc = "around parameter" },
-        --       -- ["ip"] = { query = "@parameter.inner", desc = "inside a parameter" },
-        --     },
-        --     selection_modes = {
-        --       ["@parameter.outer"] = "v",   -- charwise
-        --       ["@parameter.inner"] = "v",   -- charwise
-        --       ["@function.outer"] = "v",    -- charwise
-        --       ["@conditional.outer"] = "V", -- linewise
-        --       ["@loop.outer"] = "V",        -- linewise
-        --       ["@class.outer"] = "<c-v>",   -- blockwise
-        --     },
-        --     include_surrounding_whitespace = false,
-        --   },
-        --   move = {
-        --     enable = true,
-        --     set_jumps = true, -- whether to set jumps in the jumplist
-        --     goto_previous_start = {
-        --       ["[f"] = { query = "@function.outer", desc = "Previous function" },
-        --       ["[p"] = { query = "@parameter.inner", desc = "Previous parameter" },
-        --       ["[c"] = { query = "@style_element", desc = "Previous style" },
-        --     },
-        --     goto_next_start = {
-        --       ["]f"] = { query = "@function.outer", desc = "Next function" },
-        --       ["]p"] = { query = "@parameter.inner", desc = "Next parameter" },
-        --     },
-        --   },
-        --   swap = {
-        --     enable = false,
-        --     swap_next = {
-        --       ["<leader>a"] = "@parameter.inner",
-        --     },
-        --     swap_previous = {
-        --       ["<leader>A"] = "@parameter.inner",
-        --     },
-        --   },
-        -- },
       })
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    opts = function()
-      local tsc = require("treesitter-context")
-      Snacks.toggle({
-        name = "Treesitter Context",
-        get = tsc.enabled,
-        set = function(state)
-          if state then
-            tsc.enable()
-          else
-            tsc.disable()
-          end
-        end,
-      }):map("<leader>ut")
-      return { mode = "cursor", max_lines = 3 }
     end,
   },
 }
