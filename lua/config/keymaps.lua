@@ -82,3 +82,45 @@ vim.keymap.set("n", "<leader>te", function()
     print("Toggled to: ORACLE_HOME=" .. (vim.env.ORACLE_HOME or "nil") .. " GOARCH=amd64 CGO_ENABLED=1")
   end
 end, { desc = "Toggle GOARCH and CGO_ENABLED (always set ORACLE_HOME)" })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(event)
+    -- Information
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = event.buf, desc = "Hover" })
+
+    -- Code actions
+    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { buffer = event.buf, desc = "Code Action" })
+    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = event.buf, desc = "Rename" })
+
+    -- Diagnostics
+    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = event.buf, desc = "Open Diagnostic" })
+    vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, { buffer = event.buf, desc = "Quickfix Diagnostics" })
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  desc = "Organize imports for Go files",
+  pattern = "*.go",
+  callback = function()
+    vim.inspect("Organize imports for Go files")
+    local params = vim.lsp.util.make_range_params(0, "utf-8")
+    vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, result, _)
+      if err or not result or vim.tbl_isempty(result) then
+        return
+      end
+      for _, action in pairs(result) do
+        if action.kind == "source.organizeImports" then
+          if action.command then
+            vim.lsp.buf.code_action({
+              apply = true,
+              context = { only = { "source.organizeImports" }, diagnostics = {} },
+            })
+          elseif action.edit then
+            vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
+          end
+          return
+        end
+      end
+    end)
+  end,
+})

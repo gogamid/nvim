@@ -1,79 +1,87 @@
--- LSP keymaps
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(event)
-    -- Information
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = event.buf, desc = "Hover" })
-
-    -- Code actions
-    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { buffer = event.buf, desc = "Code Action" })
-    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = event.buf, desc = "Rename" })
-
-    -- Diagnostics
-    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = event.buf, desc = "Open Diagnostic" })
-    vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, { buffer = event.buf, desc = "Quickfix Diagnostics" })
-  end,
-})
-
-vim.api.nvim_create_user_command("LspInfo", function()
-  local clients = vim.lsp.get_clients({ bufnr = 0 })
-  if #clients == 0 then
-    print("No LSP clients attached to current buffer")
-  else
-    for _, client in ipairs(clients) do
-      print("LSP: " .. client.name .. " (ID: " .. client.id .. ")")
-    end
-  end
-end, { desc = "Show LSP client info" })
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-  desc = "Organize imports for Go files",
-  pattern = "*.go",
-  callback = function()
-    vim.inspect("Organize imports for Go files")
-    local params = vim.lsp.util.make_range_params(0, "utf-8")
-    vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, result, _)
-      if err or not result or vim.tbl_isempty(result) then
-        return
-      end
-      for _, action in pairs(result) do
-        if action.kind == "source.organizeImports" then
-          if action.command then
-            vim.lsp.buf.code_action({
-              apply = true,
-              context = { only = { "source.organizeImports" }, diagnostics = {} },
-            })
-          elseif action.edit then
-            vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
-          end
-          return
-        end
-      end
-    end)
-  end,
-})
-
--- Better LSP UI
-vim.diagnostic.config({
-  -- virtual_lines = true,
-  virtual_text = true,
-  underline = true,
-  update_in_insert = false,
-  severity_sort = true,
-  float = {
-    border = "rounded",
-    source = true,
+local vue_language_server_path = vim.fn.stdpath("data")
+  .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+local vue_plugin = {
+  name = "@vue/typescript-plugin",
+  location = vue_language_server_path,
+  languages = { "vue" },
+  configNamespace = "typescript",
+}
+vim.lsp.config("vtsls", {
+  filetypes = {
+    "javascript",
+    "javascriptreact",
+    "javascript.jsx",
+    "typescript",
+    "typescriptreact",
+    "typescript.tsx",
+    "vue",
   },
-  signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = "󰅚 ",
-      [vim.diagnostic.severity.WARN] = "󰀪 ",
-      [vim.diagnostic.severity.INFO] = "󰋽 ",
-      [vim.diagnostic.severity.HINT] = "󰌶 ",
+  single_file_support = true,
+  settings = {
+    vtsls = {
+      tsserver = {
+        globalPlugins = {
+          vue_plugin,
+        },
+      },
     },
-    numhl = {
-      [vim.diagnostic.severity.ERROR] = "ErrorMsg",
-      [vim.diagnostic.severity.WARN] = "WarningMsg",
+  },
+})
+
+vim.lsp.config("gopls", {
+  settings = {
+    gopls = {
+      gofumpt = true,
+      buildFlags = { "-tags=manual_test" },
+      ["local"] = os.getenv("GO_LOCAL_PKG"),
+      staticcheck = true,
+      analyses = {
+        shadow = true,
+        unusedvariable = true,
+        nilness = true,
+        unusedwrite = true,
+        useany = true,
+        ST1003 = false,
+      },
+      hints = {
+        assignVariableTypes = false,
+        compositeLiteralFields = false,
+        compositeLiteralTypes = false,
+        constantValues = true,
+        functionTypeParameters = false,
+        parameterNames = false,
+        rangeVariableTypes = false,
+      },
+      codelenses = {
+        gc_details = false,
+        generate = true,
+        regenerate_cgo = true,
+        run_govulncheck = true,
+        test = true,
+        tidy = true,
+        upgrade_dependency = true,
+        vendor = true,
+      },
+      usePlaceholders = true,
+      completeUnimported = true,
+      directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
+      semanticTokens = false, -- overrides injections
+      diagnosticsTrigger = "Save",
     },
+  },
+})
+
+vim.lsp.config("protobuf_language_server", {
+  cmd = { "/Users/gamidli/go/bin/protobuf-language-server" },
+  filetypes = { "proto" },
+  root_markers = { ".git" },
+  single_file_support = true,
+  settings = {
+    -- ["additional-proto-dirs"] = [
+    -- path to additional protobuf directories
+    -- "vendor",
+    -- "third_party",
+    -- ]
   },
 })
 
@@ -113,7 +121,7 @@ vim.lsp.enable({
   -- "buck2",
   -- "buddy_ls",
   -- "buf_ls", -- for proto files
-  "bufls",
+  -- "bufls",
   -- "bzl",
   -- "c3_lsp",
   -- "cairo_ls",
@@ -304,6 +312,7 @@ vim.lsp.enable({
   -- "prolog_ls",
   -- "prosemd_lsp",
   -- "protols",
+  "protobuf_language_server",
   -- "psalm",
   -- "pug",
   -- "puppet",
@@ -441,3 +450,8 @@ vim.lsp.enable({
   -- "zk",
   -- "zls",
 })
+
+return {
+  "neovim/nvim-lspconfig", -- default configs for lsps
+  "mason-org/mason.nvim", -- package manager
+}

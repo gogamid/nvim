@@ -15,8 +15,9 @@ return {
     config = function()
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
-          "go",
           "markdown",
+          "go",
+          "lua",
         },
         ignore_install = {},
         sync_install = true,
