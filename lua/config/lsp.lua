@@ -112,8 +112,8 @@ vim.lsp.enable({
   -- "bsl_ls",
   -- "buck2",
   -- "buddy_ls",
-  "buf_ls", -- for proto files
-  -- "bufls",
+  -- "buf_ls", -- for proto files
+  "bufls",
   -- "bzl",
   -- "c3_lsp",
   -- "cairo_ls",
