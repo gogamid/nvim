@@ -88,42 +88,11 @@ local git_options = {
   },
 }
 
-local marks_options = {
-  actions = {
-    ["delete_mark"] = function(picker)
-      picker.preview:reset()
-      local currentMark = picker:current()
-      local label = currentMark and currentMark.label
-      if label and label == label:lower() then
-        vim.api.nvim_buf_del_mark(0, label)
-      elseif label then
-        vim.api.nvim_del_mark(label)
-      end
-      picker.list:set_selected()
-      picker.list:set_target()
-      picker:find()
-    end,
-  },
-  win = {
-    input = {
-      keys = {
-        ["<C-x>"] = {
-          "delete_mark",
-          desc = "Delete mark",
-          mode = { "n", "i" },
-        },
-      },
-    },
-  },
-  ["local"] = false,
-}
-
 local picker_options = {
   sources = {
     git_log = git_options,
     git_log_file = git_options,
     git_log_line = git_options,
-    marks = marks_options,
   },
   win = {
     input = {

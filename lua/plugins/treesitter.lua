@@ -4,10 +4,21 @@ return {
     build = ":TSUpdate",
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
-      "nvim-treesitter/nvim-treesitter-context",
+      {
+        "nvim-treesitter/nvim-treesitter-context",
+        opts = {
+          mode = "cursor",
+          max_lines = 3,
+        },
+      },
     },
     config = function()
       require("nvim-treesitter.configs").setup({
+        ensure_installed = {
+          "go",
+          "markdown",
+        },
+        ignore_install = {},
         sync_install = true,
         modules = {},
         highlight = {

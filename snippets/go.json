@@ -201,5 +201,36 @@
       "\treturn err",
       "}"
     ]
+  },
+  "toWhereInQuery": {
+    "prefix": "toWhereInQuery",
+    "body": [
+      "func toWhereInQuery[T int64 | string](fieldName, argName string, filterValues []T) (wawidb.SqlQuery, []sql.NamedArg) {",
+      "\tvar q strings.Builder",
+      "\tq.WriteString(fmt.Sprintf(\"%s IN (\", fieldName))",
+      "\tfor i := range len(filterValues) {",
+      "\t\tfmt.Fprintf(&q, \":%s_%d\", argName, i)",
+      "\t\tif i != len(filterValues)-1 {",
+      "\t\t\tq.WriteString(\", \")",
+      "\t\t}",
+      "\t}",
+      "\tq.WriteString(\")\")",
+      "",
+      "\targs := make([]sql.NamedArg, 0, len(filterValues))",
+      "\tfor i, value := range filterValues {",
+      "\t\targName := fmt.Sprintf(\"%s_%d\", argName, i)",
+      "\t\targs = append(args, sql.NamedArg{Name: argName, Value: value})",
+      "\t}",
+      "\treturn wawidb.SqlQuery(q.String()), args",
+      "}"
+    ]
+  },
+  "pointTo": {
+    "prefix": "pointTo",
+    "body": [
+      "func pointTo[element any](s element) *element {",
+      "\treturn &s",
+      "}"
+    ]
   }
 }
