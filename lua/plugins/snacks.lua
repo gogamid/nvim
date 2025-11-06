@@ -663,59 +663,6 @@ return {
       end,
       desc = "Themes",
     },
-    {
-      "<leader>st",
-      function()
-        Snacks.picker.lsp_symbols()
-      end,
-      desc = "LSP Symbols",
-    },
-    {
-      "<leader>sS",
-      function()
-        Snacks.picker.lsp_workspace_symbols()
-      end,
-      desc = "LSP Workspace Symbols",
-    },
-
-    -- LSP
-    {
-      "gd",
-      function()
-        Snacks.picker.lsp_definitions()
-      end,
-      desc = "Definitions",
-    },
-    {
-      "gD",
-      function()
-        Snacks.picker.lsp_declarations()
-      end,
-      desc = "Declarations",
-    },
-    {
-      "gr",
-      function()
-        Snacks.picker.lsp_references()
-      end,
-      nowait = true,
-      desc = "References",
-    },
-    {
-      "gi",
-      function()
-        Snacks.picker.lsp_implementations()
-      end,
-      desc = "Implementation",
-    },
-    {
-      "gt",
-      function()
-        Snacks.picker.lsp_type_definitions()
-      end,
-      desc = "Type Definition",
-    },
-
     -- Other
     {
       "<leader>bd",

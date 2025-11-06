@@ -83,6 +83,7 @@ vim.keymap.set("n", "<leader>te", function()
   end
 end, { desc = "Toggle GOARCH and CGO_ENABLED (always set ORACLE_HOME)" })
 
+--stylua: ignore
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(event)
     -- Information
@@ -95,6 +96,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- Diagnostics
     vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = event.buf, desc = "Open Diagnostic" })
     vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, { buffer = event.buf, desc = "Quickfix Diagnostics" })
+
+    -- Code actions
+    vim.keymap.set("n", "gd", function() Snacks.picker.lsp_definitions() end, { desc = "Definitions" })
+    vim.keymap.set("n", "gD", function() Snacks.picker.lsp_declarations() end, { desc = "Declarations" })
+    vim.keymap.set("n", "gr", function() Snacks.picker.lsp_references() end, { nowait = true, desc = "References" })
+    vim.keymap.set("n", "gi", function() Snacks.picker.lsp_implementations() end, { desc = "Implementation" })
+    vim.keymap.set("n", "gt", function() Snacks.picker.lsp_type_definitions() end, { desc = "Type Definition" })
   end,
 })
 
