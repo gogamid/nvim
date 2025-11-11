@@ -80,3 +80,32 @@ vim.api.nvim_create_autocmd("VimEnter", {
     end
   end,
 })
+
+---@param filetype? string
+local function checkForTreesitter(filetype)
+  if vim.o.diff then
+    return
+  end
+
+  if not filetype then
+    filetype = vim.bo.filetype
+  end
+  local win = vim.api.nvim_get_current_win()
+
+  local ok, hasParser = pcall(vim.treesitter.query.get, filetype, "folds")
+
+  if ok and hasParser then
+    vim.wo[win][0].foldmethod = "expr"
+    vim.wo[win][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  else
+    vim.wo[win][0].foldexpr = ""
+    vim.wo[win][0].foldtext = "v:lua.custom_foldtext()"
+  end
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Origami: Use Treesitter as folding provider if there is a parser for it",
+  callback = function(ctx)
+    checkForTreesitter(ctx.match)
+  end,
+})
