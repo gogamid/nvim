@@ -80,96 +80,106 @@ local function filetype()
 end
 
 return {
-  "nvim-lualine/lualine.nvim",
-  opts = {
-    options = {
-      theme = "everforest", -- Use your current colorscheme's theme or set a specific one
-      globalstatus = true, -- Use a single statusline for all windows
-      icons_enabled = true,
-      component_separators = { left = "", right = "" },
-      section_separators = { left = "", right = "" },
-      disabled_filetypes = {
-        statusline = {},
-        winbar = {},
-      },
-      ignore_focus = {},
-      always_divide_middle = true,
-      always_show_tabline = true,
-      refresh = {
-        statusline = 1000,
-        tabline = 1000,
-        winbar = 1000,
-        refresh_time = 16, -- ~60fps
-        events = {
-          "WinEnter",
-          "BufEnter",
-          "BufWritePost",
-          "SessionLoadPost",
-          "FileChangedShellPost",
-          "VimResized",
-          "Filetype",
-          "CursorMoved",
-          "CursorMovedI",
-          "ModeChanged",
-          "User OverseerTaskUpdate", -- Custom event for overseer updates
+  {
+    "nvim-lualine/lualine.nvim",
+    opts = {
+      options = {
+        theme = "everforest", -- Use your current colorscheme's theme or set a specific one
+        globalstatus = true, -- Use a single statusline for all windows
+        icons_enabled = true,
+        component_separators = { left = "", right = "" },
+        section_separators = { left = "", right = "" },
+        disabled_filetypes = {
+          statusline = {},
+          winbar = {},
+        },
+        ignore_focus = {},
+        always_divide_middle = true,
+        always_show_tabline = true,
+        refresh = {
+          statusline = 1000,
+          tabline = 1000,
+          winbar = 1000,
+          refresh_time = 16, -- ~60fps
+          events = {
+            "WinEnter",
+            "BufEnter",
+            "BufWritePost",
+            "SessionLoadPost",
+            "FileChangedShellPost",
+            "VimResized",
+            "Filetype",
+            "CursorMoved",
+            "CursorMovedI",
+            "ModeChanged",
+            "User OverseerTaskUpdate", -- Custom event for overseer updates
+          },
         },
       },
-    },
-    sections = {
-      lualine_a = {},
-      lualine_b = {},
-      lualine_c = {
-        filetype,
-        formatter_status,
-        lsp_status,
-        "%=",
-        {
-          "filename",
-          path = 1,
-          fmt = function(str)
-            local max = 40
-            if #str > max then
-              return "..." .. str:sub(-max)
-            else
-              return str
-            end
-          end,
+      sections = {
+        lualine_a = {},
+        lualine_b = {},
+        lualine_c = {
+          filetype,
+          formatter_status,
+          lsp_status,
+          "%=",
+          -- {
+          --   "filename",
+          --   path = 1,
+          --   fmt = function(str)
+          --     local max = 40
+          --     if #str > max then
+          --       return "..." .. str:sub(-max)
+          --     else
+          --       return str
+          --     end
+          --   end,
+          -- },
         },
+        -- "location"
+        -- - `branch` (git branch)
+        -- - `buffers` (shows currently available buffers)
+        -- - `diagnostics` (diagnostics count from your preferred source)
+        -- - `diff` (git diff status)
+        -- - `encoding` (file encoding)
+        -- - `fileformat` (file format)
+        -- - `filename`
+        -- - `filesize`
+        -- - `filetype`
+        -- - `hostname`
+        -- - `location` (location in file in line:column format)
+        -- - `mode` (vim mode)
+        -- - `progress` (%progress in file)
+        -- - `searchcount` (number of search matches when hlsearch is active)
+        -- - `selectioncount` (number of selected characters or lines)
+        -- - `tabs` (shows currently available tabs)
+        -- - `windows` (shows currently available windows)
+        -- - `lsp_status` (shows active LSPs in the current buffer and a progress spinner)
+        lualine_x = { supermaven, "overseer", overseer_status, "diagnostics", "diff", "progress" },
+        lualine_y = {},
+        lualine_z = {},
       },
-      -- "location"
-      -- - `branch` (git branch)
-      -- - `buffers` (shows currently available buffers)
-      -- - `diagnostics` (diagnostics count from your preferred source)
-      -- - `diff` (git diff status)
-      -- - `encoding` (file encoding)
-      -- - `fileformat` (file format)
-      -- - `filename`
-      -- - `filesize`
-      -- - `filetype`
-      -- - `hostname`
-      -- - `location` (location in file in line:column format)
-      -- - `mode` (vim mode)
-      -- - `progress` (%progress in file)
-      -- - `searchcount` (number of search matches when hlsearch is active)
-      -- - `selectioncount` (number of selected characters or lines)
-      -- - `tabs` (shows currently available tabs)
-      -- - `windows` (shows currently available windows)
-      -- - `lsp_status` (shows active LSPs in the current buffer and a progress spinner)
-      lualine_x = { supermaven, "overseer", overseer_status, "diagnostics", "diff", "progress" },
-      lualine_y = {},
-      lualine_z = {},
+      inactive_sections = {
+        lualine_a = {},
+        lualine_b = {},
+        -- lualine_c = { "filename" },
+        lualine_x = { "location" },
+        lualine_y = {},
+        lualine_z = {},
+      },
+      tabline = {},
+      winbar = {},
+      inactive_winbar = {},
+      extensions = {},
     },
-    inactive_sections = {
-      lualine_a = {},
-      lualine_b = {},
-      lualine_c = { "filename" },
-      lualine_x = { "location" },
-      lualine_y = {},
-      lualine_z = {},
-    },
-    tabline = {},
-    winbar = {},
-    inactive_winbar = {},
-    extensions = {},
+  },
+  {
+    "b0o/incline.nvim",
+    config = function()
+      require("incline").setup()
+    end,
+    -- Optional: Lazy load Incline
+    event = "VeryLazy",
   },
 }

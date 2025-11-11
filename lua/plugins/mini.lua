@@ -108,7 +108,6 @@ return {
   },
   {
     "nvim-mini/mini.hipatterns",
-    enabled = false,
     opts = {
       delay = {
         text_change = 100,
