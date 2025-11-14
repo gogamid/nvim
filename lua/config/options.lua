@@ -65,9 +65,14 @@ function _G.custom_foldtext()
   return string.format("%s%s ... (%d lines)", indent, combined, line_count)
 end
 
--- disable vim's auto-folding
-vim.opt.foldlevel = 99
-vim.opt.foldlevelstart = 99
+vim.o.foldlevel   = 10       -- Fold nothing by default; set to 0 or 1 to fold
+vim.o.foldmethod  = 'indent' -- Fold based on indent level
+vim.o.foldnestmax = 10       -- Limit number of fold levels
+vim.opt.foldtext = "v:lua.custom_foldtext()"
+
+-- -- disable vim's auto-folding
+-- vim.opt.foldlevel = 99
+-- vim.opt.foldlevelstart = 99
 
 vim.opt.fillchars = {
   eob = " ",

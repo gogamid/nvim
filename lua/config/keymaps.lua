@@ -85,17 +85,19 @@ end, { desc = "Toggle GOARCH and CGO_ENABLED (always set ORACLE_HOME)" })
 
 --stylua: ignore
 vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(event)
+  callback = function(args)
+
+    vim.lsp.inlay_hint.enable(true)
     -- Information
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = event.buf, desc = "Hover" })
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = args.buf, desc = "Hover" })
 
     -- Code actions
-    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { buffer = event.buf, desc = "Code Action" })
-    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = event.buf, desc = "Rename" })
+    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { buffer = args.buf, desc = "Code Action" })
+    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = args.buf, desc = "Rename" })
 
     -- Diagnostics
-    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = event.buf, desc = "Open Diagnostic" })
-    vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, { buffer = event.buf, desc = "Quickfix Diagnostics" })
+    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = args.buf, desc = "Open Diagnostic" })
+    vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, { buffer = args.buf, desc = "Quickfix Diagnostics" })
 
     -- Code actions
     vim.keymap.set("n", "gd", function() Snacks.picker.lsp_definitions() end, { desc = "Definitions" })
@@ -103,6 +105,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "gr", function() Snacks.picker.lsp_references() end, { nowait = true, desc = "References" })
     vim.keymap.set("n", "gi", function() Snacks.picker.lsp_implementations() end, { desc = "Implementation" })
     vim.keymap.set("n", "gt", function() Snacks.picker.lsp_type_definitions() end, { desc = "Type Definition" })
+
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and vim.lsp.inlay_hint then
+      local lsp_to_enable = { "gopls", "lua_ls", "other_lsp2" }
+      for _, lsp_name in ipairs(lsp_to_enable) do
+        if client.name:find(lsp_name) then
+          vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+          break
+        end
+      end
+    end
   end,
 })
 
