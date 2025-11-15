@@ -187,6 +187,7 @@ vim.lsp.config("gopls", {
 --   },
 -- })
 
+-- used when buf lsp is buggy
 vim.lsp.config("protobuf_language_server", {
   cmd = { "/Users/gamidli/go/bin/protobuf-language-server" },
   filetypes = { "proto" },
@@ -236,7 +237,7 @@ vim.lsp.enable({
   -- "bsl_ls",
   -- "buck2",
   -- "buddy_ls",
-  -- "buf_ls", -- for proto files
+  "buf_ls", -- for proto files
   -- "bufls",
   -- "bzl",
   -- "c3_lsp",
@@ -428,7 +429,7 @@ vim.lsp.enable({
   -- "prolog_ls",
   -- "prosemd_lsp",
   -- "protols",
-  "protobuf_language_server",
+  -- "protobuf_language_server",
   -- "psalm",
   -- "pug",
   -- "puppet",
