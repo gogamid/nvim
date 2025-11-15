@@ -106,16 +106,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "gi", function() Snacks.picker.lsp_implementations() end, { desc = "Implementation" })
     vim.keymap.set("n", "gt", function() Snacks.picker.lsp_type_definitions() end, { desc = "Type Definition" })
 
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if client and vim.lsp.inlay_hint then
-      local lsp_to_enable = { "gopls", "lua_ls", "other_lsp2" }
-      for _, lsp_name in ipairs(lsp_to_enable) do
-        if client.name:find(lsp_name) then
-          vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
-          break
-        end
-      end
-    end
   end,
 })
 
