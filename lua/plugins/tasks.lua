@@ -222,15 +222,12 @@ return {
           unknown = "",
         },
       })
-      vim.api.nvim_create_autocmd("BufWinEnter", {
-        pattern = { "*neotest*" },
-        command = "normal! G",
-      })
     end,
     keys = {
       {
         "<leader>tf",
         function()
+          require("neotest").output_panel.clear()
           require("neotest").run.run(vim.fn.expand("%"))
         end,
         desc = "[t]est run [f]ile",
@@ -238,6 +235,7 @@ return {
       {
         "<leader>tA",
         function()
+          require("neotest").output_panel.clear()
           require("neotest").run.run(vim.uv.cwd())
         end,
         desc = "[t]est [A]ll files",
@@ -245,6 +243,7 @@ return {
       {
         "<leader>tn",
         function()
+          require("neotest").output_panel.clear()
           require("neotest").run.run()
         end,
         desc = "[t]est [n]earest",
@@ -252,6 +251,7 @@ return {
       {
         "<leader>tl",
         function()
+          require("neotest").output_panel.clear()
           require("neotest").run.run_last()
         end,
         desc = "[t]est [l]ast",
@@ -273,7 +273,19 @@ return {
       {
         "<leader>to",
         function()
-          require("neotest").output_panel.toggle()
+          local neotest = require("neotest")
+          local op = neotest.output_panel
+          if vim.api.nvim_get_current_buf() == op.buffer() then
+            return op.close()
+          end
+          op.open()
+          for _, win in ipairs(vim.api.nvim_list_wins()) do
+            if vim.api.nvim_win_get_buf(win) == op.buffer() then
+              vim.api.nvim_set_current_win(win)
+              vim.cmd("normal! gg")
+              return
+            end
+          end
         end,
         desc = "[t]est [o]utput panel",
       },
