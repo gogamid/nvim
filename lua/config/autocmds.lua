@@ -218,7 +218,7 @@ end
 
 local function get_translation_value(key, translations)
   if not key or key == "" then
-    return "none"
+    return ""
   end
 
   if not translations then
@@ -229,7 +229,7 @@ local function get_translation_value(key, translations)
   if value and type(value) == "string" then
     return value
   else
-    return "none"
+    return ""
   end
 end
 
