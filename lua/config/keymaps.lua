@@ -6,7 +6,7 @@ vim.keymap.set({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up",
 
 -- Normal mode mappings
 vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
-vim.keymap.set("n", "<leader>qq", "<cmd>wa | qa<cr>", { desc = "Save All and Quit All" })
+vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Save All and Quit All" })
 
 -- Center screen when jumping
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
