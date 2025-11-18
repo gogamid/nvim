@@ -55,17 +55,5 @@ return {
         },
       })
     end,
-    keys = {
-      -- { "<leader>uI", ":InspectTree<CR>", desc = "Inspect Tree" },
-      -- { "<leader>uE", ":EditQuery<CR>", desc = "Edit Query" },
-      {
-        "<leader>uI",
-        function()
-          vim.cmd("InspectTree")
-          vim.cmd("EditQuery")
-        end,
-        desc = "Inspect and Edit Query",
-      },
-    },
   },
 }
