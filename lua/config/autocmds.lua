@@ -186,11 +186,56 @@ local query_str = [[
   (#any-of? @ident "__" "m")
 )
 ]]
-local highlight = "NonText"
+local highlight = "Conceal"
+
+local function find_translation_file()
+  local cwd = vim.fn.getcwd()
+  local json_file = cwd .. "/src/i18n/en_DEV.json"
+
+  if vim.fn.filereadable(json_file) == 1 then
+    return json_file
+  end
+
+  return nil
+end
+
+local function load_translations(json_file)
+  if not json_file then
+    return nil
+  end
+
+  local ok, result = pcall(function()
+    local content = table.concat(vim.fn.readfile(json_file), "\n")
+    return vim.json.decode(content)
+  end)
+
+  if ok then
+    return result
+  else
+    return nil
+  end
+end
+
+local function get_translation_value(key, translations)
+  if not key or key == "" then
+    return "none"
+  end
+
+  if not translations then
+    return "err"
+  end
+
+  local value = translations[key]
+  if value and type(value) == "string" then
+    return value
+  else
+    return "none"
+  end
+end
 
 local function on_win(_, win, buf, top, bottom)
   local filetype = vim.bo[buf].filetype
-  if filetype ~= "typescript" then
+  if filetype ~= "typescript" and filetype ~= "typescriptreact" then
     return false
   end
 
@@ -206,6 +251,10 @@ local function on_win(_, win, buf, top, bottom)
     return false
   end
 
+  -- Load translations once per window render
+  local json_file = find_translation_file()
+  local translations = load_translations(json_file)
+
   local query = vim.treesitter.query.parse(filetype, query_str)
   for _, match, _ in query:iter_matches(tree:root(), buf, top, bottom + 1) do
     for id, nodes in pairs(match) do
@@ -215,9 +264,11 @@ local function on_win(_, win, buf, top, bottom)
         local key_text = vim.treesitter.get_node_text(key_node, buf)
         local start_row, start_col, end_row, end_col = key_node:range()
 
-        -- Set virtual text showing "value" after the key
-        vim.api.nvim_buf_set_extmark(buf, ns, end_row, end_col, {
-          virt_text = { { " → value", highlight } },
+        local value = get_translation_value(key_text, translations)
+
+        -- Set virtual text showing actual value after the key
+        vim.api.nvim_buf_set_extmark(buf, ns, end_row, end_col + 1, {
+          virt_text = { { " → " .. value, highlight } },
           virt_text_pos = "inline",
         })
       end
