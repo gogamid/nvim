@@ -174,3 +174,56 @@ vim.api.nvim_create_autocmd("BufEnter", {
   desc = "Find root and change current directory",
   -- once = true,
 })
+
+local ns = vim.api.nvim_create_namespace("translation key values")
+local query_str = [[
+(
+  (call_expression
+    function: (identifier) @ident
+    arguments: (arguments
+      (string
+        (string_fragment) @translation.key)))
+  (#any-of? @ident "__" "m")
+)
+]]
+local highlight = "NonText"
+
+local function on_win(_, win, buf, top, bottom)
+  local filetype = vim.bo[buf].filetype
+  if filetype ~= "typescript" then
+    return false
+  end
+
+  vim.api.nvim_buf_clear_namespace(buf, ns, top, bottom)
+
+  local parser = vim.treesitter.get_parser(buf, filetype)
+  if not parser then
+    return false
+  end
+  local trees = parser:parse()
+  local tree = trees and trees[1]
+  if not tree then
+    return false
+  end
+
+  local query = vim.treesitter.query.parse(filetype, query_str)
+  for _, match, _ in query:iter_matches(tree:root(), buf, top, bottom + 1) do
+    for id, nodes in pairs(match) do
+      local capture_name = query.captures[id]
+      if capture_name == "translation.key" then
+        local key_node = nodes[1]
+        local key_text = vim.treesitter.get_node_text(key_node, buf)
+        local start_row, start_col, end_row, end_col = key_node:range()
+
+        -- Set virtual text showing "value" after the key
+        vim.api.nvim_buf_set_extmark(buf, ns, end_row, end_col, {
+          virt_text = { { " → value", highlight } },
+          virt_text_pos = "inline",
+        })
+      end
+    end
+  end
+  return true
+end
+
+vim.api.nvim_set_decoration_provider(ns, { on_win = on_win })
