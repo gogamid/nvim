@@ -159,3 +159,18 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.opt_local.conceallevel = 0
   end,
 })
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = vim.api.nvim_create_augroup("setup_auto_root", {}),
+  callback = function(data)
+    vim.o.autochdir = false
+    local root = vim.fs.root(data.buf, { "service.yaml", ".git" })
+    if root == nil or root == vim.fn.getcwd() then
+      return
+    end
+    vim.fn.chdir(root)
+    vim.api.nvim_echo({ { "chdir to " .. root, "WarningMsg" } }, true, {})
+  end,
+  desc = "Find root and change current directory",
+  -- once = true,
+})
