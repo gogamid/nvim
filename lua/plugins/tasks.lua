@@ -29,19 +29,17 @@ return {
         },
       },
       component_aliases = {
-        default_neotest = {
-          "on_output_summarize",
-          "on_exit_set_status",
-          "on_complete_notify",
-          "on_complete_dispose",
-        },
         default = {
           { "open_output", direction = "dock", on_complete = "failure", on_start = "never", focus = false },
           { "display_duration", detail_level = 1 },
           "on_output_summarize",
           "on_exit_set_status",
-          "on_complete_notify",
+          { "on_complete_notify", system = "unfocused" },
+        },
+        default_neotest = {
           "unique",
+          { "on_complete_notify", system = "unfocused", on_change = true },
+          "default",
         },
       },
     },
@@ -193,7 +191,10 @@ return {
       "nvim-neotest/nvim-nio",
       "antoinemadec/FixCursorHold.nvim",
 
-      { "fredrikaverpil/neotest-golang", version = "2.4.0" },
+      {
+        "fredrikaverpil/neotest-golang",
+        version = "2.4.0", -- bad for monorepo with bunch of duplicate tests
+      },
       "marilari88/neotest-vitest",
     },
     config = function()
@@ -203,8 +204,10 @@ return {
         },
         adapters = {
           require("neotest-golang")({
-            -- "-timeout=60s",
+            runner = "gotestsum",
             go_test_args = { "-v", "-count=1", "-tags=manual_test" },
+            gotestsum_args = { "--format=testname" }, -- NOTE: can also be a function
+            -- gotestsum_args = { "--format=testdox" }, -- NOTE: can also be a function
           }),
           require("neotest-vitest"),
         },
