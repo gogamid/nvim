@@ -235,13 +235,21 @@ end
 
 local function on_win(_, win, buf, top, bottom)
   local filetype = vim.bo[buf].filetype
-  if filetype ~= "typescript" and filetype ~= "typescriptreact" then
+  if filetype ~= "typescript" and filetype ~= "typescriptreact" and filetype ~= "vue" then
     return false
   end
 
   vim.api.nvim_buf_clear_namespace(buf, ns, top, bottom)
 
-  local parser = vim.treesitter.get_parser(buf, filetype)
+  -- For Vue files, get the injected TypeScript parser
+  local parser
+  if filetype == "vue" then
+    local lang_parser = vim.treesitter.get_parser(buf, "typescript")
+    parser = lang_parser and lang_parser:children().typescript or lang_parser
+  else
+    parser = vim.treesitter.get_parser(buf, filetype)
+  end
+  
   if not parser then
     return false
   end
@@ -255,7 +263,8 @@ local function on_win(_, win, buf, top, bottom)
   local json_file = find_translation_file()
   local translations = load_translations(json_file)
 
-  local query = vim.treesitter.query.parse(filetype, query_str)
+  -- Always use TypeScript query since that's where translation calls exist
+  local query = vim.treesitter.query.parse("typescript", query_str)
   for _, match, _ in query:iter_matches(tree:root(), buf, top, bottom + 1) do
     for id, nodes in pairs(match) do
       local capture_name = query.captures[id]
