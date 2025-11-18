@@ -127,7 +127,7 @@ local picker_options = {
         -- ["<c-k>"] = false,
         -- ["<c-n>"] = false,
         -- ["<c-p>"] = false,
-        ["<c-q>"] = false,
+        -- ["<c-q>"] = false,
         -- ["<c-s>"] = false,
         ["<c-t>"] = false,
         -- ["<c-u>"] = false,
@@ -181,6 +181,8 @@ local picker_options = {
         ["<c-d>"] = { "list_scroll_down", mode = { "i", "n" } },
         ["<c-b>"] = { "preview_scroll_up", mode = { "i", "n" } },
         ["<c-f>"] = { "preview_scroll_down", mode = { "i", "n" } },
+
+        -- ["<c-q>"] = quickfix
 
         ["<c-i>"] = { "inspect", mode = { "n", "i" } },
       },
