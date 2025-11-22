@@ -78,15 +78,6 @@ local function on_win(_, win, buf, top, bottom)
 
   vim.api.nvim_buf_clear_namespace(buf, ns, top, bottom)
 
-  -- For Vue files, get the injected TypeScript parser
-  -- local parser
-  -- if filetype == "vue" then
-  --   local lang_parser = vim.treesitter.get_parser(buf, "typescript")
-  --   parser = lang_parser and lang_parser:children().typescript or lang_parser
-  -- else
-  --   parser = vim.treesitter.get_parser(buf, filetype)
-  -- end
-
   local parser = vim.treesitter.get_parser(buf, lang_by_ft[filetype])
   if not parser then
     return false
