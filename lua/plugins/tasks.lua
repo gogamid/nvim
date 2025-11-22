@@ -30,14 +30,14 @@ return {
       },
       component_aliases = {
         default = {
-          { "open_output", direction = "dock", on_complete = "failure", on_start = "never", focus = false },
+          { "open_output", direction = "dock", on_complete = "never", on_start = "never", focus = false },
           { "display_duration", detail_level = 1 },
           "on_output_summarize",
           "on_exit_set_status",
           { "on_complete_notify", system = "unfocused" },
+          "unique",
         },
         default_neotest = {
-          "unique",
           { "on_complete_notify", system = "unfocused", on_change = true },
           "default",
         },

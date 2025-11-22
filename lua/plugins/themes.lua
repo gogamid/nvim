@@ -38,6 +38,9 @@ return {
         vim.cmd("highlight Normal ctermbg=none")
         vim.cmd("highlight NonText ctermbg=none")
         vim.cmd("highlight EndOfBuffer guibg=none ctermbg=none")
+
+        vim.api.nvim_set_hl(0, "LspCodeLens", { link = "Conceal" })
+        vim.api.nvim_set_hl(0, "LspCodeLensSeparator", { link = "Conceal" })
       end,
       set_light_mode = function()
         -- vim.cmd("colorscheme catppuccin-latte")

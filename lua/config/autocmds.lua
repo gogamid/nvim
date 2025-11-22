@@ -137,6 +137,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.fn.getcwd():find(vim.fn.expand("$NEXUS_REPO"), 1, true) == 1 then
       require("modules.pb_snips").compute_and_add_alias_import_snippets()
+      require("modules.translations").setup()
     end
   end,
 })
@@ -164,126 +165,21 @@ vim.api.nvim_create_autocmd("BufEnter", {
   group = vim.api.nvim_create_augroup("setup_auto_root", {}),
   callback = function(data)
     vim.o.autochdir = false
-    local root = vim.fs.root(data.buf, { "service.yaml", ".git" })
+    local root = vim.fs.root(data.buf, { "Dockerfile", "Buildfile.yaml", "service.yaml", "Makefile", ".git" })
     if root == nil or root == vim.fn.getcwd() then
       return
     end
     vim.fn.chdir(root)
-    vim.api.nvim_echo({ { "chdir to " .. root, "WarningMsg" } }, true, {})
+    vim.api.nvim_echo({ { "chdir to " .. root, "Conceal" } }, true, {})
   end,
   desc = "Find root and change current directory",
   -- once = true,
 })
 
-local ns = vim.api.nvim_create_namespace("translation key values")
-local query_str = [[
-(
-  (call_expression
-    function: (identifier) @ident
-    arguments: (arguments
-      (string
-        (string_fragment) @translation.key)))
-  (#any-of? @ident "__" "m")
-)
-]]
-local highlight = "Conceal"
-
-local function find_translation_file()
-  local cwd = vim.fn.getcwd()
-  local json_file = cwd .. "/src/i18n/en_DEV.json"
-
-  if vim.fn.filereadable(json_file) == 1 then
-    return json_file
-  end
-
-  return nil
-end
-
-local function load_translations(json_file)
-  if not json_file then
-    return nil
-  end
-
-  local ok, result = pcall(function()
-    local content = table.concat(vim.fn.readfile(json_file), "\n")
-    return vim.json.decode(content)
-  end)
-
-  if ok then
-    return result
-  else
-    return nil
-  end
-end
-
-local function get_translation_value(key, translations)
-  if not key or key == "" then
-    return ""
-  end
-
-  if not translations then
-    return "err"
-  end
-
-  local value = translations[key]
-  if value and type(value) == "string" then
-    return value
-  else
-    return ""
-  end
-end
-
-local function on_win(_, win, buf, top, bottom)
-  local filetype = vim.bo[buf].filetype
-  if filetype ~= "typescript" and filetype ~= "typescriptreact" and filetype ~= "vue" then
-    return false
-  end
-
-  vim.api.nvim_buf_clear_namespace(buf, ns, top, bottom)
-
-  -- For Vue files, get the injected TypeScript parser
-  local parser
-  if filetype == "vue" then
-    local lang_parser = vim.treesitter.get_parser(buf, "typescript")
-    parser = lang_parser and lang_parser:children().typescript or lang_parser
-  else
-    parser = vim.treesitter.get_parser(buf, filetype)
-  end
-  
-  if not parser then
-    return false
-  end
-  local trees = parser:parse()
-  local tree = trees and trees[1]
-  if not tree then
-    return false
-  end
-
-  -- Load translations once per window render
-  local json_file = find_translation_file()
-  local translations = load_translations(json_file)
-
-  -- Always use TypeScript query since that's where translation calls exist
-  local query = vim.treesitter.query.parse("typescript", query_str)
-  for _, match, _ in query:iter_matches(tree:root(), buf, top, bottom + 1) do
-    for id, nodes in pairs(match) do
-      local capture_name = query.captures[id]
-      if capture_name == "translation.key" then
-        local key_node = nodes[1]
-        local key_text = vim.treesitter.get_node_text(key_node, buf)
-        local start_row, start_col, end_row, end_col = key_node:range()
-
-        local value = get_translation_value(key_text, translations)
-
-        -- Set virtual text showing actual value after the key
-        vim.api.nvim_buf_set_extmark(buf, ns, end_row, end_col + 1, {
-          virt_text = { { " → " .. value, highlight } },
-          virt_text_pos = "inline",
-        })
-      end
-    end
-  end
-  return true
-end
-
-vim.api.nvim_set_decoration_provider(ns, { on_win = on_win })
+-- Show codelenses on LSP client attach
+vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+  pattern = { "*.go", "*.lua" },
+  callback = function()
+    vim.lsp.codelens.refresh()
+  end,
+})

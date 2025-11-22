@@ -148,7 +148,7 @@ local picker_options = {
         ["gg"] = false,
         ["j"] = false,
         ["k"] = false,
-        ["q"] = false,
+        -- ["q"] = true,
 
         -- used keys
 

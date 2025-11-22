@@ -88,12 +88,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
 
     vim.lsp.inlay_hint.enable(true)
+
     -- Information
     vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = args.buf, desc = "Hover" })
 
     -- Code actions
     vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { buffer = args.buf, desc = "Code Action" })
     vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = args.buf, desc = "Rename" })
+    vim.keymap.set("n", '<leader>cl', vim.lsp.codelens.run, { buffer = args.buf, desc = "CodeLens" })
 
     -- Diagnostics
     vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = args.buf, desc = "Open Diagnostic" })
