@@ -83,35 +83,54 @@ local function on_win(_, win, buf, top, bottom)
     return false
   end
 
-  local trees = parser:parse()
-  local tree = trees and trees[1]
-  if not tree then
+  local parsed = parser:parse({ top, bottom + 1 })
+  if not parsed then
     return false
   end
 
   -- Load translations once per window render, todo: maybe autocommand when we open buffer?
-  local json_file = vim.fn.findfile("en_DEV.json")
-  local translations = load_translations(json_file)
+  local translations = load_translations(vim.fn.findfile("en_DEV.json"))
 
   local query = vim.treesitter.query.parse(lang_by_ft[filetype], query_by_ft[filetype])
-  for _, match, _ in query:iter_matches(tree:root(), buf, top, bottom + 1) do
-    for id, nodes in pairs(match) do
-      local capture_name = query.captures[id]
-      if capture_name == "translation.key" then
-        local key_node = nodes[1]
-        local key_text = vim.treesitter.get_node_text(key_node, buf)
-        local start_row, start_col, end_row, end_col = key_node:range()
 
-        local value = get_translation_value(key_text, translations)
+  for _, node in pairs(parsed) do
+    for _, match, _ in query:iter_matches(node:root(), buf, top, bottom + 1) do
+      for id, nodes in pairs(match) do
+        local capture_name = query.captures[id]
+        if capture_name == "translation.key" then
+          local key_node = nodes[1]
+          local key_text = vim.treesitter.get_node_text(key_node, buf)
+          local start_row, start_col, end_row, end_col = key_node:range()
 
-        -- Set virtual text showing actual value after the key
-        vim.api.nvim_buf_set_extmark(buf, ns, end_row, end_col + 1, {
-          virt_text = { { " → " .. value, highlight } },
-          virt_text_pos = "inline",
-        })
+          local value = get_translation_value(key_text, translations)
+
+          vim.api.nvim_buf_set_extmark(buf, ns, end_row, end_col + 1, {
+            virt_text = { { " → " .. value, highlight } },
+            virt_text_pos = "inline",
+          })
+        end
       end
     end
   end
+
+  -- for _, match, _ in query:iter_matches(tree:root(), buf, top, bottom + 1) do
+  --   for id, nodes in pairs(match) do
+  --     local capture_name = query.captures[id]
+  --     if capture_name == "translation.key" then
+  --       local key_node = nodes[1]
+  --       local key_text = vim.treesitter.get_node_text(key_node, buf)
+  --       local start_row, start_col, end_row, end_col = key_node:range()
+  --
+  --       local value = get_translation_value(key_text, translations)
+  --
+  --       -- Set virtual text showing actual value after the key
+  --       vim.api.nvim_buf_set_extmark(buf, ns, end_row, end_col + 1, {
+  --         virt_text = { { " → " .. value, highlight } },
+  --         virt_text_pos = "inline",
+  --       })
+  --     end
+  --   end
+  -- end
   return true
 end
 
