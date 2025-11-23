@@ -2,41 +2,19 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("ig_" .. name, { clear = true })
 end
 
--- ---@param filetype? string
--- local function checkForTreesitter(filetype)
---   if vim.o.diff then
---     return
---   end
---
---   if not filetype then
---     filetype = vim.bo.filetype
---   end
---   local win = vim.api.nvim_get_current_win()
---
---   local ok, hasParser = pcall(vim.treesitter.query.get, filetype, "folds")
---
---   if ok and hasParser then
---     vim.wo[win][0].foldmethod = "expr"
---     vim.wo[win][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
---   else
---     vim.wo[win][0].foldexpr = ""
---     vim.wo[win][0].foldtext = "v:lua.custom_foldtext()"
---   end
--- end
---
--- vim.api.nvim_create_autocmd("FileType", {
---   desc = "Enable treesitter folding else fallback to indent folding",
---   group = augroup("folding"),
---   callback = function(ctx)
---     checkForTreesitter(ctx.match)
---   end,
--- })
+-- Buf autocommands in order BufReadPost, BufEnter, BufWritePre
 
-vim.api.nvim_create_autocmd("TextYankPost", {
-  desc = "Highlight yanked text",
-  group = augroup("highlight_yank"),
-  callback = function()
-    vim.hl.on_yank()
+vim.api.nvim_create_autocmd("BufReadPost", {
+  desc = "Change current directory to buffer's root",
+  group = vim.api.nvim_create_augroup("setup_auto_root", {}),
+  callback = function(data)
+    vim.o.autochdir = false
+    local root = vim.fs.root(data.buf, { "Dockerfile", "Buildfile.yaml", "service.yaml", "Makefile", ".git" })
+    if root == nil or root == vim.fn.getcwd() then
+      return
+    end
+    vim.fn.chdir(root)
+    vim.api.nvim_echo({ { "chdir to " .. root, "Conceal" } }, true, {})
   end,
 })
 
@@ -52,13 +30,23 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
-vim.api.nvim_create_autocmd("VimResized", {
-  desc = "Auto resize splits when window is resized",
-  group = augroup("auto_resize"),
+local workspace = vim.fn.expand("$NEXUS_REPO")
+vim.api.nvim_create_autocmd("BufEnter", {
+  desc = "Add pb import aliases on nexus repo",
+  group = augroup("add_pb_import_aliases"),
+  pattern = workspace .. "**",
   callback = function()
-    local current_tab = vim.fn.tabpagenr()
-    vim.cmd("tabdo wincmd =")
-    vim.cmd("tabnext " .. current_tab)
+    require("modules.translations").setup()
+    require("modules.pb_snips").compute_and_add_alias_import_snippets()
+  end,
+  once = true,
+})
+
+vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+  desc = "Refresh codelenses",
+  pattern = { "*.go", "*.lua" },
+  callback = function()
+    vim.lsp.codelens.refresh()
   end,
 })
 
@@ -71,6 +59,54 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
     end
     local file = vim.uv.fs_realpath(event.match) or event.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+  end,
+})
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+  desc = "Highlight yanked text",
+  group = augroup("highlight_yank"),
+  callback = function()
+    vim.hl.on_yank()
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimResized", {
+  desc = "Auto resize splits when window is resized",
+  group = augroup("auto_resize"),
+  callback = function()
+    local current_tab = vim.fn.tabpagenr()
+    vim.cmd("tabdo wincmd =")
+    vim.cmd("tabnext " .. current_tab)
+  end,
+})
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  desc = "Add q mapping to quit terminal window",
+  callback = function(args)
+    vim.keymap.set("n", "q", "<cmd>close<CR>", {
+      buffer = args.buf,
+      silent = true,
+      desc = "Quit terminal window",
+    })
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+  desc = "Reload file when it changed outside of vim",
+  group = augroup("checktime"),
+  callback = function()
+    if vim.o.buftype ~= "nofile" then
+      vim.cmd("checktime")
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  desc = "Set conceallevel to 0 for json files",
+  group = augroup("json_conceal"),
+  pattern = { "json", "jsonc", "json5" },
+  callback = function()
+    vim.opt_local.conceallevel = 0
   end,
 })
 
@@ -118,68 +154,5 @@ vim.api.nvim_create_autocmd("FileType", {
         desc = "Quit buffer",
       })
     end)
-  end,
-})
-
-vim.api.nvim_create_autocmd("TermOpen", {
-  callback = function(args)
-    vim.keymap.set("n", "q", "<cmd>close<CR>", {
-      buffer = args.buf,
-      silent = true,
-      desc = "Quit terminal window",
-    })
-  end,
-})
-
-vim.api.nvim_create_autocmd("VimEnter", {
-  desc = "Add pb import aliases on nexus repo",
-  group = augroup("add_pb_import_aliases"),
-  callback = function()
-    if vim.fn.getcwd():find(vim.fn.expand("$NEXUS_REPO"), 1, true) == 1 then
-      require("modules.pb_snips").compute_and_add_alias_import_snippets()
-      require("modules.translations").setup()
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-  desc = "Reload file when it changed outside of vim",
-  group = augroup("checktime"),
-  callback = function()
-    if vim.o.buftype ~= "nofile" then
-      vim.cmd("checktime")
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  desc = "Set conceallevel to 0 for json files",
-  group = augroup("json_conceal"),
-  pattern = { "json", "jsonc", "json5" },
-  callback = function()
-    vim.opt_local.conceallevel = 0
-  end,
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-  group = vim.api.nvim_create_augroup("setup_auto_root", {}),
-  callback = function(data)
-    vim.o.autochdir = false
-    local root = vim.fs.root(data.buf, { "Dockerfile", "Buildfile.yaml", "service.yaml", "Makefile", ".git" })
-    if root == nil or root == vim.fn.getcwd() then
-      return
-    end
-    vim.fn.chdir(root)
-    vim.api.nvim_echo({ { "chdir to " .. root, "Conceal" } }, true, {})
-  end,
-  desc = "Find root and change current directory",
-  -- once = true,
-})
-
--- Show codelenses on LSP client attach
-vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-  pattern = { "*.go", "*.lua" },
-  callback = function()
-    vim.lsp.codelens.refresh()
   end,
 })
