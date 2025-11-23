@@ -141,6 +141,8 @@ local default_opts = {}
 M.setup = function(opts)
   M.options = vim.tbl_deep_extend("keep", opts or {}, default_opts)
   M.init()
+
+  vim.notify("Translation has been enabled, keys will have a translation value next to them")
 end
 
 return M
