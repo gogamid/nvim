@@ -26,14 +26,6 @@ local query_by_lang = {
   go = go_translation_query,
 }
 
-local active = {
-  typescript = true,
-  vue = true,
-  go = true,
-}
-
-local highlight = "Conceal"
-
 local function load_translations(json_file)
   if not json_file then
     return nil
@@ -83,8 +75,10 @@ local function handle_trees(trees, lang, buf, top, bottom, translations)
           local value = get_translation_value(key_text, translations)
 
           vim.api.nvim_buf_set_extmark(buf, ns, end_row, end_col + 1, {
-            virt_text = { { " → " .. value, highlight } },
-            virt_text_pos = "inline",
+            virt_text = { { value, M.opts.highlight } },
+            virt_text_pos = "right_align",
+            hl_mode = "combine",
+            spell = true,
           })
         end
       end
@@ -94,7 +88,7 @@ end
 
 local function on_win(_, win, buf, top, bottom)
   local filetype = vim.bo[buf].filetype
-  if not active[filetype] then
+  if not M.opts.active[filetype] then
     return false
   end
 
@@ -120,7 +114,7 @@ local function on_win(_, win, buf, top, bottom)
     return false
   end
 
-  local translations = load_translations(vim.fn.findfile("en_DEV.json"))
+  local translations = load_translations(M.opts.translation_file)
 
   for lang, ltree in pairs(ltrees) do
     local tstrees = ltree:parse({ top, bottom + 1 })
@@ -136,10 +130,18 @@ M.init = function()
   vim.api.nvim_set_decoration_provider(ns, { on_win = on_win })
 end
 
-local default_opts = {}
+local default_opts = {
+  translation_file = vim.fn.findfile("en_DEV.json"),
+  highlight = "Conceal",
+  active = {
+    typescript = true,
+    vue = true,
+    go = true,
+  },
+}
 
 M.setup = function(opts)
-  M.options = vim.tbl_deep_extend("keep", opts or {}, default_opts)
+  M.opts = vim.tbl_deep_extend("keep", opts or {}, default_opts)
   M.init()
 
   vim.notify("Translation has been enabled")
