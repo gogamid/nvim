@@ -140,9 +140,156 @@ local default_opts = {
   },
 }
 
+local function find_key_line_in_json(json_file, key)
+  local ok, lines = pcall(vim.fn.readfile, json_file)
+  if not ok then
+    return nil
+  end
+
+  for line_num, line in ipairs(lines) do
+    if line:match('"' .. vim.pesc(key) .. '"') then
+      return line_num
+    end
+  end
+  return nil
+end
+
+local function add_key_to_json(json_file, key, value)
+  local ok, lines = pcall(vim.fn.readfile, json_file)
+  if not ok then
+    vim.notify("Failed to read JSON file", vim.log.levels.ERROR)
+    return false
+  end
+
+  -- Verify it's valid JSON
+  local file_content = table.concat(lines, "\n")
+  local parse_ok, data = pcall(vim.json.decode, file_content)
+  if not parse_ok then
+    vim.notify("Invalid JSON file", vim.log.levels.ERROR)
+    return false
+  end
+
+  -- Check if key already exists
+  if data[key] then
+    vim.notify("Key '" .. key .. "' already exists", vim.log.levels.WARN)
+    return false
+  end
+
+  -- Find the first line with { and insert after it
+  local insert_line = nil
+  for i, line in ipairs(lines) do
+    if line:match("{") then
+      insert_line = i
+      break
+    end
+  end
+
+  if not insert_line then
+    vim.notify("Invalid JSON format", vim.log.levels.ERROR)
+    return false
+  end
+
+  -- Format the new key-value pair with proper indentation
+  local indent = lines[insert_line + 1]:match("^(%s*)")
+  if indent == nil then
+    indent = "  "
+  end
+
+  local new_line = indent .. '"' .. key .. '": ' .. vim.json.encode(value) .. ","
+
+  -- Insert the new key-value pair
+  table.insert(lines, insert_line + 1, new_line)
+
+  local write_ok = pcall(function()
+    vim.fn.writefile(lines, json_file)
+  end)
+
+  if write_ok then
+    vim.notify("Added key '" .. key .. "' to translations", vim.log.levels.INFO)
+    return true
+  else
+    vim.notify("Failed to write to JSON file", vim.log.levels.ERROR)
+    return false
+  end
+end
+
+local function get_key_at_cursor()
+  local buf = vim.api.nvim_get_current_buf()
+  local filetype = vim.bo[buf].filetype
+
+  if not M.opts.active[filetype] then
+    vim.notify("Translations not active for this filetype", vim.log.levels.WARN)
+    return nil
+  end
+
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  row = row - 1
+
+  local lt = vim.treesitter.get_parser(buf)
+  if not lt then
+    vim.notify("No treesitter parser available", vim.log.levels.WARN)
+    return nil
+  end
+
+  local query = vim.treesitter.query.parse(lt:lang(), query_by_lang[lt:lang()] or "")
+  local root = lt:parse()[1]:root()
+
+  for _, match in query:iter_matches(root, buf) do
+    for id, nodes in pairs(match) do
+      if query.captures[id] == "translation.key" then
+        local key_node = nodes[1]
+        local start_row, start_col, end_row, end_col = key_node:range()
+
+        if start_row == row and col >= start_col and col <= end_col then
+          return vim.treesitter.get_node_text(key_node, buf)
+        end
+      end
+    end
+  end
+
+  vim.notify("No translation key found at cursor", vim.log.levels.WARN)
+  return nil
+end
+
+M.navigate_to_key = function()
+  local key = get_key_at_cursor()
+  if not key then
+    return
+  end
+
+  local json_file = vim.fn.findfile(M.opts.translation_file)
+  if not json_file or json_file == "" then
+    vim.notify("Translation file not configured", vim.log.levels.ERROR)
+    return
+  end
+
+  local line_num = find_key_line_in_json(json_file, key)
+
+  if not line_num then
+    -- Key not found, ask user for value
+    vim.ui.input({ prompt = "Enter value for '" .. key .. "': " }, function(value)
+      if value then
+        if add_key_to_json(json_file, key, value) then
+          -- Reload translations display
+          vim.api.nvim_exec_autocmds("User", { pattern = "TranslationsUpdated" })
+        end
+      end
+    end)
+  else
+    -- Open the JSON file at the key location
+    vim.cmd("edit " .. json_file)
+    vim.api.nvim_win_set_cursor(0, { line_num, 0 })
+  end
+end
+
 M.setup = function(opts)
   M.opts = vim.tbl_deep_extend("keep", opts or {}, default_opts)
   M.init()
+
+  -- Translations navigation
+  vim.keymap.set("n", "<leader>tg", function()
+    M.navigate_to_key()
+  end, { noremap = true, silent = true, desc = "Go to translation key" })
 
   vim.notify("Translation has been enabled")
 end
