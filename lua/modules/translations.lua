@@ -12,6 +12,13 @@ local default_opts = {
 
 local ns = vim.api.nvim_create_namespace("translations")
 
+-- Cache for translations file data and line mappings
+local cache = {
+  json_file = nil,
+  data = nil,
+  key_lines = {}, -- key -> line number mapping
+}
+
 local ts_translation_query = [[
 (
   (call_expression
@@ -96,6 +103,23 @@ local function handle_trees(trees, lang, buf, top, bottom, translations)
   end
 end
 
+local function build_key_line_map(json_file)
+  local ok, lines = pcall(vim.fn.readfile, json_file)
+  if not ok then
+    return {}
+  end
+
+  local key_lines = {}
+  for line_num, line in ipairs(lines) do
+    -- Match pattern like "key": value
+    local key = line:match('"([^"]+)"%s*:')
+    if key then
+      key_lines[key] = line_num
+    end
+  end
+  return key_lines
+end
+
 local function on_win(_, win, buf, top, bottom)
   local filetype = vim.bo[buf].filetype
   if not M.opts.active[filetype] then
@@ -124,7 +148,15 @@ local function on_win(_, win, buf, top, bottom)
     return false
   end
 
-  local translations = load_translations(vim.fn.findfile(M.opts.translation_file))
+  local json_file = vim.fn.findfile(M.opts.translation_file)
+  local translations = load_translations(json_file)
+
+  -- Update cache
+  if json_file and translations then
+    cache.json_file = json_file
+    cache.data = translations
+    cache.key_lines = build_key_line_map(json_file)
+  end
 
   for lang, ltree in pairs(ltrees) do
     local tstrees = ltree:parse({ top, bottom + 1 })
@@ -253,19 +285,25 @@ M.navigate_to_key = function()
     return
   end
 
-  local json_file = vim.fn.findfile(M.opts.translation_file)
+  -- Use cached json_file, fall back to finding it
+  local json_file = cache.json_file or vim.fn.findfile(M.opts.translation_file)
   if not json_file or json_file == "" then
     vim.notify("Translation file not configured", vim.log.levels.ERROR)
     return
   end
 
-  local line_num = find_key_line_in_json(json_file, key)
+  -- Try cached line mapping first
+  local line_num = cache.key_lines[key]
 
   if not line_num then
     -- Key not found, ask user for value
     vim.ui.input({ prompt = "Enter value for '" .. key .. "': " }, function(value)
       if value then
         if add_key_to_json(json_file, key, value) then
+          -- Invalidate cache
+          cache.json_file = nil
+          cache.data = nil
+          cache.key_lines = {}
           -- Reload translations display
           vim.api.nvim_exec_autocmds("User", { pattern = "TranslationsUpdated" })
         end
