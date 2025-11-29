@@ -1,5 +1,15 @@
 local M = {}
 
+local default_opts = {
+  translation_file = "en_DEV.json",
+  highlight = "Conceal",
+  active = {
+    typescript = true,
+    vue = true,
+    go = true,
+  },
+}
+
 local ns = vim.api.nvim_create_namespace("translations")
 
 local ts_translation_query = [[
@@ -129,16 +139,6 @@ end
 M.init = function()
   vim.api.nvim_set_decoration_provider(ns, { on_win = on_win })
 end
-
-local default_opts = {
-  translation_file = "en_DEV.json",
-  highlight = "Conceal",
-  active = {
-    typescript = true,
-    vue = true,
-    go = true,
-  },
-}
 
 local function find_key_line_in_json(json_file, key)
   local ok, lines = pcall(vim.fn.readfile, json_file)
