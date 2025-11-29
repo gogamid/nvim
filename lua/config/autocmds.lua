@@ -4,7 +4,7 @@ end
 
 -- Buf autocommands in order BufReadPost, BufEnter, BufWritePre
 
-vim.api.nvim_create_autocmd("BufReadPost", {
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
   desc = "Change current directory to buffer's root",
   group = vim.api.nvim_create_augroup("setup_auto_root", {}),
   callback = function(data)
