@@ -93,7 +93,7 @@ local function handle_trees(trees, lang, buf, top, bottom, translations)
 
           vim.api.nvim_buf_set_extmark(buf, ns, end_row, end_col + 1, {
             virt_text = { { value, M.opts.highlight } },
-            virt_text_pos = "right_align",
+            -- virt_text_pos = "inline",
             hl_mode = "combine",
             spell = true,
           })
