@@ -168,20 +168,6 @@ local function on_win(_, win, buf, top, bottom)
   return true
 end
 
-local function find_key_line_in_json(json_file, key)
-  local ok, lines = pcall(vim.fn.readfile, json_file)
-  if not ok then
-    return nil
-  end
-
-  for line_num, line in ipairs(lines) do
-    if line:match('"' .. vim.pesc(key) .. '"') then
-      return line_num
-    end
-  end
-  return nil
-end
-
 local function add_key_to_json(json_file, key, value)
   local ok, lines = pcall(vim.fn.readfile, json_file)
   if not ok then
