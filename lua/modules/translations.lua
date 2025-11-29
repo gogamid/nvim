@@ -136,10 +136,6 @@ local function on_win(_, win, buf, top, bottom)
   return true
 end
 
-M.init = function()
-  vim.api.nvim_set_decoration_provider(ns, { on_win = on_win })
-end
-
 local function find_key_line_in_json(json_file, key)
   local ok, lines = pcall(vim.fn.readfile, json_file)
   if not ok then
@@ -282,14 +278,18 @@ M.navigate_to_key = function()
   end
 end
 
+M.init = function()
+  vim.api.nvim_set_decoration_provider(ns, { on_win = on_win })
+
+  -- Translations navigation
+  vim.keymap.set("n", "gj", function()
+    M.navigate_to_key()
+  end, { noremap = true, silent = true, desc = "Go to translation key" })
+end
+
 M.setup = function(opts)
   M.opts = vim.tbl_deep_extend("keep", opts or {}, default_opts)
   M.init()
-
-  -- Translations navigation
-  vim.keymap.set("n", "<leader>tg", function()
-    M.navigate_to_key()
-  end, { noremap = true, silent = true, desc = "Go to translation key" })
 
   vim.notify("Translation has been enabled")
 end
