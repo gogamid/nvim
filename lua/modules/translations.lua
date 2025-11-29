@@ -114,7 +114,7 @@ local function on_win(_, win, buf, top, bottom)
     return false
   end
 
-  local translations = load_translations(M.opts.translation_file)
+  local translations = load_translations(vim.fn.findfile(M.opts.translation_file))
 
   for lang, ltree in pairs(ltrees) do
     local tstrees = ltree:parse({ top, bottom + 1 })
@@ -131,7 +131,7 @@ M.init = function()
 end
 
 local default_opts = {
-  translation_file = vim.fn.findfile("en_DEV.json"),
+  translation_file = "en_DEV.json",
   highlight = "Conceal",
   active = {
     typescript = true,
