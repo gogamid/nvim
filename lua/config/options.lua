@@ -19,7 +19,7 @@ vim.o.cursorline     = true       -- Enable current line highlighting
 vim.o.linebreak      = true       -- Wrap lines at 'breakat' (if 'wrap' is set)
 vim.o.list           = true       -- Show helpful text indicators
 vim.o.number         = true       -- Show line numbers
-vim.o.relativenumber = true       -- Show  relative line numbers
+vim.o.relativenumber = false      -- Show  relative line numbers
 vim.o.pumheight      = 10         -- Make popup menu smaller
 vim.o.ruler          = false      -- Don't show cursor coordinates
 vim.o.shortmess      = 'CFOSWaco' -- Disable some built-in completion messages
@@ -169,3 +169,11 @@ vim.diagnostic.config({
     },
   },
 })
+
+if vim.g.neovide then
+  vim.g.transparency = 0.8
+  vim.g.neovide_opacity = 0.2
+  vim.g.neovide_normal_opacity = 0.6
+  vim.g.neovide_show_border = false
+  vim.g.neovide_background_color = "#2A3035"
+end

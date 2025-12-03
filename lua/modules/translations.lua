@@ -53,11 +53,7 @@ local function load_translations(json_file)
     return vim.json.decode(content)
   end)
 
-  if ok then
-    return result
-  else
-    return nil
-  end
+  return ok and result or nil
 end
 
 local function get_translation_value(key, translations)
