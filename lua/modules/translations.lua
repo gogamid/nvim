@@ -1,5 +1,19 @@
 local M = {}
 
+local fname = "translations.lua"
+
+local function error(msg)
+  vim.schedule(function()
+    vim.notify(msg, vim.log.levels.ERROR, { title = fname })
+  end)
+end
+
+local function info(msg)
+  vim.schedule(function()
+    vim.notify(msg, vim.log.levels.INFO, { title = fname })
+  end)
+end
+
 local default_opts = {
   translation_file = "en_DEV.json",
   highlight = "Conceal",
@@ -167,7 +181,7 @@ end
 local function add_key_to_json(json_file, key, value)
   local ok, lines = pcall(vim.fn.readfile, json_file)
   if not ok then
-    vim.notify("Failed to read JSON file", vim.log.levels.ERROR)
+    error("Failed to read JSON file")
     return false
   end
 
@@ -175,17 +189,15 @@ local function add_key_to_json(json_file, key, value)
   local file_content = table.concat(lines, "\n")
   local parse_ok, data = pcall(vim.json.decode, file_content)
   if not parse_ok then
-    vim.notify("Invalid JSON file", vim.log.levels.ERROR)
+    error("Invalid JSON file")
     return false
   end
 
-  -- Check if key already exists
   if data[key] then
-    vim.notify("Key '" .. key .. "' already exists", vim.log.levels.WARN)
+    error("Key '" .. key .. "' already exists")
     return false
   end
 
-  -- Find the first line with { and insert after it
   local insert_line = nil
   for i, line in ipairs(lines) do
     if line:match("{") then
@@ -195,7 +207,7 @@ local function add_key_to_json(json_file, key, value)
   end
 
   if not insert_line then
-    vim.notify("Invalid JSON format", vim.log.levels.ERROR)
+    error("Invalid JSON format")
     return false
   end
 
@@ -215,10 +227,10 @@ local function add_key_to_json(json_file, key, value)
   end)
 
   if write_ok then
-    vim.notify("Added key '" .. key .. "' to translations", vim.log.levels.INFO)
+    info("Added key '" .. key .. "' to translations")
     return true
   else
-    vim.notify("Failed to write to JSON file", vim.log.levels.ERROR)
+    error("Failed to write to JSON file")
     return false
   end
 end
@@ -228,7 +240,7 @@ local function get_key_at_cursor()
   local filetype = vim.bo[buf].filetype
 
   if not M.opts.active[filetype] then
-    vim.notify("Translations not active for this filetype", vim.log.levels.WARN)
+    error("translations not active for this filetype")
     return nil
   end
 
@@ -237,7 +249,7 @@ local function get_key_at_cursor()
 
   local lt = vim.treesitter.get_parser(buf)
   if not lt then
-    vim.notify("No treesitter parser available", vim.log.levels.WARN)
+    error("No treesitter parser available")
     return nil
   end
 
@@ -257,7 +269,7 @@ local function get_key_at_cursor()
     end
   end
 
-  vim.notify("No translation key found at cursor", vim.log.levels.WARN)
+  error("No translation key found at cursor")
   return nil
 end
 
@@ -270,7 +282,7 @@ M.navigate_to_key = function()
   -- Use cached json_file, fall back to finding it
   local json_file = cache.json_file or vim.fn.findfile(M.opts.translation_file)
   if not json_file or json_file == "" then
-    vim.notify("Translation file not configured", vim.log.levels.ERROR)
+    error("Translation file not configured")
     return
   end
 
@@ -311,7 +323,7 @@ M.setup = function(opts)
   M.opts = vim.tbl_deep_extend("keep", opts or {}, default_opts)
   M.init()
 
-  vim.notify("Translation has been enabled")
+  info("done")
 end
 
 return M

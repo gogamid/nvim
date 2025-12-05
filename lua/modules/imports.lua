@@ -81,7 +81,7 @@ local function create_snippets(imports)
 
   if #snippets > 0 then
     ls.add_snippets("go", snippets, { key = "go_imports_dynamic" })
-    info("added " .. #snippets .. " import snippets")
+    info(#snippets .. " snippets")
   else
     error("no imports found")
   end
