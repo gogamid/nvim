@@ -45,6 +45,9 @@ local function append_import(package_path, alias)
   if import_start and import_end then
     vim.api.nvim_buf_set_lines(bufnr, import_end, import_end, false, { "\t" .. import_line })
     info("added import at the bottom: " .. alias)
+  elseif import_start then
+    vim.api.nvim_buf_set_lines(bufnr, import_start, import_start, false, { "\t" .. import_line })
+    info("added import at the top: " .. alias)
   elseif package_line then
     local new_block = { "", "import (", "\t" .. import_line, ")" }
     vim.api.nvim_buf_set_lines(bufnr, package_line, package_line, false, new_block)
