@@ -1,12 +1,7 @@
-local function augroup(name)
-  return vim.api.nvim_create_augroup("ig_" .. name, { clear = true })
-end
-
 -- Buf autocommands in order BufReadPost, BufEnter, BufWritePre
 
 vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
   desc = "Change current directory to buffer's root",
-  group = vim.api.nvim_create_augroup("setup_auto_root", {}),
   callback = function(data)
     vim.o.autochdir = false
     local root = vim.fs.root(data.buf, { "Dockerfile", "Buildfile.yaml", "service.yaml", "Makefile", ".git" })
@@ -20,7 +15,6 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
 
 vim.api.nvim_create_autocmd("BufReadPost", {
   desc = "Return to last edit position when opening files",
-  group = augroup("return_to_last_edit_position"),
   callback = function()
     local mark = vim.api.nvim_buf_get_mark(0, '"')
     local lcount = vim.api.nvim_buf_line_count(0)
@@ -32,12 +26,12 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 local workspace = vim.fn.expand("$NEXUS_REPO")
 vim.api.nvim_create_autocmd("BufEnter", {
-  desc = "Add pb import aliases on nexus repo",
-  group = augroup("add_pb_import_aliases"),
+  desc = "nexus actions",
   pattern = workspace .. "**",
   callback = function()
+    vim.env.DEPLOY_TO_MULTI_REGION = false
     require("modules.translations").setup()
-    require("modules.pb_snips").compute_and_add_alias_import_snippets()
+    require("modules.imports").add_snippets()
   end,
   once = true,
 })
@@ -52,7 +46,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   desc = "Create directories when saving files",
-  group = augroup("auto_create_dir"),
   callback = function(event)
     if event.match:match("^%w%w+:[\\/][\\/]") then
       return
@@ -64,7 +57,6 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight yanked text",
-  group = augroup("highlight_yank"),
   callback = function()
     vim.hl.on_yank()
   end,
@@ -72,7 +64,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.api.nvim_create_autocmd("VimResized", {
   desc = "Auto resize splits when window is resized",
-  group = augroup("auto_resize"),
   callback = function()
     local current_tab = vim.fn.tabpagenr()
     vim.cmd("tabdo wincmd =")
@@ -93,7 +84,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
 
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   desc = "Reload file when it changed outside of vim",
-  group = augroup("checktime"),
   callback = function()
     if vim.o.buftype ~= "nofile" then
       vim.cmd("checktime")
@@ -103,7 +93,6 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
   desc = "Set conceallevel to 0 for json files",
-  group = augroup("json_conceal"),
   pattern = { "json", "jsonc", "json5" },
   callback = function()
     vim.opt_local.conceallevel = 0
@@ -112,7 +101,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Wrap text for text filetypes",
-  group = augroup("wrap_text_filetypes"),
   pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
   callback = function()
     vim.opt_local.wrap = true
@@ -124,7 +112,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Close file with <q>",
-  group = augroup("close_with_q"),
   pattern = {
     "PlenaryTestPopup",
     "checkhealth",
