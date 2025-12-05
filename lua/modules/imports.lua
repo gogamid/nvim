@@ -46,14 +46,14 @@ local function append_import(package_path, alias)
 
   if import_start and import_end then
     vim.api.nvim_buf_set_lines(bufnr, import_end, import_end, false, { "\t" .. import_line })
-    info("added import at the bottom: " .. alias)
+    info("added " .. alias)
   elseif import_start then
     vim.api.nvim_buf_set_lines(bufnr, import_start, import_start, false, { "\t" .. import_line })
-    info("added import at the top: " .. alias)
+    info("added " .. alias)
   elseif package_line then
     local new_block = { "", "import (", "\t" .. import_line, ")" }
     vim.api.nvim_buf_set_lines(bufnr, package_line, package_line, false, new_block)
-    info("added import after package: " .. alias)
+    info("added " .. alias)
   end
 end
 
@@ -132,10 +132,9 @@ local function read_and_parse_file(file, seen_triggers, done_cb)
       local size = stat.size > BYTES_LIMIT and BYTES_LIMIT or stat.size
 
       uv.fs_read(fd, size, 0, function(read_err, data)
-        uv.fs_close(fd) -- Always close file descriptor
+        uv.fs_close(fd)
 
         if not read_err and data then
-          -- Parse logic (Cpu bound, but fast enough for this context)
           local imports = extract_imports(data, seen_triggers)
           done_cb(imports)
         else
@@ -149,48 +148,39 @@ end
 -- [Orchestrator] The Worker Pool Logic
 local function process_files(files)
   local all_imports = {}
-  local seen_triggers = {} -- Shared state to avoid duplicates across files
+  local seen_triggers = {} -- Shared state
 
   local file_index = 1
   local active_workers = 0
   local processed_count = 0
   local total_files = #files
 
-  -- The recursive scheduler
   local function schedule_next()
-    -- 1. Check if completely finished
-    if processed_count == total_files then
-      -- Must wrap final UI update in schedule
+    if processed_count >= total_files then
       vim.schedule(function()
         create_snippets(all_imports)
       end)
       return
     end
 
-    -- 2. Fill the worker slots up to MAX_CONCURRENT
     while active_workers < MAX_CONCURRENT and file_index <= total_files do
       local current_file = files[file_index]
       file_index = file_index + 1
       active_workers = active_workers + 1
 
-      -- Run the job
       read_and_parse_file(current_file, seen_triggers, function(new_imports)
-        -- Collect results (Lua is single threaded, so this append is safe)
         if new_imports then
           vim.list_extend(all_imports, new_imports)
         end
 
-        -- Worker finished
         active_workers = active_workers - 1
         processed_count = processed_count + 1
 
-        -- Trigger next job immediately
         schedule_next()
       end)
     end
   end
 
-  -- Start the machine
   schedule_next()
 end
 
@@ -216,7 +206,6 @@ function M.add_snippets()
       return
     end
 
-    info("Found " .. #files .. " files. Parsing...")
     process_files(files)
   end)
 end
