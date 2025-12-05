@@ -1,5 +1,7 @@
 local M = {}
 
+local BYTES_LIMIT = 6000
+local uv = vim.uv
 local fname = "imports.lua"
 
 local function error(msg)
@@ -79,55 +81,60 @@ local function create_snippets(imports)
   end
 end
 
+local function extract_imports(data, seen_triggers)
+  local new_imports = {}
+  local in_import_block = false
+
+  local lines = vim.split(data, "\n")
+  for _, line in ipairs(lines) do
+    local trimmed = vim.trim(line)
+
+    if trimmed:match("^import%s*%(") then
+      in_import_block = true
+    elseif in_import_block and trimmed == ")" then
+      in_import_block = false
+    elseif in_import_block and trimmed:match('^%w+%s+"') then
+      local alias, package_path = trimmed:match('^(%w+)%s+"([^"]+)"')
+      if alias and package_path and not seen_triggers[alias] then
+        seen_triggers[alias] = true
+        table.insert(new_imports, {
+          trigger = alias,
+          alias = alias,
+          package_path = package_path,
+        })
+      end
+    end
+  end
+  return new_imports
+end
+
 local function process_files(files)
   local imports = {}
   local seen_triggers = {}
   local files_processed = 0
 
-  -- Process each service.go file
   for _, file in ipairs(files) do
-    vim.uv.fs_open(file, "r", 438, function(err, fd)
+    uv.fs_open(file, "r", 438, function(err, fd)
       if err then
         files_processed = files_processed + 1
         return
       end
 
-      vim.uv.fs_fstat(fd, function(stat_err, stat)
+      uv.fs_fstat(fd, function(stat_err, stat)
         if stat_err then
-          vim.uv.fs_close(fd)
+          uv.fs_close(fd)
           files_processed = files_processed + 1
           return
         end
 
-        vim.uv.fs_read(fd, stat.size, 0, function(read_err, data)
-          vim.uv.fs_close(fd)
+        local size = stat.size > BYTES_LIMIT and BYTES_LIMIT or stat.size
+
+        uv.fs_read(fd, size, 0, function(read_err, data)
+          uv.fs_close(fd)
 
           if not read_err and data then
-            local lines = vim.split(data, "\n")
-            local in_import_block = false
-
-            for _, line in ipairs(lines) do
-              local trimmed = vim.trim(line)
-
-              -- Detect import block start
-              if trimmed:match("^import%s*%(") then
-                in_import_block = true
-                -- Detect import block end
-              elseif in_import_block and trimmed == ")" then
-                in_import_block = false
-                -- Extract aliased imports (lines with space before quoted path)
-              elseif in_import_block and trimmed:match('^%w+%s+"') then
-                local alias, package_path = trimmed:match('^(%w+)%s+"([^"]+)"')
-                if alias and package_path and not seen_triggers[alias] then
-                  seen_triggers[alias] = true
-                  table.insert(imports, {
-                    trigger = alias,
-                    alias = alias,
-                    package_path = package_path,
-                  })
-                end
-              end
-            end
+            local new_imports = extract_imports(data, seen_triggers)
+            vim.list_extend(imports, new_imports)
           end
 
           files_processed = files_processed + 1
