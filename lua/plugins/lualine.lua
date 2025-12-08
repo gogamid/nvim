@@ -1,8 +1,10 @@
+local is_ssh = os.getenv("SSH_CONNECTION") ~= nil or os.getenv("TERM_PROGRAM") == "Termius"
 local function supermaven()
+  local icon = is_ssh and "smvn" or "󰉶 "
   if require("supermaven-nvim.api").is_running() then
-    return " "
+    return icon
   else
-    return " "
+    return ""
   end
 end
 
@@ -29,54 +31,35 @@ local function overseer_status()
   return ""
 end
 
-local function formatter_status()
-  --get bufnr
-  local bufnr = vim.api.nvim_get_current_buf()
-  local formatters, use_lsp = require("conform").list_formatters_to_run(bufnr)
+local function formatter()
+  local icon = is_ssh and "fmt:" or "󰉶 "
 
-  if #formatters > 0 then
-    local formatter_names = {}
-    for _, formatter_info in ipairs(formatters) do
-      table.insert(formatter_names, formatter_info.name)
-    end
-    local result = "󰉶 " .. table.concat(formatter_names, ", ")
-    if use_lsp then
-      result = result .. " + LSP"
-    end
-    return result
-  elseif use_lsp then
-    return "󰉶 LSP"
-  else
-    return "󰉶 "
+  local formatters, use_lsp = require("conform").list_formatters_to_run(0)
+  local names = {}
+  for i, formatter_info in ipairs(formatters) do
+    names[i] = formatter_info.name
   end
+  local lsp = use_lsp and " + LSP" or ""
+
+  return icon .. table.concat(names, ", ") .. lsp
 end
 
--- TODO(ig): show progress too
-local function lsp_status()
-  local clients = vim.lsp.get_clients({ bufnr = 0 })
-  if #clients > 0 then
-    local client_names = {}
-    for _, client in ipairs(clients) do
-      table.insert(client_names, client.name)
-    end
-    return "  " .. table.concat(client_names, ", ")
-  else
-    return "  "
+local function lsp()
+  local icon = is_ssh and "lsp:" or "  "
+
+  local client_names = {}
+  for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+    table.insert(client_names, client.name)
   end
+
+  return icon .. table.concat(client_names, ", ")
 end
 
 local function filetype()
   local ft = vim.bo.filetype
-  if ft and ft ~= "" then
-    local icon = require("nvim-web-devicons").get_icon_by_filetype(ft)
-    if icon then
-      return icon .. " " .. ft
-    else
-      return " " .. ft
-    end
-  else
-    return " "
-  end
+  local ft_icon = require("nvim-web-devicons").get_icon_by_filetype(ft)
+  local icon = is_ssh and "ft:" or ft_icon
+  return icon .. ft
 end
 
 return {
@@ -86,7 +69,7 @@ return {
       options = {
         theme = "everforest", -- Use your current colorscheme's theme or set a specific one
         globalstatus = true, -- Use a single statusline for all windows
-        icons_enabled = true,
+        icons_enabled = not is_ssh,
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
         disabled_filetypes = {
@@ -121,21 +104,9 @@ return {
         lualine_b = {},
         lualine_c = {
           filetype,
-          formatter_status,
-          lsp_status,
+          formatter,
+          lsp,
           "%=",
-          -- {
-          --   "filename",
-          --   path = 1,
-          --   fmt = function(str)
-          --     local max = 40
-          --     if #str > max then
-          --       return "..." .. str:sub(-max)
-          --     else
-          --       return str
-          --     end
-          --   end,
-          -- },
         },
         -- "location"
         -- - `branch` (git branch)
@@ -168,8 +139,22 @@ return {
         lualine_y = {},
         lualine_z = {},
       },
-      tabline = {},
-      winbar = {},
+      tabline = {
+        -- lualine_a = {},
+        -- lualine_b = {},
+        -- lualine_c = {},
+        -- lualine_x = { "filename" },
+        -- lualine_y = {},
+        -- lualine_z = {},
+      },
+      winbar = {
+        -- lualine_a = {},
+        -- lualine_b = {},
+        -- lualine_c = { "filename" },
+        -- lualine_x = {},
+        -- lualine_y = {},
+        -- lualine_z = {},
+      },
       inactive_winbar = {},
       extensions = {},
     },
