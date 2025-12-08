@@ -55,10 +55,10 @@ local function lsp()
   return icon .. table.concat(client_names, ", ")
 end
 
-local function filetype()
-  local ft = vim.bo.filetype
-  local ft_icon = require("nvim-web-devicons").get_icon_by_filetype(ft)
+local function ftype()
+  local ft_icon = "󰉶 "
   local icon = is_ssh and "ft:" or ft_icon
+  local ft = vim.bo.filetype
   return icon .. ft
 end
 
@@ -103,7 +103,7 @@ return {
         lualine_a = {},
         lualine_b = {},
         lualine_c = {
-          filetype,
+          ftype,
           formatter,
           lsp,
           "%=",
