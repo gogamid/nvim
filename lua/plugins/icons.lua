@@ -1,4 +1,5 @@
-local is_ssh = os.getenv("SSH_CONNECTION") ~= nil or os.getenv("TERM_PROGRAM") == "Termius"
+-- local is_ssh = os.getenv("SSH_CONNECTION") ~= nil
+local is_ssh = false --webssh supports icons
 
 return {
   { "nvim-tree/nvim-web-devicons", enabled = not is_ssh },

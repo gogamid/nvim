@@ -1,11 +1,9 @@
-local is_ssh = os.getenv("SSH_CONNECTION") ~= nil or os.getenv("TERM_PROGRAM") == "Termius"
+-- local is_ssh = os.getenv("SSH_CONNECTION") ~= nil or os.getenv("TERM_PROGRAM") == "Termius"
+local is_ssh = false --webssh supports icons
+
 local function supermaven()
-  local icon = is_ssh and "smvn" or "󰉶 "
-  if require("supermaven-nvim.api").is_running() then
-    return icon
-  else
-    return ""
-  end
+  local icon = is_ssh and "smvn" or " "
+  return require("supermaven-nvim.api").is_running() and icon or ""
 end
 
 local function overseer_status()
@@ -56,7 +54,7 @@ local function lsp()
 end
 
 local function ftype()
-  local ft_icon = "󰉶 "
+  local ft_icon = " "
   local icon = is_ssh and "ft:" or ft_icon
   local ft = vim.bo.filetype
   return icon .. ft
