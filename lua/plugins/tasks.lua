@@ -1,16 +1,16 @@
 return {
   {
     "stevearc/overseer.nvim",
-    version = "1.6.0", -- before major refactoring
+    -- version = "1.6.0", -- before major refactoring
     opts = {
       dap = false,
       task_list = {
         min_height = { 15, 0.3 },
-        bindings = {
-          ["<C-h>"] = false,
+        keymaps = {
           ["<C-j>"] = false,
           ["<C-k>"] = false,
-          ["<C-l>"] = false,
+          ["k"] = "keymap.prev_task",
+          ["j"] = "keymap.next_task",
         },
       },
       form = {
@@ -30,46 +30,30 @@ return {
       },
       component_aliases = {
         default = {
-          { "open_output", direction = "dock", on_complete = "never", on_start = "never", focus = false },
-          { "display_duration", detail_level = 1 },
-          "on_output_summarize",
           "on_exit_set_status",
           { "on_complete_notify", system = "unfocused" },
-          { "on_complete_dispose" },
+          { "on_complete_dispose", require_view = { "SUCCESS", "FAILURE" } },
+
+          { "open_output", direction = "dock", on_complete = "never", on_start = "never", focus = false },
           "unique",
+          { "on_output_quickfix", open_on_exit = "failure", close = true },
         },
         default_neotest = {
-          { "on_complete_notify", system = "unfocused", on_change = true },
           "default",
+          { "on_complete_notify", system = "unfocused", on_change = true },
         },
       },
     },
     keys = {
       { "<leader>tt", "<cmd>OverseerToggle<cr>", desc = "Tasks Open" },
       { "<leader>tr", "<cmd>OverseerRun<cr>", desc = "Run task" },
-      { "<leader>tq", "<cmd>OverseerQuickAction<cr>", desc = "OverseerQuickAction" },
+      { "<leader>ta", "<cmd>OverseerTaskAction<cr>", desc = "OverseerTaskAction" },
+      { "<leader>tq", "<cmd>OverseerShell<cr>", desc = "Overseer Quick Shell" },
     },
 
     config = function(_, opts)
       local overseer = require("overseer")
       overseer.setup(opts)
-
-      vim.api.nvim_create_autocmd("FileType", {
-        desc = "Toggle Overseer with q",
-        pattern = "OverseerList",
-        callback = function(event)
-          vim.bo[event.buf].buflisted = false
-          vim.schedule(function()
-            vim.keymap.set("n", "q", function()
-              vim.cmd("OverseerToggle")
-            end, {
-              buffer = event.buf,
-              silent = true,
-              desc = "Toggle Overseer",
-            })
-          end)
-        end,
-      })
 
       overseer.register_template({
         name = "skaffold dev",
