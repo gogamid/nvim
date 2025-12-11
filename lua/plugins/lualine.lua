@@ -65,7 +65,7 @@ return {
     "nvim-lualine/lualine.nvim",
     opts = {
       options = {
-        theme = "everforest", -- Use your current colorscheme's theme or set a specific one
+        theme = "auto", -- Use your current colorscheme's theme or set a specific one
         globalstatus = true, -- Use a single statusline for all windows
         icons_enabled = not is_ssh,
         component_separators = { left = "", right = "" },

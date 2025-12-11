@@ -35,6 +35,7 @@ return {
           "on_output_summarize",
           "on_exit_set_status",
           { "on_complete_notify", system = "unfocused" },
+          { "on_complete_dispose" },
           "unique",
         },
         default_neotest = {
@@ -46,6 +47,7 @@ return {
     keys = {
       { "<leader>tt", "<cmd>OverseerToggle<cr>", desc = "Tasks Open" },
       { "<leader>tr", "<cmd>OverseerRun<cr>", desc = "Run task" },
+      { "<leader>tq", "<cmd>OverseerQuickAction<cr>", desc = "OverseerQuickAction" },
     },
 
     config = function(_, opts)
@@ -70,13 +72,41 @@ return {
       })
 
       overseer.register_template({
+        name = "skaffold dev",
+        condition = {
+          dir = os.getenv("NEXUS_REPO"),
+        },
+        builder = function()
+          local service_dir = vim.fs.root(0, { "service.yaml" })
+          if service_dir == nil then
+            return nil
+          end
+          local service = vim.fs.basename(service_dir)
+          if service == nil then
+            return nil
+          end
+
+          return {
+            name = service .. "[dev]",
+            cmd = {
+              "make",
+              "-C",
+              service_dir,
+              "skaffold-dev-remotedev",
+              "ALIAS=" .. (os.getenv("USER") or "user"),
+            },
+          }
+        end,
+      })
+
+      overseer.register_template({
         name = "auth skaffold dev",
         condition = {
           dir = os.getenv("NEXUS_REPO"),
         },
         builder = function()
           return {
-            name = "auth skaffold dev",
+            name = "auth[dev]",
             cmd = {
               "make",
               "-C",
