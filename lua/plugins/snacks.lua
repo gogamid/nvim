@@ -327,7 +327,11 @@ return {
       },
     },
     explorer = { enabled = false },
-    indent = { enabled = true },
+    indent = {
+      indent = {
+        char = "",
+      },
+    },
     scope = { enabled = true },
     scroll = { enabled = false },
     -- Auto-show LSP references and quickly navigate between them

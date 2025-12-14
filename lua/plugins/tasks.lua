@@ -39,8 +39,8 @@ return {
           { "on_output_quickfix", open_on_exit = "failure", close = true },
         },
         default_neotest = {
-          "default",
           { "on_complete_notify", system = "unfocused", on_change = true },
+          "default",
         },
       },
     },

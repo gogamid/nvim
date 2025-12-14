@@ -27,7 +27,7 @@ return {
     opts = {
       update_interval = 1000,
       set_dark_mode = function()
-        vim.cmd("colorscheme rose-pine")
+        vim.cmd("colorscheme catppuccin-mocha")
 
         -- everforest("dark", "soft")
         --
@@ -46,11 +46,61 @@ return {
         -- vim.api.nvim_set_hl(0, "LspCodeLensSeparator", { link = "Conceal" })
       end,
       set_light_mode = function()
-        vim.cmd("colorscheme rose-pine-dawn")
+        vim.cmd("colorscheme catppuccin-latte")
         -- everforest("light", "medium")
 
         -- vim.api.nvim_set_hl(0, "Visual", { bg = "#A7C080", fg = "#2B3339" })
       end,
+    },
+  },
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    opts = {
+      transparent_background = true, -- disables setting the background color.
+      color_overrides = {
+        all = {
+          rosewater = "#efd3cd",
+          flamingo = "#ecc8c8",
+          pink = "#e9c9e0",
+          mauve = "#c4aee1",
+          red = "#df99aa",
+          maroon = "#e2a5ae",
+          peach = "#ebb99b",
+          yellow = "#eee3cd",
+          green = "#6d9c6a",
+          teal = "#a5ded4",
+          sky = "#9dd8e3",
+          sapphire = "#89c4e0",
+          blue = "#96b9f1",
+          lavender = "#b6bff5",
+          text = "#afb4bc",
+          subtext1 = "#bac2de",
+          subtext0 = "#a6adc8",
+          overlay2 = "#9399b2",
+          overlay1 = "#7f849c",
+          overlay0 = "#6c7086",
+          surface2 = "#585b70",
+          surface1 = "#45475a",
+          surface0 = "#313244",
+          base = "#19191f",
+          mantle = "#1b1b20",
+          crust = "#ffffff",
+        },
+      },
+      custom_highlights = function(c)
+        return {
+          Comment = { fg = c.overlay0 },
+        }
+      end,
+      highlight_overrides = {
+        mocha = function(c)
+          return {
+            SnacksIndentScope = { fg = c.overlay1 },
+          }
+        end,
+      },
     },
   },
 }
