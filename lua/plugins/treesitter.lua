@@ -16,7 +16,7 @@ return {
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "markdown",
-          "go",
+          -- "go",
           "lua",
         },
         ignore_install = {},
@@ -54,6 +54,18 @@ return {
           },
         },
       })
+      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+      parser_config.go = {
+        install_info = {
+          url = "/Users/gamidli/personal/tree-sitter-go", -- your local path
+          files = { "src/parser.c" },
+          -- optional entries:
+          branch = "master",
+          generate_requires_npm = false,
+          requires_generate_from_grammar = false, -- you have pre-generated src/parser.c
+        },
+        filetype = "go", -- Gupta files typically use .apt extension
+      }
     end,
   },
 }
