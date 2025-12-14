@@ -115,3 +115,7 @@
            )
   )
 )
+
+((comment) @injection.content
+ (#any-contains? @injection.content "//go:generate" "//go:build" "//go:embed" "//line" "//go:noescape")
+ (#set! injection.language "bash"))
