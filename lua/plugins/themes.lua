@@ -1,23 +1,8 @@
----@param background? "dark" | "light
----@param contrast? "hard" | "medium" | "soft"
-local function everforest(background, contrast)
-  if not background then
-    background = "dark"
-  end
-  if not contrast then
-    contrast = "soft"
-  end
-
-  vim.cmd("set background=" .. background)
-  vim.cmd(string.format("let g:everforest_background='%s'", contrast))
-  vim.cmd([[
-    let g:everforest_enable_italic = 1
-    let g:everforest_disable_italic_comment = 1
-
-    colorscheme everforest
-  ]])
+local function set_transparent_background(val)
+  local opts = require("catppuccin").options
+  opts.transparent_background = val
+  require("catppuccin").setup(opts)
 end
-
 return {
   { "sainnhe/everforest" },
   { "rebelot/kanagawa.nvim" },
@@ -27,29 +12,12 @@ return {
     opts = {
       update_interval = 1000,
       set_dark_mode = function()
+        set_transparent_background(true)
         vim.cmd("colorscheme catppuccin-mocha")
-
-        -- everforest("dark", "soft")
-        --
-        -- vim.cmd("highlight Normal guibg=none")
-        -- vim.cmd("highlight NormalNC guibg=none")
-        -- vim.cmd("highlight NormalSB guibg=none")
-        -- vim.cmd("highlight NormalFloat guibg=none")
-        -- vim.cmd("highlight Pmenu guibg=none")
-        -- vim.cmd("highlight FloatBorder guibg=none")
-        -- vim.cmd("highlight NonText guibg=none")
-        -- vim.cmd("highlight Normal ctermbg=none")
-        -- vim.cmd("highlight NonText ctermbg=none")
-        -- vim.cmd("highlight EndOfBuffer guibg=none ctermbg=none")
-        --
-        -- vim.api.nvim_set_hl(0, "LspCodeLens", { link = "Conceal" })
-        -- vim.api.nvim_set_hl(0, "LspCodeLensSeparator", { link = "Conceal" })
       end,
       set_light_mode = function()
+        set_transparent_background(false)
         vim.cmd("colorscheme catppuccin-latte")
-        -- everforest("light", "medium")
-
-        -- vim.api.nvim_set_hl(0, "Visual", { bg = "#A7C080", fg = "#2B3339" })
       end,
     },
   },
@@ -58,9 +26,8 @@ return {
     name = "catppuccin",
     priority = 1000,
     opts = {
-      transparent_background = true, -- disables setting the background color.
       color_overrides = {
-        all = {
+        mocha = {
           rosewater = "#efd3cd",
           flamingo = "#ecc8c8",
           pink = "#e9c9e0",
@@ -88,6 +55,34 @@ return {
           mantle = "#19191f",
           crust = "#ffffff",
         },
+        latte = {
+          rosewater = "#dc8a78",
+          flamingo = "#dd7878",
+          pink = "#ea76cb",
+          mauve = "#8839ef",
+          red = "#d20f39",
+          maroon = "#e64553",
+          peach = "#fe640b",
+          yellow = "#df8e1d",
+          green = "#40a02b",
+          teal = "#179299",
+          sky = "#04a5e5",
+          sapphire = "#209fb5",
+          blue = "#1e66f5",
+          lavender = "#7287fd",
+          text = "#4c4f69",
+          subtext1 = "#5c5f77",
+          subtext0 = "#6c6f85",
+          overlay2 = "#7c7f93",
+          overlay1 = "#8c8fa1",
+          overlay0 = "#9ca0b0",
+          surface2 = "#acb0be",
+          surface1 = "#bcc0cc",
+          surface0 = "#ccd0da",
+          base = "#eff1f5",
+          mantle = "#e6e9ef",
+          crust = "#dce0e8",
+        },
       },
       custom_highlights = function(c)
         return {
@@ -98,6 +93,8 @@ return {
         mocha = function(c)
           return {
             SnacksIndentScope = { fg = c.overlay1 },
+            LspCodeLens = { fg = c.surface1 },
+            LspCodeLensSeparator = { fg = c.surface2 },
           }
         end,
       },
