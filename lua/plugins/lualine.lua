@@ -43,7 +43,7 @@ local function formatter()
 end
 
 local function lsp()
-  local icon = is_ssh and "lsp:" or "  "
+  local icon = is_ssh and "lsp:" or " "
 
   local client_names = {}
   for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
