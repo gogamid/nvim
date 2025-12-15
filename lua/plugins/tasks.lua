@@ -36,11 +36,11 @@ return {
 
           { "open_output", direction = "dock", on_complete = "never", on_start = "never", focus = false },
           "unique",
-          { "on_output_quickfix", open_on_exit = "failure", close = true },
+          { "on_output_quickfix", close = true },
         },
         default_neotest = {
-          { "on_complete_notify", system = "unfocused", on_change = true },
           "default",
+          { "on_complete_notify", system = "unfocused", on_change = true },
         },
       },
     },
