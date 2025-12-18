@@ -187,7 +187,7 @@ return {
         accept_word = "<C-o>",
         clear_suggestion = "<C-x>",
       },
-      ignore_filetypes = { "copilot-chat, opencode_ask" },
+      ignore_filetypes = { "copilot-chat, opencode_ask", "snacks_picker_input" },
       color = {
         suggestion_color = "#9198a1",
         cterm = 244,
