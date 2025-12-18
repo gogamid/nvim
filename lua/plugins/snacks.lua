@@ -7,15 +7,22 @@ local git_options = {
         require("diffview").open(args)
       end
     end,
+    ["codediff"] = function(picker)
+      local currentCommit = picker:current().commit
+      if currentCommit then
+        vim.cmd(string.format("CodeDiff main %s", currentCommit))
+      end
+    end,
     ["copy_pr_url"] = function(picker)
       local currentMsg = picker:current().msg
       if currentMsg then
         local pr_number = string.match(currentMsg, "Merged PR (%d+):")
         if pr_number then
-          local url = string.format("%s/%s", os.getenv("AZURE_PR_URL"), pr_number)
+          local url = os.getenv("AZURE_PR_URL") .. pr_number
           vim.fn.setreg("+", url)
+          vim.notify(string.format("PR URL copied: %s", url), vim.log.levels.INFO)
         else
-          print("PR number not found in message.")
+          vim.notify("PR number not found in message.", vim.log.levels.ERROR)
         end
       end
     end,
@@ -24,13 +31,10 @@ local git_options = {
       if currentMsg then
         local pr_number = string.match(currentMsg, "Merged PR (%d+):")
         if pr_number then
-          local url = string.format(
-            "https://dev.azure.com/schwarzit/lidl.wawi-core/_git/fd801c1d-643e-47f4-ad9d-2efc5db0fc03/pullrequest/%s",
-            pr_number
-          )
+          local url = os.getenv("AZURE_PR_URL") .. pr_number
           vim.fn.system({ "open", url })
         else
-          print("PR number not found in message.")
+          vim.notify("PR number not found in message.", vim.log.levels.ERROR)
         end
       end
     end,
