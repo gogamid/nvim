@@ -69,20 +69,6 @@ end, { desc = "Go to URL under cursor" })
 require("modules.bionic").setup({ prefix_length = 2, auto_activate = false, filetypes = { "markdown" } })
 vim.keymap.set("n", "<leader>uB", ":BionicToggle<CR>", { desc = "Toggle Bionic Read" })
 
--- Test environment toggle
-vim.keymap.set("n", "<leader>te", function()
-  vim.env.ORACLE_HOME = vim.env.HOMEBREW_PREFIX
-  if vim.env.GOARCH == "amd64" then
-    vim.env.GOARCH = nil
-    vim.env.CGO_ENABLED = nil
-    print("Toggled to: ORACLE_HOME=" .. (vim.env.ORACLE_HOME or "nil") .. " GOARCH=nil CGO_ENABLED=nil")
-  else
-    vim.env.GOARCH = "amd64"
-    vim.env.CGO_ENABLED = "1"
-    print("Toggled to: ORACLE_HOME=" .. (vim.env.ORACLE_HOME or "nil") .. " GOARCH=amd64 CGO_ENABLED=1")
-  end
-end, { desc = "Toggle GOARCH and CGO_ENABLED (always set ORACLE_HOME)" })
-
 --stylua: ignore
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)

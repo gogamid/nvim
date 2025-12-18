@@ -640,20 +640,6 @@ return {
       desc = "Delete Buffer",
     },
     {
-      "<leader>z",
-      function()
-        Snacks.zen()
-      end,
-      desc = "Toggle Zen Mode",
-    },
-    {
-      "<leader>Z",
-      function()
-        Snacks.zen.zoom()
-      end,
-      desc = "Toggle Zoom",
-    },
-    {
       "<leader>cR",
       function()
         Snacks.rename.rename_file()
@@ -698,19 +684,44 @@ return {
         vim.print = _G.dd -- Override print to use snacks for `:=` command
 
         -- Create some toggle mappings
-        Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
-        Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
-        Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
-        Snacks.toggle.diagnostics():map("<leader>ud")
-        Snacks.toggle.line_number():map("<leader>ul")
-        -- Snacks.toggle
-        --   .option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
-        --   :map("<leader>uC")
-        Snacks.toggle.treesitter():map("<leader>uT")
+        Snacks.toggle
+          .new({
+            id = "goarch",
+            name = "GOARCH and CGO_ENABLED",
+            get = function()
+              return vim.env.GOARCH
+            end,
+            set = function(state)
+              if state then
+                vim.env.ORACLE_HOME = vim.env.HOMEBREW_PREFIX
+                vim.env.GOARCH = "amd64"
+                vim.env.CGO_ENABLED = "1"
+              else
+                vim.env.ORACLE_HOME = vim.env.HOMEBREW_PREFIX
+                vim.env.GOARCH = nil
+                vim.env.CGO_ENABLED = nil
+              end
+            end,
+          })
+          :map("<leader>ua")
+        Snacks.toggle.animate():map("<leader>uA")
         Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
+        Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
+        Snacks.toggle.line_number():map("<leader>ul")
+        Snacks.toggle.scroll():map("<leader>us")
+        Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>uS")
+        Snacks.toggle.diagnostics():map("<leader>ud")
+        Snacks.toggle.treesitter():map("<leader>ut")
         Snacks.toggle.inlay_hints():map("<leader>uh")
-        Snacks.toggle.indent():map("<leader>ug")
+        Snacks.toggle.indent():map("<leader>ui")
+        Snacks.toggle.profiler():map("<leader>up")
+        Snacks.toggle.profiler_highlights():map("<leader>uP")
         Snacks.toggle.dim():map("<leader>uD")
+        Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
+        Snacks.toggle.words():map("<leader>uW")
+        Snacks.toggle.zoom():map("<leader>uz")
+        Snacks.toggle.zen():map("<leader>uZ")
+        Snacks.toggle.zen():map("<leader>uZ")
       end,
     })
   end,

@@ -7,14 +7,27 @@ return {
           display_mode = "border",
         },
         parser = {
-          delimiter = { default = ";", ft = { tsv = "\t" } },
+          delimiter = {
+            ft = {
+              csv = ";",
+              tsv = "\t",
+            },
+            fallbacks = {
+              ",",
+              "\t",
+              ";",
+              "|",
+              ":",
+              " ",
+            },
+          },
         },
       })
     end,
     ft = { "csv" },
     keys = {
       {
-        "<leader>ue",
+        "<leader>uc",
         function()
           require("csvview").toggle()
         end,

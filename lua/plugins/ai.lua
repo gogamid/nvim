@@ -174,11 +174,11 @@ return {
     enabled = true,
     keys = {
       {
-        "<leader>aS",
+        "<leader>uC",
         function()
           require("supermaven-nvim.api").toggle()
         end,
-        desc = "Toggle Supermaven",
+        desc = "Toggle Supermaven Completion",
       },
     },
     opts = {
