@@ -1,44 +1,3 @@
-local function git_log_by_author()
-  -- First, create a picker to select from git authors
-  local function get_git_authors()
-    local result = vim.fn.systemlist("git shortlog -sne --all")
-    local authors = {}
-    for _, line in ipairs(result) do
-      -- Parse "123  Author Name <email@example.com>" format
-      local count, author = line:match("^%s*(%d+)%s+(.+)$")
-      if author then
-        table.insert(authors, {
-          text = author,
-          author = author,
-          count = tonumber(count) or 0,
-        })
-      end
-    end
-    return authors
-  end
-
-  Snacks.picker({
-    items = get_git_authors(),
-    format = function(item)
-      return {
-        { tostring(item.count), "Number" },
-        { "  ", "Normal" },
-        { item.author, "String" },
-      }
-    end,
-    title = "Select Git Author",
-    layout = { preset = "select" },
-    confirm = function(picker, item)
-      picker:close()
-      -- Now show git log for selected author
-      Snacks.picker.git_log({
-        author = item.author,
-        sort = { fields = { "date:desc", "score:desc", "idx" } },
-      })
-    end,
-  })
-end
-
 local git_options = {
   actions = {
     ["diffview"] = function(picker)
@@ -413,7 +372,6 @@ return {
       end,
       desc = "Lazygit",
     },
-    { "<leader>ga", git_log_by_author, desc = "Author Logs" },
     {
       "<leader>gl",
       function()
