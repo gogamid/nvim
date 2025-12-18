@@ -13,7 +13,7 @@ return {
       { "<leader>q", "", desc = "session", mode = { "n", "v" } },
       { "<leader>r", "", desc = "refactor(todo)", mode = { "n", "v" } },
       { "<leader>t", "", desc = "task(todo)", mode = { "n", "v" } },
-      { "<leader>u", "", desc = "enable/disable(todo)", mode = { "n", "v" } },
+      { "<leader>u", "", desc = "toggles", mode = { "n", "v" } },
       { "<leader>v", "", desc = "visual(todo)", mode = { "n", "v" } },
       { "<leader>w", "", desc = "window(todo)", mode = { "n", "v" } },
       { "<leader>b", "", desc = "buffer(todo)", mode = { "n", "v" } },
