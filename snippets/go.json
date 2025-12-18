@@ -1,6 +1,6 @@
 {
   "todo gamidli": {
-    "prefix": "todo gamidli",
+    "prefix": "todo",
     "body": ["// TODO(ig): "]
   },
 
@@ -73,8 +73,8 @@
       "}"
     ]
   },
-  "pager all pages": {
-    "prefix": "pagerAll",
+  "new pager": {
+    "prefix": "new pager",
     "body": [
       "${4:pager} := paging.NewPager(",
       "\t(*${1:pb}.List${2:Item}Response).Get${2:Item},",
@@ -94,8 +94,8 @@
       "}"
     ]
   },
-  "jsonprintf": {
-    "prefix": "jsonprintf",
+  "print json": {
+    "prefix": "print json",
     "body": [
       "${1:item}Json, _ := json.MarshalIndent(${1:item}, \"\", \"  \")",
       "fmt.Fprintf(os.Stderr, \"DEBUGPRINT: ${1:item}=%s\\n\", string(${1:item}Json))"
@@ -146,8 +146,8 @@
       "}"
     ]
   },
-  "service call and mock": {
-    "prefix": "service call and mock",
+  "service client": {
+    "prefix": "service client",
     "body": [
       "type ${1:serviceName}ServiceClient interface {",
       "\t${2:Method1}(ctx context.Context, request *${3:PackageName}.${2:Method1}Request, opts ...grpc.CallOption) (*${3:PackageName}.${2:Method1}Response, error)",
@@ -231,6 +231,17 @@
       "func pointTo[element any](s element) *element {",
       "\treturn &s",
       "}"
+    ]
+  },
+  "sortFunc": {
+    "prefix": "sortFunc",
+    "body": [
+      "slices.SortFunc(${1:slice}, func(a, b ${2:type}) int {",
+      "\treturn cmp.Or(",
+      "\t\tcmp.Compare(a.${3:Field}, b.${3:Field}),",
+      "\t\t$0",
+      "\t)",
+      "})"
     ]
   }
 }
