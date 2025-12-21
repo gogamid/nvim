@@ -33,6 +33,7 @@ local cache = {
   key_lines = {}, -- key -> line number mapping
 }
 
+-- language: scheme
 local ts_translation_query = [[
 (
   (call_expression
@@ -44,6 +45,7 @@ local ts_translation_query = [[
 )
 ]]
 
+-- language: scheme
 local go_translation_query = [[
 ((index_expression 
   operand: (identifier) @ident 
