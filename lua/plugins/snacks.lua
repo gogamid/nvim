@@ -8,10 +8,14 @@ local git_options = {
       end
     end,
     ["codediff"] = function(picker)
-      local currentCommit = picker:current().commit
-      if currentCommit then
-        vim.cmd(string.format("CodeDiff main %s", currentCommit))
+      local curr = picker:current().commit
+      if not curr then
+        err("No commit selected", "codediff")
+        return
       end
+      local prev = vim.trim(vim.fn.system("git rev-parse --short " .. curr .. "^"))
+      prev = prev:match("[a-f0-9]+")
+      vim.cmd(string.format("CodeDiff %s %s", prev, curr))
     end,
     ["copy_pr_url"] = function(picker)
       local currentMsg = picker:current().msg
@@ -20,9 +24,9 @@ local git_options = {
         if pr_number then
           local url = os.getenv("AZURE_PR_URL") .. pr_number
           vim.fn.setreg("+", url)
-          vim.notify(string.format("PR URL copied: %s", url), vim.log.levels.INFO)
+          info(string.format("PR URL copied: %s", url))
         else
-          vim.notify("PR number not found in message.", vim.log.levels.ERROR)
+          err("PR number not found in message.")
         end
       end
     end,
@@ -34,7 +38,7 @@ local git_options = {
           local url = os.getenv("AZURE_PR_URL") .. pr_number
           vim.fn.system({ "open", url })
         else
-          vim.notify("PR number not found in message.", vim.log.levels.ERROR)
+          err("PR number not found in message.")
         end
       end
     end,
@@ -42,7 +46,7 @@ local git_options = {
   win = {
     input = {
       keys = {
-        ["<CR>"] = { "diffview", desc = "Diffview this commit", mode = { "n", "i" } },
+        ["<CR>"] = { "codediff", desc = "Diffview this commit", mode = { "n", "i" } },
         ["<C-c>"] = { "git_checkout", desc = "Checkout commit", mode = { "n", "i" } },
         ["<C-y>"] = { "copy_pr_url", desc = "Copy PR URL", mode = { "n", "i" } },
         ["<C-o>"] = { "open_pr", desc = "Open PR", mode = { "n", "i" } },
@@ -674,16 +678,6 @@ return {
     vim.api.nvim_create_autocmd("User", {
       pattern = "VeryLazy",
       callback = function()
-        -- Setup some globals for debugging (lazy-loaded)
-        _G.dd = function(...)
-          Snacks.debug.inspect(...)
-        end
-        _G.bt = function()
-          Snacks.debug.backtrace()
-        end
-        vim.print = _G.dd -- Override print to use snacks for `:=` command
-
-        -- Create some toggle mappings
         Snacks.toggle
           .new({
             id = "goarch",
@@ -711,7 +705,23 @@ return {
         Snacks.toggle.scroll():map("<leader>us")
         Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>uS")
         Snacks.toggle.diagnostics():map("<leader>ud")
-        Snacks.toggle.treesitter():map("<leader>ut")
+        Snacks.toggle.treesitter():map("<leader>uT")
+        Snacks.toggle
+          .new({
+            id = "treesitter-context",
+            name = "Treesitter Context",
+            get = function()
+              return require("treesitter-context").enabled()
+            end,
+            set = function(state)
+              if state then
+                require("treesitter-context").enable()
+              else
+                require("treesitter-context").disable()
+              end
+            end,
+          })
+          :map("<leader>ut")
         Snacks.toggle.inlay_hints():map("<leader>uh")
         Snacks.toggle.indent():map("<leader>ui")
         Snacks.toggle.profiler():map("<leader>up")
