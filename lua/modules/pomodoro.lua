@@ -1,9 +1,11 @@
+local api = vim.api
 local actions = {
   resume = "Resume Pomodoro",
   stop = "Stop Pomodoro",
   short_break = "Short Break",
   long_break = "Long break",
   work = "Work",
+  stats = "Stats",
 }
 
 local phase = {
@@ -173,6 +175,16 @@ local function setInterval()
   timer = t
 end
 
+local open_stats = function()
+  local res = require("plenary.window.float").centered({
+    winblend = 0,
+    percentage = 0.8,
+  })
+  vim.bo[res.bufnr].filetype = "pomodorostats"
+  vim.bo[res.bufnr].modifiable = false
+  api.nvim_buf_set_keymap(res.bufnr, "n", "q", ":q<CR>", { noremap = true, silent = true })
+end
+
 local handleAction = function(action)
   if action == actions.resume then
     load_state()
@@ -200,6 +212,8 @@ local handleAction = function(action)
     state.start = os.time()
     state.elapsed = 0
     notinfo("Focus!")
+  elseif action == actions.stats then
+    open_stats()
   end
 end
 

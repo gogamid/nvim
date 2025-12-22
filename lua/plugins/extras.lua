@@ -5,6 +5,12 @@ return {
   { "kmonad/kmonad-vim" },
   { "rafamadriz/friendly-snippets" },
   {
+    "nvzone/typr",
+    dependencies = "nvzone/volt",
+    opts = {},
+    cmd = { "Typr", "TyprStats" },
+  },
+  {
     "folke/lazydev.nvim",
     ft = "lua", -- only load on lua files
     opts = {
