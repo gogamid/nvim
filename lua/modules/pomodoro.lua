@@ -27,7 +27,7 @@ local opts = {
 
 local M = {}
 
-local state_file = vim.fs.joinpath(opts.dir, "tate.json")
+local state_file = vim.fs.joinpath(opts.dir, "state.json")
 
 local state = {
   phase = phase.UNKNOWN,
