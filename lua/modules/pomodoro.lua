@@ -16,12 +16,12 @@ local phase = {
 }
 
 local opts = {
-  work_interval = 25 * 60,
-  break_interval = 5 * 60,
-  long_interval = 15 * 60,
-  -- work_interval = 25,
-  -- break_interval = 5,
-  -- long_interval = 15,
+  -- work_interval = 25 * 60,
+  -- break_interval = 5 * 60,
+  -- long_interval = 15 * 60,
+  work_interval = 25,
+  break_interval = 5,
+  long_interval = 15,
   count = 4,
   refresh_interval_ms = 1 * 1000,
   dir = vim.fs.joinpath(vim.fn.stdpath("data"), "pomodoro"),
@@ -180,9 +180,46 @@ local open_stats = function()
     winblend = 0,
     percentage = 0.8,
   })
-  vim.bo[res.bufnr].filetype = "pomodorostats"
-  vim.bo[res.bufnr].modifiable = false
   api.nvim_buf_set_keymap(res.bufnr, "n", "q", ":q<CR>", { noremap = true, silent = true })
+
+  local volt = require("volt")
+  local ui = require("volt.ui")
+  volt.gen_data({
+    {
+      buf = res.bufnr,
+      xpad = 2,
+      ns = vim.api.nvim_create_namespace("progress"),
+      layout = {
+        {
+          name = "progress",
+          lines = function()
+            local progress = ui.progressbar({
+              w = 10,
+              val = 30,
+              icon = { on = "█", off = "░" },
+              hl = { on = "String", off = "Comment" },
+            })
+            -- Wrap the result properly
+            return { progress }
+          end,
+        },
+        {
+          name = "progress",
+          lines = function()
+            local progress = ui.progressbar({
+              w = 10,
+              val = 30,
+              icon = { on = "█", off = "░" },
+              hl = { on = "String", off = "Comment" },
+            })
+            -- Wrap the result properly
+            return { progress }
+          end,
+        },
+      },
+    },
+  })
+  volt.run(res.bufnr, { h = 10, w = 100 })
 end
 
 local handleAction = function(action)
@@ -238,6 +275,41 @@ M.menu = function()
   Snacks.picker.pick(snacks_opts)
 end
 
+local progressbar = function(ops)
+  ops = ops or {}
+
+  local width = ops.width or 20
+  local value = ops.value or 0
+  local on_icon = ops.on_icon or "█"
+  local off_icon = ops.off_icon or "░"
+
+  -- Clamp value between 0 and 100
+  value = math.max(0, math.min(100, value))
+
+  local activelen = math.floor(width * (value / 100))
+  local inactivelen = width - activelen
+
+  return string.rep(on_icon, activelen) .. string.rep(off_icon, inactivelen)
+end
+
+M.status_color = function()
+  if not state.phase or state.phase == phase.UNKNOWN then
+    return ""
+  end
+
+  local color = ""
+
+  if state.phase == phase.WORK then
+    color = "@diff.delta"
+  elseif state.phase == phase.BREAK then
+    color = "WarningMsg"
+  elseif state.phase == phase.LONG_BREAK then
+    color = "@diff.minus"
+  end
+
+  return color
+end
+
 M.status = function()
   if not state.phase or state.phase == phase.UNKNOWN then
     return ""
@@ -245,7 +317,14 @@ M.status = function()
 
   local progress = ""
   if state.phase == phase.WORK then
-    progress = math.floor(state.elapsed / opts.work_interval * 100) .. "perc"
+    local perc = math.floor(state.elapsed / opts.work_interval * 100)
+    progress = progressbar({ width = 20, value = perc })
+  elseif state.phase == phase.BREAK then
+    local perc = math.floor(state.elapsed / opts.break_interval * 100)
+    progress = progressbar({ width = 20, value = perc })
+  elseif state.phase == phase.LONG_BREAK then
+    local perc = math.floor(state.elapsed / opts.long_interval * 100)
+    progress = progressbar({ width = 20, value = perc })
   end
 
   local diff = state.elapsed

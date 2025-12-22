@@ -105,7 +105,13 @@ return {
           formatter,
           lsp,
           "%=",
-          require("modules.pomodoro").status,
+          {
+            require("modules.pomodoro").status,
+            color = function()
+              local c = require("modules.pomodoro").status_color()
+              return c
+            end,
+          },
         },
         -- "location"
         -- - `branch` (git branch)
