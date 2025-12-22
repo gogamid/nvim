@@ -144,3 +144,5 @@ vim.keymap.set("n", "<leader>uI", function()
   vim.cmd("InspectTree")
   vim.cmd("EditQuery")
 end, { desc = "Inspect and Edit Query" })
+
+vim.keymap.set("n", "<leader>p", require("modules.pomodoro").menu, { desc = "Pomodoro Menu" })
