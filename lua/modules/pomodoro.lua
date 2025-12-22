@@ -12,6 +12,13 @@ local noterr = function(msg, title)
   end)
 end
 
+local actions = {
+  resume = "Resume Pomodoro",
+  stop = "Stop Pomodoro",
+  short_break = "Short Break",
+  long_break = "Long break",
+  work = "Work",
+}
 local phase = {
   UNKNOWN = "",
   WORK = "work",
@@ -34,22 +41,22 @@ local state = {
   phase = phase.UNKNOWN,
   start = 0,
   now = 0,
+  elapsed = 0,
   completed = 0,
 }
 
 local timer = nil
 
-local save_state = function(st)
+local save_state = function()
   local path = vim.fn.expand(state_file)
-  local json = vim.fn.json_encode(st)
-
-  local ok, err = pcall(function()
-    vim.fn.writefile({ json }, path)
-  end)
-
-  if not ok then
-    vim.notify("Failed to save: " .. err, vim.log.levels.ERROR)
+  local json = vim.fn.json_encode(state)
+  local f = io.open(path, "w+")
+  if not f then
+    noterr("failed to write")
+    return
   end
+  f:write(json)
+  f:close()
 end
 
 local load_state = function()
@@ -66,50 +73,57 @@ local load_state = function()
   if not ok then
     noterr(err)
   end
-  if new_state.phase ~= "" then
+  if new_state and new_state ~= vim.NIL and new_state.phase ~= phase.UNKNOWN then
+    print("DEBUGPRINT[648]: pomodoro.lua:76: new_state.phase =" .. vim.inspect(new_state.phase))
+    new_state.elapsed = new_state.elapsed - (os.time() - new_state.now)
     state = new_state
   else
     state = {
       phase = phase.WORK,
       start = os.time(),
       now = os.time(),
+      elapsed = 0,
       completed = 0,
     }
   end
 end
 
 local update_state = function()
+  local delta = os.time() - state.now
+  state.elapsed = state.elapsed + delta
   state.now = os.time()
-  local diff = state.now - state.start
   if state.phase == phase.WORK then
-    if diff >= opts.work_interval then
+    if state.elapsed >= opts.work_interval then
       state.completed = state.completed + 1
       if state.completed >= opts.count then
-        state.completed = 0
         state.phase = phase.LONG_BREAK
         state.start = os.time()
+        state.completed = 0
+        state.elapsed = 0
         notinfo("Long break!")
       else
         state.phase = phase.BREAK
         state.start = os.time()
+        state.elapsed = 0
         notinfo("Short break!")
       end
     end
   elseif state.phase == phase.BREAK then
-    if diff >= opts.break_interval then
+    if state.elapsed >= opts.break_interval then
       state.phase = phase.WORK
       state.start = os.time()
+      state.elapsed = 0
       notinfo("Focus!")
     end
   elseif state.phase == phase.LONG_BREAK then
-    if diff >= opts.long_interval then
+    if state.elapsed >= opts.long_interval then
       state.phase = phase.WORK
       state.start = os.time()
+      state.elapsed = 0
       notinfo("Focus!")
     end
   end
-  notinfo(vim.inspect(state))
-  save_state(state)
+  save_state()
 end
 
 local function clearInterval()
@@ -122,32 +136,46 @@ local function clearInterval()
 end
 
 local function setInterval()
-  clearInterval()
   local t = vim.uv.new_timer()
   t:start(0, opts.refresh_interval_ms, vim.schedule_wrap(update_state))
   timer = t
 end
 
 local handleAction = function(action)
-  if action == "start" then
+  if action == actions.resume then
     load_state()
+    clearInterval()
     setInterval()
     notinfo("pomodoro started")
-  elseif action == "stop" then
+  elseif action == actions.stop then
     state.phase = phase.UNKNOWN
     state.start = os.time()
     save_state()
     clearInterval()
     notinfo("pomodoro stopped")
+  elseif action == actions.short_break then
+    state.phase = phase.BREAK
+    state.start = os.time()
+    state.elapsed = 0
+    notinfo("Short break!")
+  elseif action == actions.long_break then
+    state.phase = phase.LONG_BREAK
+    state.start = os.time()
+    state.elapsed = 0
+    notinfo("Long break!")
+  elseif action == actions.work then
+    state.phase = phase.WORK
+    state.start = os.time()
+    state.elapsed = 0
+    notinfo("Focus!")
   end
 end
 
 M.menu = function()
-  ---@type snacks.picker.finder.Item[]
-  local items = {
-    { text = "start", file = "start" },
-    { text = "stop", file = "stop" },
-  }
+  local items = {}
+  for _, v in pairs(actions) do
+    table.insert(items, { text = v, file = v })
+  end
   ---@type snacks.picker.Config
   local snacks_opts = {
     title = "Pomodoro actions",
@@ -168,7 +196,7 @@ M.status = function()
     return ""
   end
 
-  local diff = state.now - state.start
+  local diff = state.elapsed
   local duration = string.format("%d:%d:%d", diff / 360, diff / 60, diff)
   return string.format("%s %s %d/%d", state.phase, duration, state.completed, opts.count)
 end
