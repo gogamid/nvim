@@ -92,5 +92,16 @@
   "Table Keys": {
     "prefix": "keys",
     "body": "vim.tbl_keys(${1:table})"
+  },
+  "pcall": {
+    "prefix": "pcall",
+    "body": [
+      "local ok, ${1:result} = pcall(function()",
+      "  return ${2:func}",
+      "end)",
+      "if not ok then",
+      "  error(\"Error in ${1:result}: \" .. ${1:result})",
+      "end"
+    ]
   }
 }
