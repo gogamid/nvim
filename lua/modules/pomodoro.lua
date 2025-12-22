@@ -17,7 +17,7 @@ local opts = {
   break_interval = 5,
   long_interval = 15,
   count = 4,
-  refresh_interval_ms = 5 * 1000,
+  refresh_interval_ms = 1 * 1000,
 }
 
 local state = {
@@ -98,6 +98,8 @@ M.status = function()
     return ""
   end
 
-  return string.format("%s, %d/%d", state.phase, state.completed, opts.count)
+  local diff = state.now - state.start
+  local duration = string.format("%d:%d:%d", diff / 360, diff / 60, diff)
+  return string.format("%s %s %d/%d", state.phase, duration, state.completed, opts.count)
 end
 return M
