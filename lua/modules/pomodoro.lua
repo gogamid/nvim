@@ -44,28 +44,31 @@ local update_state = function()
   end
 end
 
--- Creating a simple setInterval wrapper
-local function setInterval()
-  local timer = vim.uv.new_timer()
-  timer:start(0, opts.refresh_interval_ms, vim.schedule_wrap(update_state))
-  return timer
+local function clearInterval()
+  if not state.timer then
+    return
+  end
+  state.timer:stop()
+  state.timer:close()
+  state.timer = nil
 end
 
--- And clearInterval
-local function clearInterval(timer)
-  timer:stop()
-  timer:close()
+local function setInterval()
+  clearInterval()
+  local timer = vim.uv.new_timer()
+  timer:start(0, opts.refresh_interval_ms, vim.schedule_wrap(update_state))
+  state.timer = timer
 end
 
 local handleAction = function(action)
   if action == "start" then
     state.phase = "work"
     state.start = os.time()
-    state.timer = setInterval()
+    setInterval()
   elseif action == "stop" then
     state.phase = nil
     state.start = os.time()
-    clearInterval(state.timer)
+    clearInterval()
   end
 end
 
@@ -88,5 +91,12 @@ M.menu = function()
     end,
   }
   Snacks.picker.pick(snacks_opts)
+end
+M.status = function()
+  if not state.phase then
+    return ""
+  end
+
+  return state.phase
 end
 return M

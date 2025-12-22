@@ -105,6 +105,7 @@ return {
           formatter,
           lsp,
           "%=",
+          require("modules.pomodoro").status,
         },
         -- "location"
         -- - `branch` (git branch)
