@@ -1,17 +1,3 @@
-local M = {}
-
-local notinfo = function(msg, title)
-  vim.schedule(function()
-    vim.notify(msg, vim.log.levels.INFO, { title = title })
-  end)
-end
-
-local noterr = function(msg, title)
-  vim.schedule(function()
-    vim.notify(vim.inspect(msg), vim.log.levels.ERROR, { title = title })
-  end)
-end
-
 local actions = {
   resume = "Resume Pomodoro",
   stop = "Stop Pomodoro",
@@ -19,6 +5,7 @@ local actions = {
   long_break = "Long break",
   work = "Work",
 }
+
 local phase = {
   UNKNOWN = "",
   WORK = "work",
@@ -38,7 +25,9 @@ local opts = {
   dir = vim.fs.joinpath(vim.fn.stdpath("data"), "pomodoro"),
 }
 
-local state_file = vim.fs.joinpath(opts.dir, "state.json")
+local M = {}
+
+local state_file = vim.fs.joinpath(opts.dir, "tate.json")
 
 local state = {
   phase = phase.UNKNOWN,
@@ -50,32 +39,67 @@ local state = {
 
 local timer = nil
 
+local function file_exists(file)
+  return vim.uv.fs_stat(file) ~= nil
+end
+
+local function read_file(file)
+  local fd = assert(io.open(file, "r"))
+  ---@type string
+  local data = fd:read("*a")
+  fd:close()
+  return data
+end
+
+local function write_file(file, contents)
+  local fd = assert(io.open(file, "w+"))
+  fd:write(contents)
+  fd:close()
+end
+
+local osnotify = function(msg)
+  local cmd = {
+    "osascript",
+    "-e",
+    'display notification "' .. msg .. '" with title "pomodoro"',
+  }
+  vim.schedule(function()
+    vim.system(cmd)
+  end)
+end
+
+local notinfo = function(msg, title)
+  vim.schedule(function()
+    vim.notify(msg, vim.log.levels.INFO, { title = title })
+  end)
+  osnotify(msg)
+end
+
 local save_state = function()
-  local path = vim.fn.expand(state_file)
-  local json = vim.fn.json_encode(state)
-  local f = io.open(path, "w+")
-  if not f then
-    noterr("failed to write")
-    return
+  local ok, json = pcall(function()
+    return vim.fn.json_encode(state)
+  end)
+  if not ok then
+    error("Error in json: " .. json)
   end
-  f:write(json)
-  f:close()
+
+  write_file(state_file, json)
 end
 
 local load_state = function()
-  local f = io.open(state_file, "r")
-  if not f then
-    noterr("failed to read")
+  if not file_exists(state_file) then
+    write_file(state_file, "")
   end
-  local content = f:read("*all")
-  f:close()
-  local new_state
-  local ok, err = pcall(function()
-    new_state = vim.fn.json_decode(content)
+
+  local content = read_file(state_file)
+
+  local ok, new_state = pcall(function()
+    return vim.fn.json_decode(content)
   end)
   if not ok then
-    noterr(err)
+    error("Error in new_state: " .. new_state)
   end
+
   if new_state and new_state ~= vim.NIL and new_state.phase ~= phase.UNKNOWN then
     new_state.elapsed = new_state.elapsed - (os.time() - new_state.now)
     state = new_state
@@ -137,7 +161,7 @@ local function clearInterval()
 end
 
 local function setInterval()
-  local t = vim.uv.new_timer()
+  local t = assert(vim.uv.new_timer())
   t:start(
     0,
     opts.refresh_interval_ms,
@@ -154,7 +178,7 @@ local handleAction = function(action)
     load_state()
     clearInterval()
     setInterval()
-    notinfo("pomodoro started")
+    notinfo("pomodoro started, Focus!")
   elseif action == actions.stop then
     state.phase = phase.UNKNOWN
     state.start = os.time()
@@ -181,6 +205,7 @@ end
 
 M.menu = function()
   local items = {}
+  table.sort(actions)
   for _, v in pairs(actions) do
     table.insert(items, { text = v, file = v })
   end
