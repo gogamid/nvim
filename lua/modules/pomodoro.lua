@@ -27,9 +27,12 @@ local phase = {
 }
 
 local opts = {
-  work_interval = 15,
-  break_interval = 5,
-  long_interval = 10,
+  work_interval = 25 * 60,
+  break_interval = 5 * 60,
+  long_interval = 15 * 60,
+  -- work_interval = 25,
+  -- break_interval = 5,
+  -- long_interval = 15,
   count = 4,
   refresh_interval_ms = 1 * 1000,
   dir = vim.fs.joinpath(vim.fn.stdpath("data"), "pomodoro"),
@@ -201,9 +204,20 @@ M.status = function()
     return ""
   end
 
+  local progress = ""
+  if state.phase == phase.WORK then
+    progress = math.floor(state.elapsed / opts.work_interval * 100) .. "perc"
+  end
+
   local diff = state.elapsed
-  local duration = string.format("%d:%d:%d", diff / 360, diff / 60, diff)
-  return string.format("%s %s %d/%d", state.phase, duration, state.completed, opts.count)
+  local hours = math.floor(diff / 3600)
+  local minutes = math.floor((diff % 3600) / 60)
+  local seconds = diff % 60
+  local elapsed = string.format("%d:%02d:%02d", hours, minutes, seconds)
+
+  local count = string.format("%d/%d", state.completed, opts.count)
+
+  return string.format("%s %s %s %s", state.phase, progress, elapsed, count)
 end
 
 return M
