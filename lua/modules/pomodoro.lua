@@ -12,6 +12,13 @@ local err = function(msg, title)
   end)
 end
 
+local phase = {
+  UNKNOWN = "",
+  WORK = "work",
+  BREAK = "break",
+  LONG_BREAK = "long break",
+}
+
 local opts = {
   work_interval = 25,
   break_interval = 5,
@@ -21,7 +28,7 @@ local opts = {
 }
 
 local state = {
-  phase = nil, -- work | break | long_break
+  phase = phase.UNKNOWN,
   start = nil,
   now = nil,
   completed = 0,
@@ -31,15 +38,26 @@ local state = {
 local update_state = function()
   state.now = os.time()
   local diff = state.now - state.start
-  if state.phase == "work" then
+  if state.phase == phase.WORK then
     if diff >= opts.work_interval then
       state.completed = state.completed + 1
-      state.phase = "break"
+      if state.completed >= opts.count then
+        state.completed = 0
+        state.phase = phase.LONG_BREAK
+        state.start = os.time()
+      else
+        state.phase = phase.BREAK
+        state.start = os.time()
+      end
+    end
+  elseif state.phase == phase.BREAK then
+    if diff >= opts.break_interval then
+      state.phase = phase.WORK
       state.start = os.time()
     end
-  elseif state.phase == "break" then
-    if diff >= opts.break_interval then
-      state.phase = "work"
+  elseif state.phase == phase.LONG_BREAK then
+    if diff >= opts.long_interval then
+      state.phase = phase.WORK
       state.start = os.time()
     end
   end
@@ -63,11 +81,11 @@ end
 
 local handleAction = function(action)
   if action == "start" then
-    state.phase = "work"
+    state.phase = phase.WORK
     state.start = os.time()
     setInterval()
   elseif action == "stop" then
-    state.phase = nil
+    state.phase = phase.UNKNOWN
     state.start = os.time()
     clearInterval()
   end
@@ -94,7 +112,7 @@ M.menu = function()
   Snacks.picker.pick(snacks_opts)
 end
 M.status = function()
-  if not state.phase then
+  if not state.phase or state.phase == phase.UNKNOWN then
     return ""
   end
 
