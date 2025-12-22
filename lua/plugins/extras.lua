@@ -4,4 +4,15 @@ return {
   { "MunifTanjim/nui.nvim" },
   { "kmonad/kmonad-vim" },
   { "rafamadriz/friendly-snippets" },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        "lazy.nvim",
+        "snacks.nvim",
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
+  },
 }
