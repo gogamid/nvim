@@ -74,7 +74,6 @@ local load_state = function()
     noterr(err)
   end
   if new_state and new_state ~= vim.NIL and new_state.phase ~= phase.UNKNOWN then
-    print("DEBUGPRINT[648]: pomodoro.lua:76: new_state.phase =" .. vim.inspect(new_state.phase))
     new_state.elapsed = new_state.elapsed - (os.time() - new_state.now)
     state = new_state
   else
@@ -123,7 +122,6 @@ local update_state = function()
       notinfo("Focus!")
     end
   end
-  save_state()
 end
 
 local function clearInterval()
@@ -137,7 +135,14 @@ end
 
 local function setInterval()
   local t = vim.uv.new_timer()
-  t:start(0, opts.refresh_interval_ms, vim.schedule_wrap(update_state))
+  t:start(
+    0,
+    opts.refresh_interval_ms,
+    vim.schedule_wrap(function()
+      update_state()
+      save_state()
+    end)
+  )
   timer = t
 end
 
