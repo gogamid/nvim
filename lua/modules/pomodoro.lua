@@ -23,6 +23,7 @@ local opts = {
 local state = {
   phase = nil, -- work | break | long_break
   start = nil,
+  now = nil,
   completed = 0,
   timer = nil,
 }
@@ -97,6 +98,6 @@ M.status = function()
     return ""
   end
 
-  return state.phase
+  return string.format("%s, %d/%d", state.phase, state.completed, opts.count)
 end
 return M
