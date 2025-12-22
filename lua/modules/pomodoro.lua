@@ -1,12 +1,12 @@
 local M = {}
 
-local info = function(msg, title)
+local notinfo = function(msg, title)
   vim.schedule(function()
     vim.notify(msg, vim.log.levels.INFO, { title = title })
   end)
 end
 
-local err = function(msg, title)
+local noterr = function(msg, title)
   vim.schedule(function()
     vim.notify(vim.inspect(msg), vim.log.levels.ERROR, { title = title })
   end)
@@ -25,15 +25,58 @@ local opts = {
   long_interval = 10,
   count = 4,
   refresh_interval_ms = 1 * 1000,
+  dir = vim.fs.joinpath(vim.fn.stdpath("data"), "pomodoro"),
 }
+
+local state_file = vim.fs.joinpath(opts.dir, "state.json")
 
 local state = {
   phase = phase.UNKNOWN,
-  start = nil,
-  now = nil,
+  start = 0,
+  now = 0,
   completed = 0,
-  timer = nil,
 }
+
+local timer = nil
+
+local save_state = function(st)
+  local path = vim.fn.expand(state_file)
+  local json = vim.fn.json_encode(st)
+
+  local ok, err = pcall(function()
+    vim.fn.writefile({ json }, path)
+  end)
+
+  if not ok then
+    vim.notify("Failed to save: " .. err, vim.log.levels.ERROR)
+  end
+end
+
+local load_state = function()
+  local f = io.open(state_file, "r")
+  if not f then
+    noterr("failed to read")
+  end
+  local content = f:read("*all")
+  f:close()
+  local new_state
+  local ok, err = pcall(function()
+    new_state = vim.fn.json_decode(content)
+  end)
+  if not ok then
+    noterr(err)
+  end
+  if new_state.phase ~= "" then
+    state = new_state
+  else
+    state = {
+      phase = phase.WORK,
+      start = os.time(),
+      now = os.time(),
+      completed = 0,
+    }
+  end
+end
 
 local update_state = function()
   state.now = os.time()
@@ -45,55 +88,57 @@ local update_state = function()
         state.completed = 0
         state.phase = phase.LONG_BREAK
         state.start = os.time()
-        info("Long break!")
+        notinfo("Long break!")
       else
         state.phase = phase.BREAK
         state.start = os.time()
-        info("Short break!")
+        notinfo("Short break!")
       end
     end
   elseif state.phase == phase.BREAK then
     if diff >= opts.break_interval then
       state.phase = phase.WORK
       state.start = os.time()
-      info("Focus!")
+      notinfo("Focus!")
     end
   elseif state.phase == phase.LONG_BREAK then
     if diff >= opts.long_interval then
       state.phase = phase.WORK
       state.start = os.time()
-      info("Focus!")
+      notinfo("Focus!")
     end
   end
+  notinfo(vim.inspect(state))
+  save_state(state)
 end
 
 local function clearInterval()
-  if not state.timer then
+  if not timer then
     return
   end
-  state.timer:stop()
-  state.timer:close()
-  state.timer = nil
+  timer:stop()
+  timer:close()
+  timer = nil
 end
 
 local function setInterval()
   clearInterval()
-  local timer = vim.uv.new_timer()
-  timer:start(0, opts.refresh_interval_ms, vim.schedule_wrap(update_state))
-  state.timer = timer
+  local t = vim.uv.new_timer()
+  t:start(0, opts.refresh_interval_ms, vim.schedule_wrap(update_state))
+  timer = t
 end
 
 local handleAction = function(action)
   if action == "start" then
-    state.phase = phase.WORK
-    state.start = os.time()
+    load_state()
     setInterval()
-    info("pomodoro started")
+    notinfo("pomodoro started")
   elseif action == "stop" then
     state.phase = phase.UNKNOWN
     state.start = os.time()
+    save_state()
     clearInterval()
-    info("pomodoro stopped")
+    notinfo("pomodoro stopped")
   end
 end
 
