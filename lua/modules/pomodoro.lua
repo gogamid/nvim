@@ -24,15 +24,11 @@ local state = {
   phase = nil, -- work | break | long_break
   start = nil,
   completed = 0,
+  timer = nil,
 }
 
 local update_state = function()
-  if state.phase == nil then
-    state.phase = "work"
-    state.start = os.time()
-  end
   state.now = os.time()
-
   local diff = state.now - state.start
   if state.phase == "work" then
     if diff >= opts.work_interval then
@@ -48,19 +44,28 @@ local update_state = function()
   end
 end
 
-local start = function()
-  local timer = vim.loop.new_timer()
+-- Creating a simple setInterval wrapper
+local function setInterval()
+  local timer = vim.uv.new_timer()
+  timer:start(0, opts.refresh_interval_ms, vim.schedule_wrap(update_state))
+  return timer
+end
 
-  local function on_tick()
-    update_state()
-  end
-
-  timer:start(0, opts.refresh_interval_ms, vim.schedule_wrap(on_tick))
+-- And clearInterval
+local function clearInterval(timer)
+  timer:stop()
+  timer:close()
 end
 
 local handleAction = function(action)
   if action == "start" then
-    start()
+    state.phase = "work"
+    state.start = os.time()
+    state.timer = setInterval()
+  elseif action == "stop" then
+    state.phase = nil
+    state.start = os.time()
+    clearInterval(state.timer)
   end
 end
 
