@@ -2,7 +2,7 @@ local M = {}
 
 local info = function(msg, title)
   vim.schedule(function()
-    vim.notify(vim.inspect(msg), vim.log.levels.INFO, { title = title })
+    vim.notify(msg, vim.log.levels.INFO, { title = title })
   end)
 end
 
@@ -20,9 +20,9 @@ local phase = {
 }
 
 local opts = {
-  work_interval = 25,
+  work_interval = 15,
   break_interval = 5,
-  long_interval = 15,
+  long_interval = 10,
   count = 4,
   refresh_interval_ms = 1 * 1000,
 }
@@ -45,20 +45,24 @@ local update_state = function()
         state.completed = 0
         state.phase = phase.LONG_BREAK
         state.start = os.time()
+        info("Long break!")
       else
         state.phase = phase.BREAK
         state.start = os.time()
+        info("Short break!")
       end
     end
   elseif state.phase == phase.BREAK then
     if diff >= opts.break_interval then
       state.phase = phase.WORK
       state.start = os.time()
+      info("Focus!")
     end
   elseif state.phase == phase.LONG_BREAK then
     if diff >= opts.long_interval then
       state.phase = phase.WORK
       state.start = os.time()
+      info("Focus!")
     end
   end
 end
@@ -84,10 +88,12 @@ local handleAction = function(action)
     state.phase = phase.WORK
     state.start = os.time()
     setInterval()
+    info("pomodoro started")
   elseif action == "stop" then
     state.phase = phase.UNKNOWN
     state.start = os.time()
     clearInterval()
+    info("pomodoro stopped")
   end
 end
 
