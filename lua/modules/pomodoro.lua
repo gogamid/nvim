@@ -117,6 +117,7 @@ M.menu = function()
   }
   Snacks.picker.pick(snacks_opts)
 end
+
 M.status = function()
   if not state.phase or state.phase == phase.UNKNOWN then
     return ""
@@ -126,4 +127,5 @@ M.status = function()
   local duration = string.format("%d:%d:%d", diff / 360, diff / 60, diff)
   return string.format("%s %s %d/%d", state.phase, duration, state.completed, opts.count)
 end
+
 return M
