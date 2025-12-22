@@ -146,3 +146,5 @@ vim.keymap.set("n", "<leader>uI", function()
 end, { desc = "Inspect and Edit Query" })
 
 vim.keymap.set("n", "<leader>p", require("modules.pomodoro").menu, { desc = "Pomodoro Menu" })
+
+vim.keymap.set("n", "<leader>fl", ":e!<CR>", { desc = "Load file" })
