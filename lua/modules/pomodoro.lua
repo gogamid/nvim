@@ -279,37 +279,36 @@ end
 M.menu = function()
   local items = {}
   if not timer then
-    table.insert(items, { text = actions.resume, file = actions.resume })
+    table.insert(items, actions.resume)
   end
   if timer then
-    table.insert(items, { text = actions.change_task_name, file = actions.change_task_name })
+    table.insert(items, actions.change_task_name)
     if state.phase == phase.WORK then
-      table.insert(items, { text = actions.long_break, file = actions.long_break })
-      table.insert(items, { text = actions.short_break, file = actions.short_break })
+      table.insert(items, actions.long_break)
+      table.insert(items, actions.short_break)
     end
     if state.phase == phase.LONG_BREAK then
-      table.insert(items, { text = actions.work, file = actions.work })
+      table.insert(items, actions.work)
     end
     if state.phase == phase.BREAK then
-      table.insert(items, { text = actions.work, file = actions.work })
+      table.insert(items, actions.work)
     end
-    table.insert(items, { text = actions.stop, file = actions.stop })
+    table.insert(items, actions.stop)
   end
-  table.insert(items, { text = actions.stats, file = actions.stats })
+  table.insert(items, actions.stats)
 
-  ---@type snacks.picker.Config
-  local snacks_opts = {
-    title = "Pomodoro actions",
-    items = items,
-    layout = {
-      preset = "select",
+  Snacks.picker.select(items, {
+    prompt = "Pomodoro",
+    snacks = {
+      layout = {
+        layout = {
+          max_width = 30,
+        },
+      },
     },
-    confirm = function(picker, item)
-      picker:close()
-      handleAction(item.text)
-    end,
-  }
-  Snacks.picker.pick(snacks_opts)
+  }, function(item, _)
+    handleAction(item)
+  end)
 end
 
 local progressbar = function(ops)
