@@ -1,11 +1,8 @@
 local M = {}
 local opts = {
-  -- work_interval = 25 * 60,
-  -- break_interval = 5 * 60,
-  -- long_interval = 15 * 60,
-  work_interval = 25,
-  break_interval = 5,
-  long_interval = 15,
+  work_interval = 25 * 60,
+  break_interval = 5 * 60,
+  long_interval = 15 * 60,
   count = 4,
   refresh_interval_ms = 1 * 1000,
   dir = vim.fs.joinpath(vim.fn.stdpath("data"), "pomodoro"),
