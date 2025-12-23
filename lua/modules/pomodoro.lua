@@ -275,13 +275,25 @@ end
 
 M.menu = function()
   local items = {}
-  table.sort(actions)
-  for _, v in pairs(actions) do
-    if v == actions.change_task_name and not timer then
-    else
-      table.insert(items, { text = v, file = v })
-    end
+  if not timer then
+    table.insert(items, { text = actions.resume, file = actions.resume })
   end
+  if timer then
+    table.insert(items, { text = actions.change_task_name, file = actions.change_task_name })
+    if state.phase == phase.WORK then
+      table.insert(items, { text = actions.long_break, file = actions.long_break })
+      table.insert(items, { text = actions.short_break, file = actions.short_break })
+    end
+    if state.phase == phase.LONG_BREAK then
+      table.insert(items, { text = actions.work, file = actions.work })
+    end
+    if state.phase == phase.BREAK then
+      table.insert(items, { text = actions.work, file = actions.work })
+    end
+    table.insert(items, { text = actions.stop, file = actions.stop })
+  end
+  table.insert(items, { text = actions.stats, file = actions.stats })
+
   ---@type snacks.picker.Config
   local snacks_opts = {
     title = "Pomodoro actions",
