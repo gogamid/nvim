@@ -1,4 +1,19 @@
 local M = {}
+local opts = {
+  -- work_interval = 25 * 60,
+  -- break_interval = 5 * 60,
+  -- long_interval = 15 * 60,
+  work_interval = 25,
+  break_interval = 5,
+  long_interval = 15,
+  count = 4,
+  refresh_interval_ms = 1 * 1000,
+  dir = vim.fs.joinpath(vim.fn.stdpath("data"), "pomodoro"),
+  default_task_name = "work",
+  work_text = " ",
+  break_text = " ",
+  long_break_text = " ",
+}
 
 local api = vim.api
 local actions = {
@@ -12,21 +27,9 @@ local actions = {
 }
 local phase = {
   UNKNOWN = "",
-  WORK = "work",
-  BREAK = "break",
-  LONG_BREAK = "long break",
-}
-local default_task_name = "work"
-local opts = {
-  -- work_interval = 25 * 60,
-  -- break_interval = 5 * 60,
-  -- long_interval = 15 * 60,
-  work_interval = 25,
-  break_interval = 5,
-  long_interval = 15,
-  count = 4,
-  refresh_interval_ms = 1 * 1000,
-  dir = vim.fs.joinpath(vim.fn.stdpath("data"), "pomodoro"),
+  WORK = opts.work_text,
+  BREAK = opts.break_text,
+  LONG_BREAK = opts.long_break_text,
 }
 local state_file = vim.fs.joinpath(opts.dir, "state.json")
 local state = {
@@ -35,7 +38,7 @@ local state = {
   now = 0,
   elapsed = 0,
   completed = 0,
-  task_name = default_task_name,
+  task_name = opts.default_task_name,
 }
 local timer = nil
 
@@ -81,9 +84,9 @@ end
 local prompt_task_name = function()
   vim.schedule(function()
     vim.ui.input(
-      { prompt = "Task name (default: " .. default_task_name .. "): ", default = state.task_name },
+      { prompt = "Task name (default: " .. opts.default_task_name .. "): ", default = state.task_name },
       function(input)
-        local task_name = (input and input ~= "") and input or default_task_name
+        local task_name = (input and input ~= "") and input or opts.default_task_name
         state.task_name = task_name
         notinfo("Task name updated to: " .. task_name)
       end
@@ -122,7 +125,7 @@ local load_state = function()
   else
     state = {
       phase = phase.WORK,
-      task_name = default_task_name,
+      task_name = opts.default_task_name,
       start = os.time(),
       now = os.time(),
       elapsed = 0,
@@ -362,14 +365,13 @@ M.status = function()
   end
 
   local diff = state.elapsed
-  local hours = math.floor(diff / 3600)
   local minutes = math.floor((diff % 3600) / 60)
   local seconds = diff % 60
-  local elapsed = string.format("%d:%02d:%02d", hours, minutes, seconds)
+  local elapsed = string.format("%02d:%02d", minutes, seconds)
 
   local count = string.format("%d/%d", state.completed, opts.count)
 
-  return string.format("%s(%s) %s %s %s", state.phase, state.task_name, progress, elapsed, count)
+  return string.format("%s %s %s %s %s", state.phase, state.task_name, progress, elapsed, count)
 end
 
 return M
