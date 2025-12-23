@@ -16,6 +16,8 @@ local phase = {
   LONG_BREAK = "long break",
 }
 
+local default_task_name = "focus"
+
 local opts = {
   -- work_interval = 25 * 60,
   -- break_interval = 5 * 60,
@@ -38,7 +40,7 @@ local state = {
   now = 0,
   elapsed = 0,
   completed = 0,
-  task_name = "focus",
+  task_name = default_task_name,
 }
 
 local timer = nil
@@ -81,8 +83,8 @@ end
 
 local prompt_task_name = function(callback)
   vim.schedule(function()
-    vim.ui.input({ prompt = "Task name: ", default = state.task_name }, function(input)
-      local task_name = (input and input ~= "") and input or "focus"
+    vim.ui.input({ prompt = "Task name (default: " .. default_task_name .. "): ", default = state.task_name }, function(input)
+      local task_name = (input and input ~= "") and input or default_task_name
       callback(task_name)
     end)
   end)
@@ -119,7 +121,7 @@ local load_state = function()
   else
     state = {
       phase = phase.WORK,
-      task_name = "focus",
+      task_name = default_task_name,
       start = os.time(),
       now = os.time(),
       elapsed = 0,
