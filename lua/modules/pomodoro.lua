@@ -218,6 +218,16 @@ local function setInterval()
   timer = t
 end
 
+local function ts_to_str(ts)
+  return os.date("%Y-%m-%d %H:%M", ts)
+end
+
+local function s_to_mm_ss(s)
+  local m = math.floor(s / 60)
+  local ss = math.floor(s % 60)
+  return string.format("%02d:%02d", m, ss)
+end
+
 local gen_history_component = function()
   local content = read_file(history_file)
   local tb = {
@@ -228,11 +238,15 @@ local gen_history_component = function()
       return vim.fn.json_decode(line)
     end)
     if ok then
-      table.insert(tb, { h.phase, h.task_name, h.start_time, h.mod_time, h.elapsed_seconds })
+      local start = ts_to_str(h.start_time)
+      local endd = ts_to_str(h.mod_time)
+      local duration = s_to_mm_ss(h.elapsed_seconds)
+      local type = phase_to_text[h.phase]
+      table.insert(tb, { type, h.task_name, start, endd, duration })
     end
   end
 
-  return voltui.table(tb, 60)
+  return voltui.table(tb, 80)
 end
 
 local gen_layout = function()
