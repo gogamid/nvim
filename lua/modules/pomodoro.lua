@@ -6,6 +6,7 @@ local actions = {
   long_break = "Long break",
   work = "Work",
   stats = "Stats",
+  change_task_name = "Change Task Name",
 }
 
 local phase = {
@@ -37,6 +38,7 @@ local state = {
   now = 0,
   elapsed = 0,
   completed = 0,
+  task_name = "focus",
 }
 
 local timer = nil
@@ -75,6 +77,15 @@ local notinfo = function(msg, title)
     vim.notify(msg, vim.log.levels.INFO, { title = title })
   end)
   osnotify(msg)
+end
+
+local prompt_task_name = function(callback)
+  vim.schedule(function()
+    vim.ui.input({ prompt = "Task name (default: focus): " }, function(input)
+      local task_name = (input and input ~= "") and input or "focus"
+      callback(task_name)
+    end)
+  end)
 end
 
 local save_state = function()
