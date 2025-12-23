@@ -1,4 +1,5 @@
 local M = {}
+local voltui = require("volt.ui")
 local opts = {
   work_interval = 25 * 60,
   break_interval = 5 * 60,
@@ -223,7 +224,6 @@ end
 
 local gen_layout = function()
   local volt = require("volt")
-  local voltui = require("volt.ui")
   local history = "History"
   local data = { history, "B", "C", "D" }
   local active = history
@@ -255,7 +255,6 @@ end
 
 local open_stats = function()
   local volt = require("volt")
-  local voltui = require("volt.ui")
   local voltstate = require("volt.state")
 
   local float = require("plenary.window.float").centered({ winblend = 0, percentage = 0.8 })
