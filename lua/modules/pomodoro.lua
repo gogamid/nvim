@@ -1,3 +1,5 @@
+local M = {}
+
 local api = vim.api
 local actions = {
   resume = "Resume Pomodoro",
@@ -8,16 +10,13 @@ local actions = {
   stats = "Stats",
   change_task_name = "Change Task Name",
 }
-
 local phase = {
   UNKNOWN = "",
   WORK = "work",
   BREAK = "break",
   LONG_BREAK = "long break",
 }
-
 local default_task_name = "focus"
-
 local opts = {
   -- work_interval = 25 * 60,
   -- break_interval = 5 * 60,
@@ -29,11 +28,7 @@ local opts = {
   refresh_interval_ms = 1 * 1000,
   dir = vim.fs.joinpath(vim.fn.stdpath("data"), "pomodoro"),
 }
-
-local M = {}
-
 local state_file = vim.fs.joinpath(opts.dir, "state.json")
-
 local state = {
   phase = phase.UNKNOWN,
   start = 0,
@@ -42,7 +37,6 @@ local state = {
   completed = 0,
   task_name = default_task_name,
 }
-
 local timer = nil
 
 local function file_exists(file)
