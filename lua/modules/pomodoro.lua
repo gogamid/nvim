@@ -84,13 +84,14 @@ local notinfo = function(msg, title)
   osnotify(msg, title)
 end
 
-local prompt_task_name = function(callback)
+local prompt_task_name = function()
   vim.schedule(function()
     vim.ui.input(
       { prompt = "Task name (default: " .. default_task_name .. "): ", default = state.task_name },
       function(input)
         local task_name = (input and input ~= "") and input or default_task_name
-        callback(task_name)
+        state.task_name = task_name
+        notinfo("Task name updated to: " .. task_name)
       end
     )
   end)
@@ -271,10 +272,7 @@ local handleAction = function(action)
     notinfo("Focus!")
   elseif action == actions.change_task_name then
     if timer then
-      prompt_task_name(function(task_name)
-        state.task_name = task_name
-        notinfo("Task name updated to: " .. task_name)
-      end)
+      prompt_task_name()
     end
   elseif action == actions.stats then
     open_stats()
