@@ -164,6 +164,7 @@ local update_state = function()
   state.mod_time = os.time()
   if state.phase == phase.WORK then
     if state.elapsed_seconds >= opts.work_interval then
+      append_to_history()
       state.completed = state.completed + 1
       if state.completed >= opts.count then
         state.phase = phase.LONG_BREAK
@@ -180,6 +181,7 @@ local update_state = function()
     end
   elseif state.phase == phase.BREAK then
     if state.elapsed_seconds >= opts.break_interval then
+      append_to_history()
       state.phase = phase.WORK
       state.start_time = os.time()
       state.elapsed_seconds = 0
@@ -187,6 +189,7 @@ local update_state = function()
     end
   elseif state.phase == phase.LONG_BREAK then
     if state.elapsed_seconds >= opts.long_interval then
+      append_to_history()
       state.phase = phase.WORK
       state.start_time = os.time()
       state.elapsed_seconds = 0
