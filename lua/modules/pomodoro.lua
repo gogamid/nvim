@@ -26,12 +26,20 @@ local actions = {
   change_task_name = "Change Task Name",
 }
 local phase = {
-  UNKNOWN = "",
-  WORK = opts.work_text,
-  BREAK = opts.break_text,
-  LONG_BREAK = opts.long_break_text,
+  UNKNOWN = 0,
+  WORK = 1,
+  BREAK = 2,
+  LONG_BREAK = 3,
+}
+local phase_to_text = {
+  [phase.UNKNOWN] = "",
+  [phase.WORK] = opts.work_text,
+  [phase.BREAK] = opts.break_text,
+  [phase.LONG_BREAK] = opts.long_break_text,
 }
 local state_file = vim.fs.joinpath(opts.dir, "state.json")
+local history_file = vim.fs.joinpath(opts.dir, "history.jsonl")
+
 local state = {
   phase = phase.UNKNOWN,
   start = 0,
@@ -103,6 +111,19 @@ local save_state = function()
   end
 
   write_file(state_file, json)
+end
+
+local append_to_history = function()
+  local ok, json = pcall(function()
+    return vim.fn.json_encode(state)
+  end)
+  if not ok then
+    error("Error encoding session: " .. json)
+  end
+
+  local fd = assert(io.open(history_file, "a"))
+  fd:write(json .. "\n")
+  fd:close()
 end
 
 local load_state = function()
@@ -393,7 +414,7 @@ M.status = function()
 
   local count = string.format("%d/%d", state.completed, opts.count)
 
-  return string.format("%s %s %s %s %s", state.phase, state.task_name, progress, elapsed, count)
+  return string.format("%s %s %s %s %s", phase_to_text[state.phase], state.task_name, progress, elapsed, count)
 end
 
 return M
