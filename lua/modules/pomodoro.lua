@@ -132,6 +132,9 @@ local load_state = function()
   end
 
   local content = read_file(state_file)
+  if content == "" then
+    content = "{}"
+  end
 
   local ok, new_state = pcall(function()
     return vim.fn.json_decode(content)
@@ -141,17 +144,17 @@ local load_state = function()
   end
 
   if new_state and new_state ~= vim.NIL and new_state.phase ~= phase.UNKNOWN then
-    vim.tbl_deep_extend("force", state, new_state)
+    notinfo("State found, updating")
+    state = vim.tbl_deep_extend("force", state, new_state)
     state.elapsed_seconds = state.elapsed_seconds - (os.time() - state.mod_time)
   else
-    state = {
-      phase = phase.WORK,
-      task_name = opts.default_task_name,
-      start = os.time(),
-      now = os.time(),
-      elapsed = 0,
-      completed = 0,
-    }
+    notinfo("State not found, creating new")
+    state.phase = phase.WORK
+    state.task_name = opts.default_task_name
+    state.start_time = os.time()
+    state.mod_time = os.time()
+    state.completed = 0
+    state.elapsed_seconds = 0
   end
 end
 
