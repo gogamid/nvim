@@ -16,7 +16,7 @@ local phase = {
   BREAK = "break",
   LONG_BREAK = "long break",
 }
-local default_task_name = "focus"
+local default_task_name = "work"
 local opts = {
   -- work_interval = 25 * 60,
   -- break_interval = 5 * 60,
@@ -357,7 +357,7 @@ M.status = function()
 
   local count = string.format("%d/%d", state.completed, opts.count)
 
-  return string.format("%s %s %s %s", state.phase, progress, elapsed, count)
+  return string.format("%s(%s) %s %s %s", state.phase, state.task_name, progress, elapsed, count)
 end
 
 return M
