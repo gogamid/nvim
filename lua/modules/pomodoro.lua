@@ -317,16 +317,39 @@ local progressbar = function(ops)
 
   local width = ops.width or 20
   local value = ops.value or 0
-  local on_icon = ops.on_icon or "█"
-  local off_icon = ops.off_icon or "░"
 
-  -- Clamp value between 0 and 100
+  local on_icon_left = ""
+  local on_icon_mid = ""
+  local on_icon_right = ""
+
+  local off_icon_left = ""
+  local off_icon_mid = ""
+  local off_icon_right = ""
+
   value = math.max(0, math.min(100, value))
 
   local activelen = math.floor(width * (value / 100))
   local inactivelen = width - activelen
 
-  return string.rep(on_icon, activelen) .. string.rep(off_icon, inactivelen)
+  local active_part = ""
+  if activelen > 0 then
+    if inactivelen == 0 and activelen >= 2 then
+      active_part = on_icon_left .. string.rep(on_icon_mid, activelen - 2) .. on_icon_right
+    else
+      active_part = on_icon_left .. string.rep(on_icon_mid, activelen - 1)
+    end
+  end
+
+  local inactive_part = ""
+  if inactivelen > 0 then
+    if activelen == 0 then
+      inactive_part = off_icon_left .. string.rep(off_icon_mid, inactivelen - 2) .. off_icon_right
+    else
+      inactive_part = string.rep(off_icon_mid, inactivelen - 1) .. off_icon_right
+    end
+  end
+
+  return active_part .. inactive_part
 end
 
 M.status_color = function()
@@ -355,13 +378,13 @@ M.status = function()
   local progress = ""
   if state.phase == phase.WORK then
     local perc = math.floor(state.elapsed / opts.work_interval * 100)
-    progress = progressbar({ width = 20, value = perc })
+    progress = progressbar({ width = 10, value = perc })
   elseif state.phase == phase.BREAK then
     local perc = math.floor(state.elapsed / opts.break_interval * 100)
-    progress = progressbar({ width = 20, value = perc })
+    progress = progressbar({ width = 10, value = perc })
   elseif state.phase == phase.LONG_BREAK then
     local perc = math.floor(state.elapsed / opts.long_interval * 100)
-    progress = progressbar({ width = 20, value = perc })
+    progress = progressbar({ width = 10, value = perc })
   end
 
   local diff = state.elapsed
