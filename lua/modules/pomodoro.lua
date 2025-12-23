@@ -219,7 +219,20 @@ local function setInterval()
 end
 
 local gen_history_component = function()
-  return { {} }
+  local content = read_file(history_file)
+  local tb = {
+    { "Type", "Task", "Start", "End", "Duration" },
+  }
+  for line in string.gmatch(content, "[^\n]+") do
+    local ok, h = pcall(function()
+      return vim.fn.json_decode(line)
+    end)
+    if ok then
+      table.insert(tb, { h.phase, h.task_name, h.start_time, h.mod_time, h.elapsed_seconds })
+    end
+  end
+
+  return voltui.table(tb, 60)
 end
 
 local gen_layout = function()
