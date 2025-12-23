@@ -217,16 +217,38 @@ local function setInterval()
   timer = t
 end
 
+local gen_history_component = function()
+  return { {} }
+end
+
 local gen_layout = function()
   local volt = require("volt")
   local voltui = require("volt.ui")
-  local data = { "History", "B", "C", "D" }
+  local history = "History"
+  local data = { history, "B", "C", "D" }
+  local active = history
   return {
     {
       lines = function()
-        return voltui.tabs(data, 30, { active = data[1] })
+        return voltui.tabs(data, 30, { active = active })
       end,
       name = "tabs",
+    },
+    {
+      lines = function()
+        return { {} }
+      end,
+      name = "emptyline",
+    },
+    {
+      lines = function()
+        if active == history then
+          return gen_history_component()
+        else
+          return { {} }
+        end
+      end,
+      name = "stats",
     },
   }
 end
