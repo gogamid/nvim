@@ -42,9 +42,9 @@ local history_file = vim.fs.joinpath(opts.dir, "history.jsonl")
 
 local state = {
   phase = phase.UNKNOWN,
-  start = 0,
-  now = 0,
-  elapsed = 0,
+  start_time = 0,
+  mod_time = 0,
+  elapsed_time = 0,
   completed = 0,
   task_name = opts.default_task_name,
 }
@@ -156,37 +156,37 @@ local load_state = function()
 end
 
 local update_state = function()
-  local delta = os.time() - state.now
-  state.elapsed = state.elapsed + delta
-  state.now = os.time()
+  local delta = os.time() - state.mod_time
+  state.elapsed_time = state.elapsed_time + delta
+  state.mod_time = os.time()
   if state.phase == phase.WORK then
-    if state.elapsed >= opts.work_interval then
+    if state.elapsed_time >= opts.work_interval then
       state.completed = state.completed + 1
       if state.completed >= opts.count then
         state.phase = phase.LONG_BREAK
-        state.start = os.time()
+        state.start_time = os.time()
         state.completed = 0
-        state.elapsed = 0
+        state.elapsed_time = 0
         notinfo("Long break!")
       else
         state.phase = phase.BREAK
-        state.start = os.time()
-        state.elapsed = 0
+        state.start_time = os.time()
+        state.elapsed_time = 0
         notinfo("Short break!")
       end
     end
   elseif state.phase == phase.BREAK then
-    if state.elapsed >= opts.break_interval then
+    if state.elapsed_time >= opts.break_interval then
       state.phase = phase.WORK
-      state.start = os.time()
-      state.elapsed = 0
+      state.start_time = os.time()
+      state.elapsed_time = 0
       notinfo("Focus!")
     end
   elseif state.phase == phase.LONG_BREAK then
-    if state.elapsed >= opts.long_interval then
+    if state.elapsed_time >= opts.long_interval then
       state.phase = phase.WORK
-      state.start = os.time()
-      state.elapsed = 0
+      state.start_time = os.time()
+      state.elapsed_time = 0
       notinfo("Focus!")
     end
   end
@@ -269,24 +269,24 @@ local handleAction = function(action)
     notinfo("Started, Focus!")
   elseif action == actions.stop then
     state.phase = phase.UNKNOWN
-    state.start = os.time()
+    state.start_time = os.time()
     save_state()
     clearInterval()
     notinfo("Stopped")
   elseif action == actions.short_break then
     state.phase = phase.BREAK
-    state.start = os.time()
-    state.elapsed = 0
+    state.start_time = os.time()
+    state.elapsed_time = 0
     notinfo("Short break!")
   elseif action == actions.long_break then
     state.phase = phase.LONG_BREAK
-    state.start = os.time()
-    state.elapsed = 0
+    state.start_time = os.time()
+    state.elapsed_time = 0
     notinfo("Long break!")
   elseif action == actions.work then
     state.phase = phase.WORK
-    state.start = os.time()
-    state.elapsed = 0
+    state.start_time = os.time()
+    state.elapsed_time = 0
     notinfo("Focus!")
   elseif action == actions.change_task_name then
     if timer then
@@ -397,17 +397,17 @@ M.status = function()
 
   local progress = ""
   if state.phase == phase.WORK then
-    local perc = math.floor(state.elapsed / opts.work_interval * 100)
+    local perc = math.floor(state.elapsed_time / opts.work_interval * 100)
     progress = progressbar({ width = 10, value = perc })
   elseif state.phase == phase.BREAK then
-    local perc = math.floor(state.elapsed / opts.break_interval * 100)
+    local perc = math.floor(state.elapsed_time / opts.break_interval * 100)
     progress = progressbar({ width = 10, value = perc })
   elseif state.phase == phase.LONG_BREAK then
-    local perc = math.floor(state.elapsed / opts.long_interval * 100)
+    local perc = math.floor(state.elapsed_time / opts.long_interval * 100)
     progress = progressbar({ width = 10, value = perc })
   end
 
-  local diff = state.elapsed
+  local diff = state.elapsed_time
   local minutes = math.floor((diff % 3600) / 60)
   local seconds = diff % 60
   local elapsed = string.format("%02d:%02d", minutes, seconds)
