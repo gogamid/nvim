@@ -217,51 +217,37 @@ local function setInterval()
   timer = t
 end
 
-local open_stats = function()
-  local res = require("plenary.window.float").centered({
-    winblend = 0,
-    percentage = 0.8,
-  })
-  api.nvim_buf_set_keymap(res.bufnr, "n", "q", ":q<CR>", { noremap = true, silent = true })
-
+local gen_layout = function()
   local volt = require("volt")
-  local ui = require("volt.ui")
-  volt.gen_data({
+  local voltui = require("volt.ui")
+  local data = { "History", "B", "C", "D" }
+  return {
     {
-      buf = res.bufnr,
-      xpad = 2,
-      ns = vim.api.nvim_create_namespace("progress"),
-      layout = {
-        {
-          name = "progress",
-          lines = function()
-            local progress = ui.progressbar({
-              w = 10,
-              val = 30,
-              icon = { on = "█", off = "░" },
-              hl = { on = "String", off = "Comment" },
-            })
-            -- Wrap the result properly
-            return { progress }
-          end,
-        },
-        {
-          name = "progress",
-          lines = function()
-            local progress = ui.progressbar({
-              w = 10,
-              val = 30,
-              icon = { on = "█", off = "░" },
-              hl = { on = "String", off = "Comment" },
-            })
-            -- Wrap the result properly
-            return { progress }
-          end,
-        },
-      },
+      lines = function()
+        return voltui.tabs(data, 30, { active = data[1] })
+      end,
+      name = "tabs",
     },
-  })
-  volt.run(res.bufnr, { h = 10, w = 100 })
+  }
+end
+
+local open_stats = function()
+  local volt = require("volt")
+  local voltui = require("volt.ui")
+  local voltstate = require("volt.state")
+
+  local float = require("plenary.window.float").centered({ winblend = 0, percentage = 0.8 })
+  local buf = float.bufnr
+  local win = float.win_id
+
+  local ns = api.nvim_create_namespace("pomodoro")
+  local xpad = 2
+  api.nvim_buf_set_keymap(buf, "n", "q", ":q<CR>", { noremap = true, silent = true })
+
+  volt.gen_data({ { layout = gen_layout(), buf = buf, xpad = xpad, ns = ns } })
+  local h = voltstate[buf].h
+  local w = 20
+  volt.run(buf, { h = h, w = w })
 end
 
 local handleAction = function(action)
