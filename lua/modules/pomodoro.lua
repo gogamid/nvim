@@ -63,11 +63,11 @@ local function write_file(file, contents)
   fd:close()
 end
 
-local osnotify = function(msg)
+local osnotify = function(msg, title)
   local cmd = {
     "osascript",
     "-e",
-    'display notification "' .. msg .. '" with title "pomodoro"',
+    'display notification "' .. msg .. '" with title "' .. title .. '"',
   }
   vim.schedule(function()
     vim.system(cmd)
@@ -75,18 +75,24 @@ local osnotify = function(msg)
 end
 
 local notinfo = function(msg, title)
+  if not title then
+    title = "Pomodoro"
+  end
   vim.schedule(function()
     vim.notify(msg, vim.log.levels.INFO, { title = title })
   end)
-  osnotify(msg)
+  osnotify(msg, title)
 end
 
 local prompt_task_name = function(callback)
   vim.schedule(function()
-    vim.ui.input({ prompt = "Task name (default: " .. default_task_name .. "): ", default = state.task_name }, function(input)
-      local task_name = (input and input ~= "") and input or default_task_name
-      callback(task_name)
-    end)
+    vim.ui.input(
+      { prompt = "Task name (default: " .. default_task_name .. "): ", default = state.task_name },
+      function(input)
+        local task_name = (input and input ~= "") and input or default_task_name
+        callback(task_name)
+      end
+    )
   end)
 end
 
@@ -241,13 +247,13 @@ local handleAction = function(action)
     load_state()
     clearInterval()
     setInterval()
-    notinfo("pomodoro started, Focus!")
+    notinfo("Started, Focus!")
   elseif action == actions.stop then
     state.phase = phase.UNKNOWN
     state.start = os.time()
     save_state()
     clearInterval()
-    notinfo("pomodoro stopped")
+    notinfo("Stopped")
   elseif action == actions.short_break then
     state.phase = phase.BREAK
     state.start = os.time()
