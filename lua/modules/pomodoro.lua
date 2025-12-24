@@ -288,7 +288,7 @@ local progress = function()
   )
   local data, _ = jq(today_filter)
   if not data then
-    data = {}
+    return
   end
   local goal_seconds = opts.daily_pomodoros_goal * opts.work_interval
   local today_perc = math.floor(data.total_seconds / goal_seconds * 100)
