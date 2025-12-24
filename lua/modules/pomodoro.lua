@@ -1,6 +1,8 @@
 local M = {}
+local volt = require("volt")
 local voltui = require("volt.ui")
 local opts = {
+  daily_pomodoros_goal = 20,
   work_interval = 25 * 60,
   break_interval = 5 * 60,
   long_interval = 15 * 60,
@@ -46,6 +48,7 @@ local state = {
   completed = 0,
   task_name = opts.default_task_name,
 }
+local ui = {}
 local timer = nil
 
 local function file_exists(file)
@@ -276,26 +279,50 @@ local function s_to_mm_ss(s)
   return string.format("%02d:%02d", m, ss)
 end
 
-local gen_today_component = function()
+local progress = function()
+  local w = ui.w / 4
   local today = math.floor(os.time() / 86400)
-  local filter =
-    string.format(". | map(select((.mod_time / 86400 | floor) == (%d))) | sort_by(.mod_time) | reverse", today)
-  local data, _ = jq(filter)
+  local today_filter = string.format(
+    ". | map(select((.mod_time / 86400 | floor) == (20446))) | sort_by(.mod_time) | reverse | map(.elapsed_seconds) | add | { total_seconds: ., hours: (. / 3600 | floor), minutes: ((. %% 3600) / 60 | floor)}",
+    today
+  )
+  local data, _ = jq(today_filter)
   if not data then
     data = {}
   end
-  local tbl = {
-    { "Type", "Task", "Date", "Start", "End", "Duration" },
-  }
-  for _, d in ipairs(data) do
-    local start_time = ts_to_time_str(d.start_time)
-    local end_time = ts_to_time_str(d.mod_time)
-    local date = ts_to_date_str(d.start_time)
-    local duration = s_to_mm_ss(d.elapsed_seconds)
-    local type = phase_to_text[d.phase]
-    table.insert(tbl, { type, d.task_name, date, start_time, end_time, duration })
+  local goal_seconds = opts.daily_pomodoros_goal * opts.work_interval
+  local today_perc = math.floor(data.total_seconds / goal_seconds * 100)
+  if today_perc > 100 then
+    today_perc = 100
   end
-  return voltui.table(tbl, 80)
+
+  local today_hours = string.format("%dh%dm", data.hours, data.minutes)
+  local goal_hours = math.floor(opts.daily_pomodoros_goal * opts.work_interval / 3600)
+
+  local today_focus_time = {
+    { { " ", "exgreen" }, { " Today " }, { today_hours .. " / " .. tostring(goal_hours) } },
+    {},
+    voltui.progressbar({
+      w = w,
+      val = today_perc,
+      icon = { on = "┃", off = "┃" },
+      hl = { on = "exgreen", off = "linenr" },
+    }),
+  }
+  return voltui.grid_col({
+    { lines = today_focus_time, w = w, pad = 2 },
+    -- { lines = accuracy_stats, w = barlen, pad = 2 },
+    -- { lines = lvl_stats_ui, w = barlen },
+  })
+end
+local dashboard = function()
+  return voltui.grid_row({
+    progress(),
+    { {} },
+    -- {
+    --   lines = { { voltui.progressbar({ val = today_perc, w = w_col }) } },
+    -- },
+  })
 end
 
 local gen_history_component = function()
@@ -323,24 +350,18 @@ local gen_layout = function()
   local tabs = { today, history }
   local active = today
   return {
-    {
-      lines = function()
-        return voltui.tabs(tabs, 30, { active = active })
-      end,
-      name = "tabs",
-    },
-    {
-      lines = function()
-        return { {} }
-      end,
-      name = "emptyline",
-    },
+    -- {
+    --   lines = function()
+    --     return voltui.tabs(tabs, ui.w, { active = active })
+    --   end,
+    --   name = "tabs",
+    -- },
     {
       lines = function()
         if active == history then
           return gen_history_component()
         elseif active == today then
-          return gen_today_component()
+          return dashboard()
         else
           return { {} }
         end
@@ -351,23 +372,20 @@ local gen_layout = function()
 end
 
 local open_stats = function()
-  local volt = require("volt")
-  local voltstate = require("volt.state")
+  ui.float_perc = 0.8
+  local float = require("plenary.window.float").centered({ winblend = 0, percentage = ui.float_perc })
+  ui.buf = float.bufnr
 
-  local float = require("plenary.window.float").centered({ winblend = 0, percentage = 0.8 })
-  local buf = float.bufnr
-  local win = float.win_id
+  api.nvim_buf_set_keymap(ui.buf, "n", "q", ":q<CR>", {})
+  api.nvim_buf_set_keymap(ui.buf, "n", "j", "<C-f>", {})
+  api.nvim_buf_set_keymap(ui.buf, "n", "k", "<C-b>", {})
 
-  local ns = api.nvim_create_namespace("pomodoro")
-  local xpad = 2
-  api.nvim_buf_set_keymap(buf, "n", "q", ":q<CR>", {})
-  api.nvim_buf_set_keymap(buf, "n", "j", "<C-f>", {})
-  api.nvim_buf_set_keymap(buf, "n", "k", "<C-b>", {})
-
-  volt.gen_data({ { layout = gen_layout(), buf = buf, xpad = xpad, ns = ns } })
-  local h = voltstate[buf].h
-  local w = 20
-  volt.run(buf, { h = h, w = w })
+  ui.h = vim.o.lines * ui.float_perc
+  ui.w = vim.o.columns * ui.float_perc
+  ui.ns = api.nvim_create_namespace("pomodoro")
+  ui.xpad = 2
+  volt.gen_data({ { layout = gen_layout(), buf = ui.buf, xpad = ui.xpad, ns = ui.ns } })
+  volt.run(ui.buf, { h = ui.h, w = ui.w })
 end
 
 local handleAction = function(action)
