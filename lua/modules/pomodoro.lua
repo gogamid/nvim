@@ -401,9 +401,9 @@ local gen_layout = function()
 end
 
 local open_stats = function()
-  local float = require("plenary.window.float").centered({ winblend = 0, percentage = 0.8 })
-  ui.buf = float.bufnr
-  ui.win = float.win_id
+  local float = Snacks.win({ width = 0.8, height = 0.6, border = "rounded" })
+  ui.buf = float.buf
+  ui.win = float.win
 
   api.nvim_buf_set_keymap(ui.buf, "n", "q", ":q<CR>", {})
   api.nvim_buf_set_keymap(ui.buf, "n", "j", "<C-f>", {})
