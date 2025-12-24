@@ -298,7 +298,7 @@ local progress = function()
   local goal_hours = math.floor(goal_seconds / 3600) .. "h"
 
   local today_focus_time_component = {
-    { { " ", "exgreen" }, { " Today " }, { today_hours .. "/" .. goal_hours } },
+    { { " ", "DiagnosticSignOk" }, { " Today " }, { today_hours .. "/" .. goal_hours } },
   }
 
   local today_poms_filter =
@@ -308,7 +308,11 @@ local progress = function()
     return
   end
   local today_pomodoros_component = {
-    { { " ", "exred" }, { " Pomodoros " }, { poms_count .. "/" .. tostring(opts.daily_pomodoros_goal) } },
+    {
+      { " ", "DiagnosticSignError" },
+      { " Pomodoros " },
+      { poms_count .. "/" .. tostring(opts.daily_pomodoros_goal) },
+    },
   }
 
   local streak_days_filter = [[
@@ -331,7 +335,7 @@ local progress = function()
 
   local streak = string.format("%dd", streak_days)
   local streak_days_component = {
-    { { "", "exyellow" }, { "  Streak " }, { streak } },
+    { { " ", "DiagnosticSignWarn" }, { " Streak " }, { streak } },
   }
 
   return voltui.grid_col({
