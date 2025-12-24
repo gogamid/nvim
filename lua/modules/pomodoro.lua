@@ -277,29 +277,25 @@ local function s_to_mm_ss(s)
 end
 
 local gen_history_component = function()
-  local content = read_file(history_file)
-  local tb = {
+  local hs, _ = jq(". | sort_by(.mod_time) | reverse")
+  if not hs then
+    hs = {}
+  end
+  local tbl = {
     { "Type", "Task", "Date", "Start", "End", "Duration" },
   }
-  for line in string.gmatch(content, "[^\n]+") do
-    local ok, h = pcall(function()
-      return vim.fn.json_decode(line)
-    end)
-    if ok then
-      local start_time = ts_to_time_str(h.start_time)
-      local end_time = ts_to_time_str(h.mod_time)
-      local date = ts_to_date_str(h.start_time)
-      local duration = s_to_mm_ss(h.elapsed_seconds)
-      local type = phase_to_text[h.phase]
-      table.insert(tb, { type, h.task_name, date, start_time, end_time, duration })
-    end
+  for _, h in ipairs(hs) do
+    local start_time = ts_to_time_str(h.start_time)
+    local end_time = ts_to_time_str(h.mod_time)
+    local date = ts_to_date_str(h.start_time)
+    local duration = s_to_mm_ss(h.elapsed_seconds)
+    local type = phase_to_text[h.phase]
+    table.insert(tbl, { type, h.task_name, date, start_time, end_time, duration })
   end
-
-  return voltui.table(tb, 80)
+  return voltui.table(tbl, 80)
 end
 
 local gen_layout = function()
-  local volt = require("volt")
   local history = "History"
   local data = { history, "B", "C", "D" }
   local active = history
