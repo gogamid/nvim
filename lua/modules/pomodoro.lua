@@ -1,5 +1,6 @@
 local M = {}
 local volt = require("volt")
+local voltstate = require("volt.state")
 local voltui = require("volt.ui")
 local opts = {
   daily_pomodoros_goal = 20,
@@ -280,7 +281,8 @@ local function s_to_mm_ss(s)
 end
 
 local progress = function()
-  local w = ui.w / 4
+  local w_with_pad = ui.w - (2 * ui.xpad)
+  local w = w_with_pad / 3 - 1
   local today = math.floor(os.time() / 86400)
   local today_filter = string.format(
     ". | map(select((.mod_time / 86400 | floor) == (%d) and .phase == 1)) | sort_by(.mod_time) | reverse | map(.elapsed_seconds) | add | { total_seconds: ., hours: (. / 3600 | floor), minutes: ((. %% 3600) / 60 | floor)}",
@@ -293,22 +295,10 @@ local progress = function()
   local goal_seconds = opts.daily_pomodoros_goal * opts.work_interval
 
   local today_hours = string.format("%dh%dm", data.hours, data.minutes)
-  local goal_hours = math.floor(goal_seconds / 3600)
+  local goal_hours = math.floor(goal_seconds / 3600) .. "h"
 
-  local today_perc = math.floor(data.total_seconds / goal_seconds * 100)
-  if today_perc > 100 then
-    today_perc = 100
-  end
-
-  local today_focus_time = {
-    { { " ", "exgreen" }, { " Today " }, { today_hours .. " / " .. tostring(goal_hours) } },
-    {},
-    voltui.progressbar({
-      w = w,
-      val = today_perc,
-      icon = { on = "┃", off = "┃" },
-      hl = { on = "exgreen", off = "linenr" },
-    }),
+  local today_focus_time_component = {
+    { { " ", "exgreen" }, { " Today " }, { today_hours .. "/" .. goal_hours } },
   }
 
   local today_poms_filter =
@@ -317,20 +307,37 @@ local progress = function()
   if not poms_count then
     return
   end
-  local today_pomodoros = {
-    { { "", "exred" }, { " Pomodoros " }, { poms_count .. " / " .. tostring(opts.daily_pomodoros_goal) } },
-    {},
-    voltui.progressbar({
-      w = w,
-      val = today_perc,
-      icon = { on = "┃", off = "┃" },
-      hl = { on = "exred", off = "linenr" },
-    }),
+  local today_pomodoros_component = {
+    { { " ", "exred" }, { " Pomodoros " }, { poms_count .. "/" .. tostring(opts.daily_pomodoros_goal) } },
   }
+
+  local streak_days_filter = [[
+ map(select(.phase == 1) | .mod_time / 86400 | floor) |
+  unique |
+  sort | reverse |
+  reduce .[] as $day (
+    {streak: 0, expected: null};
+    if .expected == null or $day == (.expected - 1) then
+      .streak += 1 | .expected = $day
+    else
+      .
+    end
+  ) | .streak
+  ]]
+  local streak_days, _ = jq(streak_days_filter)
+  if not streak_days then
+    streak_days = 0
+  end
+
+  local streak = string.format("%dd", streak_days)
+  local streak_days_component = {
+    { { "", "exyellow" }, { "  Streak " }, { streak } },
+  }
+
   return voltui.grid_col({
-    { lines = today_focus_time, w = w, pad = 2 },
-    { lines = today_pomodoros, w = w, pad = 2 },
-    -- { lines = lvl_stats_ui, w = barlen },
+    { lines = today_focus_time_component, w = w, pad = 2 },
+    { lines = today_pomodoros_component, w = w, pad = 2 },
+    { lines = streak_days_component, w = w },
   })
 end
 local dashboard = function()
@@ -390,20 +397,46 @@ local gen_layout = function()
 end
 
 local open_stats = function()
-  ui.float_perc = 0.8
-  local float = require("plenary.window.float").centered({ winblend = 0, percentage = ui.float_perc })
-  ui.buf = float.bufnr
+  ui.buf = api.nvim_create_buf(false, true)
+
+  local dim_buf = api.nvim_create_buf(false, true)
+  local dim_win = api.nvim_open_win(dim_buf, false, {
+    focusable = false,
+    row = 0,
+    col = 0,
+    width = vim.o.columns,
+    height = vim.o.lines - 2,
+    relative = "editor",
+    style = "minimal",
+    border = "none",
+  })
+  vim.wo[dim_win].winblend = 20
 
   api.nvim_buf_set_keymap(ui.buf, "n", "q", ":q<CR>", {})
   api.nvim_buf_set_keymap(ui.buf, "n", "j", "<C-f>", {})
   api.nvim_buf_set_keymap(ui.buf, "n", "k", "<C-b>", {})
 
-  ui.h = vim.o.lines * ui.float_perc
-  ui.w = vim.o.columns * ui.float_perc
+  ui.w = 80
   ui.ns = api.nvim_create_namespace("pomodoro")
   ui.xpad = 2
   volt.gen_data({ { layout = gen_layout(), buf = ui.buf, xpad = ui.xpad, ns = ui.ns } })
-  volt.run(ui.buf, { h = ui.h, w = ui.w })
+  ui.h = voltstate[ui.buf].h
+
+  ui.win = api.nvim_open_win(ui.buf, true, {
+    row = (vim.o.lines / 2) - (ui.h / 2),
+    col = (vim.o.columns / 2) - (ui.w / 2),
+    width = ui.w,
+    height = ui.h,
+    relative = "editor",
+    style = "minimal",
+    border = "single",
+    zindex = 100,
+    title = "Pomodoro Stats",
+    title_pos = "center",
+  })
+  api.nvim_win_set_hl_ns(ui.win, ui.ns)
+
+  volt.run(ui.buf, { h = ui.h + 1, w = ui.w - (2 * ui.xpad) })
 end
 
 local handleAction = function(action)
