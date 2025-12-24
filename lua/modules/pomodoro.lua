@@ -291,13 +291,14 @@ local progress = function()
     return
   end
   local goal_seconds = opts.daily_pomodoros_goal * opts.work_interval
+
+  local today_hours = string.format("%dh%dm", data.hours, data.minutes)
+  local goal_hours = math.floor(goal_seconds / 3600)
+
   local today_perc = math.floor(data.total_seconds / goal_seconds * 100)
   if today_perc > 100 then
     today_perc = 100
   end
-
-  local today_hours = string.format("%dh%dm", data.hours, data.minutes)
-  local goal_hours = math.floor(opts.daily_pomodoros_goal * opts.work_interval / 3600)
 
   local today_focus_time = {
     { { " ", "exgreen" }, { " Today " }, { today_hours .. " / " .. tostring(goal_hours) } },
@@ -309,9 +310,26 @@ local progress = function()
       hl = { on = "exgreen", off = "linenr" },
     }),
   }
+
+  local today_poms_filter =
+    string.format(". | map(select((.mod_time / 86400 | floor) == (%d) and .phase == 1)) | length", today)
+  local poms_count, _ = jq(today_poms_filter)
+  if not poms_count then
+    return
+  end
+  local today_pomodoros = {
+    { { "", "exred" }, { " Pomodoros " }, { poms_count .. " / " .. tostring(opts.daily_pomodoros_goal) } },
+    {},
+    voltui.progressbar({
+      w = w,
+      val = today_perc,
+      icon = { on = "┃", off = "┃" },
+      hl = { on = "exred", off = "linenr" },
+    }),
+  }
   return voltui.grid_col({
     { lines = today_focus_time, w = w, pad = 2 },
-    -- { lines = accuracy_stats, w = barlen, pad = 2 },
+    { lines = today_pomodoros, w = w, pad = 2 },
     -- { lines = lvl_stats_ui, w = barlen },
   })
 end
