@@ -100,7 +100,7 @@ local get_task_names_items_from_history = function()
     return {}
   end
 
-  local jq_filter = "[.[] | .task_name] | unique | sort | .[]"
+  local jq_filter = "[.[] | .task_name] | unique | sort | map({text: .})"
   local cmd = "jq -sr " .. vim.fn.shellescape(jq_filter) .. " " .. vim.fn.shellescape(history_file)
   local r = vim.system({ vim.o.shell, vim.o.shellcmdflag, cmd }):wait()
   if r.stderr ~= "" then
@@ -108,11 +108,12 @@ local get_task_names_items_from_history = function()
     return {}
   end
 
-  local task_names = {}
-  for task in string.gmatch(r.stdout, "[^\n]+") do
-    if task ~= "" then
-      table.insert(task_names, { text = task })
-    end
+  local ok, task_names = pcall(function()
+    return vim.fn.json_decode(r.stdout)
+  end)
+  if not ok then
+    vim.notify("Error in task_names: " .. task_names, vim.log.levels.ERROR)
+    return {}
   end
 
   return task_names
