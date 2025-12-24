@@ -180,12 +180,42 @@ return {
         end,
         desc = "Toggle Supermaven Completion",
       },
+      {
+        "<C-o>",
+        function()
+          require("supermaven-nvim.completion_preview").on_accept_suggestion()
+        end,
+        mode = { "i" },
+        remap = true,
+        silent = true,
+        desc = "Accept next block",
+      },
+      {
+        "<C-i>",
+        function()
+          require("supermaven-nvim.completion_preview").on_accept_suggestion_word()
+        end,
+        mode = { "i" },
+        remap = true,
+        silent = true,
+        desc = "Accept next word",
+      },
+      {
+        "<C-x>",
+        function()
+          require("supermaven-nvim.completion_preview").on_dispose_inlay()
+        end,
+        mode = { "i" },
+        remap = true,
+        silent = true,
+        desc = "Clear completion",
+      },
     },
     opts = {
       keymaps = {
-        accept_suggestion = "<C-i>",
-        accept_word = "<C-o>",
-        clear_suggestion = "<C-x>",
+        -- accept_suggestion = "<C-o>",
+        -- accept_word = "<C-i>",
+        -- clear_suggestion = "<C-x>",
       },
       ignore_filetypes = { "copilot-chat, opencode_ask", "snacks_picker_input" },
       color = {
@@ -226,6 +256,7 @@ return {
         none = "T",
       },
       disable_inline_completion = false,
+      disable_keymaps = true,
     },
     config = function(_, opts)
       require("supermaven-nvim").setup(opts)
