@@ -87,16 +87,55 @@ local notinfo = function(msg, title)
   osnotify(msg, title)
 end
 
+local get_task_names_items_from_history = function()
+  if not file_exists(history_file) then
+    return {}
+  end
+
+  local result = vim
+    .system({
+      "sh",
+      "-c",
+      'jq -r ".task_name" ' .. vim.fn.shellescape(history_file) .. " | sort -u",
+    })
+    :wait()
+
+  if result.code ~= 0 then
+    return {}
+  end
+
+  local task_names = {}
+  for line in string.gmatch(result.stdout, "[^\n]+") do
+    if line ~= "" then
+      table.insert(task_names, { text = line })
+    end
+  end
+
+  return task_names
+end
+
 local prompt_task_name = function()
   vim.schedule(function()
-    vim.ui.input(
-      { prompt = "Task name (default: " .. opts.default_task_name .. "): ", default = state.task_name },
-      function(input)
-        local task_name = (input and input ~= "") and input or opts.default_task_name
-        state.task_name = task_name
-        notinfo("Task name updated to: " .. task_name)
-      end
-    )
+    local names = get_task_names_items_from_history()
+    Snacks.picker({
+      finder = function(_, ctx)
+        return vim.list_extend({ { text = ctx.filter.search } }, names)
+      end,
+      format = "text",
+      live = true,
+      confirm = function(p, it, _)
+        state.task_name = it.text
+        p:close()
+      end,
+      title = "New Task Name",
+      layout = {
+        preset = "select",
+        layout = {
+          max_width = 30,
+          max_height = 10,
+        },
+      },
+    })
   end)
 end
 
