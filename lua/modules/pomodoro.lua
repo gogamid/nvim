@@ -87,43 +87,41 @@ local notinfo = function(msg, title)
   osnotify(msg, title)
 end
 
-local get_task_names_items_from_history = function()
+local function jq(filter)
   if vim.fn.executable("jq") == 0 then
-    vim.notify("jq not found, please install it", vim.log.levels.ERROR)
-    return {}
-  end
-  if vim.fn.executable("sort") == 0 then
-    vim.notify("sort not found, please install it", vim.log.levels.ERROR)
-    return {}
+    return nil, "jq not found"
   end
   if not file_exists(history_file) then
-    return {}
+    return nil, "history file not found"
   end
 
-  local jq_filter = "[.[] | .task_name] | unique | sort | map({text: .})"
-  local cmd = "jq -sr " .. vim.fn.shellescape(jq_filter) .. " " .. vim.fn.shellescape(history_file)
+  local cmd = "jq -sr " .. vim.fn.shellescape(filter) .. " " .. vim.fn.shellescape(history_file)
   local r = vim.system({ vim.o.shell, vim.o.shellcmdflag, cmd }):wait()
   if r.stderr ~= "" then
-    vim.notify(r.stderr, vim.log.levels.ERROR)
-    return {}
+    return nil, r.stderr
   end
 
-  local ok, task_names = pcall(function()
+  local ok, result = pcall(function()
     return vim.fn.json_decode(r.stdout)
   end)
   if not ok then
-    vim.notify("Error in task_names: " .. task_names, vim.log.levels.ERROR)
-    return {}
+    return nil, result
   end
 
-  return task_names
+  return result, nil
 end
 
 local prompt_task_name = function()
-  local names = get_task_names_items_from_history()
+  local task_names, err = jq("[.[] | .task_name] | unique | sort | map({text: .})")
+  if err then
+    vim.notify(err, vim.log.levels.ERROR)
+  end
+  if not task_names then
+    task_names = {}
+  end
   Snacks.picker({
     finder = function(_, ctx)
-      return vim.list_extend({ { text = ctx.filter.search } }, names)
+      return vim.list_extend({ { text = ctx.filter.search } }, task_names)
     end,
     format = "text",
     live = true,
