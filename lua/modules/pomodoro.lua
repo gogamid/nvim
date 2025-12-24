@@ -88,24 +88,27 @@ local notinfo = function(msg, title)
 end
 
 local get_task_names_items_from_history = function()
+  if vim.fn.executable("jq") == 0 then
+    vim.notify("jq not found, please install it", vim.log.levels.ERROR)
+    return {}
+  end
+  if vim.fn.executable("sort") == 0 then
+    vim.notify("sort not found, please install it", vim.log.levels.ERROR)
+    return {}
+  end
   if not file_exists(history_file) then
     return {}
   end
 
-  local result = vim
-    .system({
-      "sh",
-      "-c",
-      'jq -r ".task_name" ' .. vim.fn.shellescape(history_file) .. " | sort -u",
-    })
-    :wait()
-
-  if result.code ~= 0 then
+  local cmd = 'jq -r ".task_name" ' .. vim.fn.shellescape(history_file) .. " | sort -u"
+  local jq_res = vim.system({ vim.o.shell, vim.o.shellcmdflag, cmd }):wait()
+  if jq_res.stderr ~= "" then
+    vim.notify(jq_res.stderr, vim.log.levels.ERROR)
     return {}
   end
 
   local task_names = {}
-  for line in string.gmatch(result.stdout, "[^\n]+") do
+  for line in string.gmatch(jq_res.stdout, "[^\n]+") do
     if line ~= "" then
       table.insert(task_names, { text = line })
     end
