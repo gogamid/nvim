@@ -335,7 +335,9 @@ local open_stats = function()
 
   local ns = api.nvim_create_namespace("pomodoro")
   local xpad = 2
-  api.nvim_buf_set_keymap(buf, "n", "q", ":q<CR>", { noremap = true, silent = true })
+  api.nvim_buf_set_keymap(buf, "n", "q", ":q<CR>", {})
+  api.nvim_buf_set_keymap(buf, "n", "j", "<C-f>", {})
+  api.nvim_buf_set_keymap(buf, "n", "k", "<C-b>", {})
 
   volt.gen_data({ { layout = gen_layout(), buf = buf, xpad = xpad, ns = ns } })
   local h = voltstate[buf].h
