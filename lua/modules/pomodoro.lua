@@ -276,6 +276,28 @@ local function s_to_mm_ss(s)
   return string.format("%02d:%02d", m, ss)
 end
 
+local gen_today_component = function()
+  local today = math.floor(os.time() / 86400)
+  local filter =
+    string.format(". | map(select((.mod_time / 86400 | floor) == (%d))) | sort_by(.mod_time) | reverse", today)
+  local data, _ = jq(filter)
+  if not data then
+    data = {}
+  end
+  local tbl = {
+    { "Type", "Task", "Date", "Start", "End", "Duration" },
+  }
+  for _, d in ipairs(data) do
+    local start_time = ts_to_time_str(d.start_time)
+    local end_time = ts_to_time_str(d.mod_time)
+    local date = ts_to_date_str(d.start_time)
+    local duration = s_to_mm_ss(d.elapsed_seconds)
+    local type = phase_to_text[d.phase]
+    table.insert(tbl, { type, d.task_name, date, start_time, end_time, duration })
+  end
+  return voltui.table(tbl, 80)
+end
+
 local gen_history_component = function()
   local hs, _ = jq(". | sort_by(.mod_time) | reverse")
   if not hs then
@@ -296,13 +318,14 @@ local gen_history_component = function()
 end
 
 local gen_layout = function()
+  local today = "Today"
   local history = "History"
-  local data = { history, "B", "C", "D" }
-  local active = history
+  local tabs = { today, history }
+  local active = today
   return {
     {
       lines = function()
-        return voltui.tabs(data, 30, { active = active })
+        return voltui.tabs(tabs, 30, { active = active })
       end,
       name = "tabs",
     },
@@ -316,6 +339,8 @@ local gen_layout = function()
       lines = function()
         if active == history then
           return gen_history_component()
+        elseif active == today then
+          return gen_today_component()
         else
           return { {} }
         end
