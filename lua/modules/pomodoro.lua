@@ -283,7 +283,7 @@ local progress = function()
   local w = ui.w / 4
   local today = math.floor(os.time() / 86400)
   local today_filter = string.format(
-    ". | map(select((.mod_time / 86400 | floor) == (20446))) | sort_by(.mod_time) | reverse | map(.elapsed_seconds) | add | { total_seconds: ., hours: (. / 3600 | floor), minutes: ((. %% 3600) / 60 | floor)}",
+    ". | map(select((.mod_time / 86400 | floor) == (%d) and .phase == 1)) | sort_by(.mod_time) | reverse | map(.elapsed_seconds) | add | { total_seconds: ., hours: (. / 3600 | floor), minutes: ((. %% 3600) / 60 | floor)}",
     today
   )
   local data, _ = jq(today_filter)
