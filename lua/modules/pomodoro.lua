@@ -115,28 +115,26 @@ local get_task_names_items_from_history = function()
 end
 
 local prompt_task_name = function()
-  vim.schedule(function()
-    local names = get_task_names_items_from_history()
-    Snacks.picker({
-      finder = function(_, ctx)
-        return vim.list_extend({ { text = ctx.filter.search } }, names)
-      end,
-      format = "text",
-      live = true,
-      confirm = function(p, it, _)
-        state.task_name = it.text
-        p:close()
-      end,
-      title = "New Task Name",
+  local names = get_task_names_items_from_history()
+  Snacks.picker({
+    finder = function(_, ctx)
+      return vim.list_extend({ { text = ctx.filter.search } }, names)
+    end,
+    format = "text",
+    live = true,
+    confirm = function(p, it, _)
+      state.task_name = it.text
+      p:close()
+    end,
+    title = "New Task Name",
+    layout = {
+      preset = "select",
       layout = {
-        preset = "select",
-        layout = {
-          max_width = 30,
-          max_height = 10,
-        },
+        max_width = 30,
+        max_height = 10,
       },
-    })
-  end)
+    },
+  })
 end
 
 local save_state = function()
