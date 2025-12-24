@@ -100,17 +100,18 @@ local get_task_names_items_from_history = function()
     return {}
   end
 
-  local cmd = 'jq -r ".task_name" ' .. vim.fn.shellescape(history_file) .. " | sort -u"
-  local jq_res = vim.system({ vim.o.shell, vim.o.shellcmdflag, cmd }):wait()
-  if jq_res.stderr ~= "" then
-    vim.notify(jq_res.stderr, vim.log.levels.ERROR)
+  local jq_filter = "[.[] | .task_name] | unique | sort | .[]"
+  local cmd = "jq -sr " .. vim.fn.shellescape(jq_filter) .. " " .. vim.fn.shellescape(history_file)
+  local r = vim.system({ vim.o.shell, vim.o.shellcmdflag, cmd }):wait()
+  if r.stderr ~= "" then
+    vim.notify(r.stderr, vim.log.levels.ERROR)
     return {}
   end
 
   local task_names = {}
-  for line in string.gmatch(jq_res.stdout, "[^\n]+") do
-    if line ~= "" then
-      table.insert(task_names, { text = line })
+  for task in string.gmatch(r.stdout, "[^\n]+") do
+    if task ~= "" then
+      table.insert(task_names, { text = task })
     end
   end
 
@@ -262,6 +263,14 @@ local function ts_to_str(ts)
   return os.date("%Y-%m-%d %H:%M", ts)
 end
 
+local function ts_to_time_str(ts)
+  return os.date("%H:%M", ts)
+end
+
+local function ts_to_date_str(ts)
+  return os.date("%Y-%m-%d", ts)
+end
+
 local function s_to_mm_ss(s)
   local m = math.floor(s / 60)
   local ss = math.floor(s % 60)
@@ -271,18 +280,19 @@ end
 local gen_history_component = function()
   local content = read_file(history_file)
   local tb = {
-    { "Type", "Task", "Start", "End", "Duration" },
+    { "Type", "Task", "Date", "Start", "End", "Duration" },
   }
   for line in string.gmatch(content, "[^\n]+") do
     local ok, h = pcall(function()
       return vim.fn.json_decode(line)
     end)
     if ok then
-      local start = ts_to_str(h.start_time)
-      local endd = ts_to_str(h.mod_time)
+      local start_time = ts_to_time_str(h.start_time)
+      local end_time = ts_to_time_str(h.mod_time)
+      local date = ts_to_date_str(h.start_time)
       local duration = s_to_mm_ss(h.elapsed_seconds)
       local type = phase_to_text[h.phase]
-      table.insert(tb, { type, h.task_name, start, endd, duration })
+      table.insert(tb, { type, h.task_name, date, start_time, end_time, duration })
     end
   end
 
