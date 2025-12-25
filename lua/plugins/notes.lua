@@ -71,70 +71,30 @@ return {
   },
   {
     "backdround/global-note.nvim",
-    config = function(_, opts)
-      local global_note = require("global-note")
-      opts.filename = "Scratchpad.md"
-      opts.directory = "~/work/obsidian/work"
-      opts.title = "Scratchpad"
-
-      opts.post_open = function(_, _)
-        vim.cmd("normal! Gzz")
-      end
-      global_note.setup(opts)
-      vim.keymap.set("n", "<leader>n", global_note.toggle_note, {
-        desc = "Toggle global note",
-      })
-    end,
-  },
-  {
-    "backdround/global-note.nvim",
     opts = {
-      -- Filename to use for default note (preset).
-      -- string or fun(): string
       filename = "Scratchpad.md",
-
-      -- Directory to keep default note (preset).
-      -- string or fun(): string
       directory = "~/work/obsidian/work",
-
-      -- Floating window title.
-      -- string or fun(): string
       title = "Scratchpad",
-
-      -- Ex command name.
-      -- string
-      command_name = "GlobalNote",
-
-      -- A nvim_open_win config to show float window.
-      -- table or fun(): table
       window_config = function()
-        local window_height = vim.api.nvim_list_uis()[1].height
-        local window_width = vim.api.nvim_list_uis()[1].width
+        local w = math.floor(vim.o.columns * 0.4)
+        local h = math.floor(vim.o.lines * 0.8)
         return {
           relative = "editor",
           border = "single",
-          title = "Note",
           title_pos = "center",
-          width = math.floor(0.7 * window_width),
-          height = math.floor(0.85 * window_height),
-          row = math.floor(0.05 * window_height),
-          col = math.floor(0.15 * window_width),
+          width = w,
+          height = h,
+          -- center
+          col = vim.o.columns / 2 - w / 2,
+          row = vim.o.lines / 2 - h / 2,
         }
       end,
-
-      -- It's called after the window creation.
-      -- fun(buffer_id: number, window_id: number)
-      post_open = function(_, _) end,
-
-      -- Whether to use autosave. Autosave saves buffer on closing window
-      -- or exiting Neovim.
-      -- boolean
-      autosave = true,
-
-      -- Additional presets to create other global, project local, file local
-      -- and other notes.
-      -- { [name]: table } - tables there have the same fields as the current table.
-      additional_presets = {},
+      post_open = function(a, b)
+        vim.cmd("normal! Gzz")
+      end,
+    },
+    keys = {
+      { "<leader>n", mode = { "n" }, "<cmd>GlobalNote<cr>", desc = "Global note" },
     },
   },
 }
