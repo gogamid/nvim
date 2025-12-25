@@ -422,13 +422,13 @@ return {
       end,
       desc = "Status",
     },
-    {
-      "<leader>gd",
-      function()
-        Snacks.picker.git_diff()
-      end,
-      desc = "Diffs",
-    },
+    -- {
+    --   "<leader>gd",
+    --   function()
+    --     Snacks.picker.git_diff()
+    --   end,
+    --   desc = "Diffs",
+    -- },
     {
       "<leader>go",
       function()

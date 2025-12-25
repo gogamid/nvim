@@ -107,14 +107,13 @@ return {
   },
   {
     "sindrets/diffview.nvim",
-    -- opts = {
-    --   view = {
-    --     default = {
-    --       -- Config for changed files, and staged files in diff views.
-    --       -- layout = "diff2_vertical",
-    --     },
-    --   },
-    -- },
+    keys = {
+      {
+        "<leader>gdm",
+        ":DiffviewOpen origin/main..HEAD<CR>",
+        desc = "Remote Diff View",
+      },
+    },
   },
   {
     "esmuellert/vscode-diff.nvim",
