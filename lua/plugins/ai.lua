@@ -3,25 +3,20 @@ local gemini_via_api_provider = {
   prepare_input = function(inputs, opts)
     return require("CopilotChat.config.providers").copilot.prepare_input(inputs, opts)
   end,
-
   prepare_output = function(output, opts)
     return require("CopilotChat.config.providers").copilot.prepare_output(output, opts)
   end,
-
   get_headers = function()
     return {
       ["Authorization"] = "Bearer " .. os.getenv("GEMINI_API_KEY"),
     }, nil
   end,
-
   get_models = function(headers)
     local response, err =
       require("CopilotChat.utils.curl").get(gemini_api_url .. "/models", { headers = headers, json_response = true })
-
     if err then
       error(err)
     end
-
     return vim.tbl_map(function(model)
       return {
         id = model.id,
@@ -29,7 +24,6 @@ local gemini_via_api_provider = {
       }
     end, response.body.data)
   end,
-
   embed = function(inputs, headers)
     local response, err = require("CopilotChat.utils.curl").post(gemini_api_url .. "/embeddings", {
       headers = headers,
@@ -40,11 +34,9 @@ local gemini_via_api_provider = {
         model = "gemini-embedding-001",
       },
     })
-
     if err then
       error(err)
     end
-
     local data = {}
     for i, embed in ipairs(response.body.data) do
       table.insert(data, {
@@ -53,14 +45,13 @@ local gemini_via_api_provider = {
         object = embed.object,
       })
     end
-
     return data
   end,
-
   get_url = function()
     return gemini_api_url .. "/chat/completions"
   end,
 }
+
 return {
   {
     "supermaven-inc/supermaven-nvim",
