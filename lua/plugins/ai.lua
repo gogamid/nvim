@@ -1,4 +1,124 @@
+local gemini_api_url = "https://generativelanguage.googleapis.com/v1beta/openai"
+local gemini_via_api_provider = {
+  prepare_input = function(inputs, opts)
+    return require("CopilotChat.config.providers").copilot.prepare_input(inputs, opts)
+  end,
+
+  prepare_output = function(output, opts)
+    return require("CopilotChat.config.providers").copilot.prepare_output(output, opts)
+  end,
+
+  get_headers = function()
+    return {
+      ["Authorization"] = "Bearer " .. os.getenv("GEMINI_API_KEY"),
+    }, nil
+  end,
+
+  get_models = function(headers)
+    local response, err =
+      require("CopilotChat.utils.curl").get(gemini_api_url .. "/models", { headers = headers, json_response = true })
+
+    if err then
+      error(err)
+    end
+
+    return vim.tbl_map(function(model)
+      return {
+        id = model.id,
+        name = model.id,
+      }
+    end, response.body.data)
+  end,
+
+  embed = function(inputs, headers)
+    local response, err = require("CopilotChat.utils.curl").post(gemini_api_url .. "/embeddings", {
+      headers = headers,
+      json_request = true,
+      json_response = true,
+      body = {
+        input = inputs,
+        model = "gemini-embedding-001",
+      },
+    })
+
+    if err then
+      error(err)
+    end
+
+    local data = {}
+    for i, embed in ipairs(response.body.data) do
+      table.insert(data, {
+        index = i - 1,
+        embedding = embed.embedding,
+        object = embed.object,
+      })
+    end
+
+    return data
+  end,
+
+  get_url = function()
+    return gemini_api_url .. "/chat/completions"
+  end,
+}
 return {
+  {
+    "supermaven-inc/supermaven-nvim",
+    enabled = true,
+    keys = {
+      {
+        "<leader>uC",
+        function()
+          require("supermaven-nvim.api").toggle()
+        end,
+        desc = "Toggle Supermaven Completion",
+      },
+      {
+        "<C-i>",
+        function()
+          require("supermaven-nvim.completion_preview").on_accept_suggestion()
+        end,
+        mode = { "i" },
+        remap = true,
+        silent = true,
+        desc = "Accept next block",
+      },
+      {
+        "<C-o>",
+        function()
+          require("supermaven-nvim.completion_preview").on_accept_suggestion_word()
+        end,
+        mode = { "i" },
+        remap = true,
+        silent = true,
+        desc = "Accept next word",
+      },
+      {
+        "<C-x>",
+        function()
+          require("supermaven-nvim.completion_preview").on_dispose_inlay()
+        end,
+        mode = { "i" },
+        remap = true,
+        silent = true,
+        desc = "Clear completion",
+      },
+    },
+    opts = {
+      disable_inline_completion = false,
+      disable_keymaps = true,
+      ignore_filetypes = { "copilot-chat, opencode_ask", "snacks_picker_input" },
+    },
+    config = function(_, opts)
+      require("supermaven-nvim").setup(opts)
+    end,
+  },
+  {
+    "sourcegraph/amp.nvim",
+    branch = "main",
+    lazy = false,
+    opts = { auto_start = true, log_level = "info" },
+  },
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     enabled = true,
@@ -87,77 +207,9 @@ return {
         github_embeddings = {
           disabled = true,
         },
-        gemini = {
-          prepare_input = function(inputs, opts)
-            return require("CopilotChat.config.providers").copilot.prepare_input(inputs, opts)
-          end,
-
-          prepare_output = function(output)
-            return require("CopilotChat.config.providers").copilot.prepare_output(output)
-          end,
-
-          get_headers = function()
-            local gemini_key = os.getenv("GEMINI_API_KEY")
-            return {
-              ["Authorization"] = "Bearer " .. gemini_key,
-            }, nil
-          end,
-
-          get_models = function(headers)
-            local response, err =
-              require("CopilotChat.utils").curl_get("https://generativelanguage.googleapis.com/v1beta/openai/models", {
-                headers = headers,
-                json_response = true,
-              })
-
-            if err then
-              error(err)
-            end
-
-            return vim.tbl_map(function(model)
-              return {
-                id = model.id,
-                name = model.id,
-              }
-            end, response.body.data)
-          end,
-
-          embed = function(inputs, headers)
-            local response, err = require("CopilotChat.utils").curl_post(
-              "https://generativelanguage.googleapis.com/v1beta/openai/embeddings",
-              {
-                headers = headers,
-                json_request = true,
-                json_response = true,
-                body = {
-                  input = inputs,
-                  model = "gemini-embedding-001",
-                },
-              }
-            )
-
-            if err then
-              error(err)
-            end
-
-            local data = {}
-            for i, embed in ipairs(response.body.data) do
-              table.insert(data, {
-                index = i - 1,
-                embedding = embed.embedding,
-                object = embed.object,
-              })
-            end
-
-            return data
-          end,
-
-          get_url = function()
-            return "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
-          end,
-        },
+        gemini = gemini_via_api_provider,
       },
-      model = "models/gemini-2.5-flash",
+      model = "models/gemini-3-flash-preview",
     },
     config = function(_, opts)
       require("CopilotChat").setup(opts)
@@ -171,62 +223,5 @@ return {
         end,
       })
     end,
-  },
-  {
-    "supermaven-inc/supermaven-nvim",
-    enabled = true,
-    keys = {
-      {
-        "<leader>uC",
-        function()
-          require("supermaven-nvim.api").toggle()
-        end,
-        desc = "Toggle Supermaven Completion",
-      },
-      {
-        "<C-i>",
-        function()
-          require("supermaven-nvim.completion_preview").on_accept_suggestion()
-        end,
-        mode = { "i" },
-        remap = true,
-        silent = true,
-        desc = "Accept next block",
-      },
-      {
-        "<C-o>",
-        function()
-          require("supermaven-nvim.completion_preview").on_accept_suggestion_word()
-        end,
-        mode = { "i" },
-        remap = true,
-        silent = true,
-        desc = "Accept next word",
-      },
-      {
-        "<C-x>",
-        function()
-          require("supermaven-nvim.completion_preview").on_dispose_inlay()
-        end,
-        mode = { "i" },
-        remap = true,
-        silent = true,
-        desc = "Clear completion",
-      },
-    },
-    opts = {
-      disable_inline_completion = false,
-      disable_keymaps = true,
-      ignore_filetypes = { "copilot-chat, opencode_ask", "snacks_picker_input" },
-    },
-    config = function(_, opts)
-      require("supermaven-nvim").setup(opts)
-    end,
-  },
-  {
-    "sourcegraph/amp.nvim",
-    branch = "main",
-    lazy = false,
-    opts = { auto_start = true, log_level = "info" },
   },
 }
