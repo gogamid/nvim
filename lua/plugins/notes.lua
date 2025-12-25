@@ -89,12 +89,14 @@ return {
           row = vim.o.lines / 2 - h / 2,
         }
       end,
-      post_open = function(a, b)
-        vim.cmd("normal! Gzz")
+      post_open = function(_, _)
+        vim.schedule(function()
+          vim.cmd("normal! Gzz")
+        end)
       end,
     },
     keys = {
-      { "<leader>n", mode = { "n" }, "<cmd>GlobalNote<cr>", desc = "Global note" },
+      { "<leader>n", "<cmd>GlobalNote<cr>", mode = { "n" }, desc = "Global note" },
     },
   },
 }
