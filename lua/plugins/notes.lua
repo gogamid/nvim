@@ -2,17 +2,9 @@ return {
   {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {
-      -- code = {
-      --   sign = false,
-      --   width = "block",
-      --   right_pad = 1,
-      -- },
       heading = {
         sign = false,
       },
-      -- checkbox = {
-      --   enabled = false,
-      -- },
     },
     ft = { "markdown", "norg", "rmd", "org", "codecompanion", "Avante" },
     config = function(_, opts)
@@ -43,10 +35,6 @@ return {
       { "<leader>fn", mode = { "n" }, "<cmd>Obsidian new<cr>", desc = "New Note" },
     },
     opts = {
-      footer = {
-        enabled = false,
-        format = "{{properties}} properties {{backlinks}} backlinks {{words}} words {{chars}} chars",
-      },
       legacy_commands = false,
       picker = {
         name = "snacks.pick",
@@ -57,49 +45,27 @@ return {
           path = "~/work/obsidian/work",
         },
       },
-      completion = {
-        blink = true,
-        min_chars = 2,
+      note_id_func = function(title)
+        if title == nil then
+          title = "untitled"
+        end
+        return tostring(os.time()) .. "-" .. title
+      end,
+      open_notes_in = "vsplit",
+      frontmatter = {
+        enabled = false,
       },
       ui = {
         enable = false,
       },
-      -- other  defaults
-      -- Sets how you follow URLs
-      ---@param url string
-      follow_url_func = function(url)
-        vim.ui.open(url)
-      end,
-
-      -- Sets how you follow images
-      ---@param img string
-      follow_img_func = function(img)
-        vim.ui.open(img)
-      end,
-
-      -- Optional, customize how note IDs are generated given an optional title.
-      ---@param title string|?
-      ---@return string
-      note_id_func = function(title)
-        -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
-        -- In this case a note with the title 'My new note' will be given an ID that looks
-        -- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'.
-        -- You may have as many periods in the note ID as you'd like—the ".md" will be added automatically
-        local suffix = ""
-        if title ~= nil then
-          -- If title is given, transform it into valid file name.
-          suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-        else
-          -- If title is nil, just add 4 random uppercase letters to the suffix.
-          for _ = 1, 4 do
-            suffix = suffix .. string.char(math.random(65, 90))
-          end
-        end
-        return tostring(os.time()) .. "-" .. suffix
-      end,
-      open = {},
+      footer = {
+        enabled = false,
+      },
       checkbox = {
         order = { " ", "x" },
+      },
+      comment = {
+        enabled = true,
       },
     },
   },

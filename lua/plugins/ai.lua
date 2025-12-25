@@ -181,7 +181,7 @@ return {
         desc = "Toggle Supermaven Completion",
       },
       {
-        "<C-o>",
+        "<C-i>",
         function()
           require("supermaven-nvim.completion_preview").on_accept_suggestion()
         end,
@@ -191,7 +191,7 @@ return {
         desc = "Accept next block",
       },
       {
-        "<C-i>",
+        "<C-o>",
         function()
           require("supermaven-nvim.completion_preview").on_accept_suggestion_word()
         end,
