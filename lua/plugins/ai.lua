@@ -70,7 +70,6 @@ return {
           require("supermaven-nvim.completion_preview").on_accept_suggestion()
         end,
         mode = { "i" },
-        remap = true,
         silent = true,
         desc = "Accept next block",
       },
