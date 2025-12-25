@@ -46,8 +46,7 @@ local git_options = {
   win = {
     input = {
       keys = {
-        ["<CR>"] = { "codediff", desc = "Diffview this commit", mode = { "n", "i" } },
-        ["<C-c>"] = { "git_checkout", desc = "Checkout commit", mode = { "n", "i" } },
+        ["<CR>"] = { "diffview", desc = "Diffview this commit", mode = { "n", "i" } },
         ["<C-y>"] = { "copy_pr_url", desc = "Copy PR URL", mode = { "n", "i" } },
         ["<C-o>"] = { "open_pr", desc = "Open PR", mode = { "n", "i" } },
       },

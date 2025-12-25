@@ -101,17 +101,24 @@ return {
         desc = "Select Hunk",
       },
     },
-    config = function(_, opts)
-      require("gitsigns").setup(opts)
-    end,
   },
   {
     "sindrets/diffview.nvim",
     keys = {
       {
-        "<leader>gdm",
+        "<leader>gdw",
+        ":DiffviewOpen<CR>",
+        desc = "Diff working tree vs staged/index",
+      },
+      {
+        "<leader>gds",
+        ":DiffviewOpen HEAD<CR>",
+        desc = "Diff staged changes (index) against the last commit (HEAD)",
+      },
+      {
+        "<leader>gdo",
         ":DiffviewOpen origin/main..HEAD<CR>",
-        desc = "Remote Diff View",
+        desc = "Diff origin/main",
       },
     },
   },
