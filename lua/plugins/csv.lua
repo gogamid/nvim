@@ -1,37 +1,27 @@
 return {
   {
     "hat0uma/csvview.nvim",
-    config = function()
-      require("csvview").setup({
-        view = {
-          display_mode = "border",
-        },
-        parser = {
-          delimiter = {
-            ft = {
-              csv = ";",
-              tsv = "\t",
-            },
-            fallbacks = {
-              ",",
-              "\t",
-              ";",
-              "|",
-              ":",
-              " ",
-            },
+    ft = { "csv" },
+    opts = {
+      view = {
+        display_mode = "border",
+        min_column_width = 1,
+      },
+      parser = {
+        delimiter = {
+          ft = {
+            -- csv = ";",
           },
         },
-      })
-    end,
-    ft = { "csv" },
+      },
+    },
     keys = {
       {
         "<leader>uc",
         function()
           require("csvview").toggle()
         end,
-        desc = "Toggle Excel csvview",
+        desc = "Toggle CSV View",
       },
     },
   },
