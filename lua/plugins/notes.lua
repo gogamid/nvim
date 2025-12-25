@@ -31,8 +31,8 @@ return {
     lazy = true,
     ft = "markdown",
     keys = {
-      { "<leader>fo", mode = { "n" }, "<cmd>Obsidian quick_switch<cr>", desc = "Obsidian files" },
-      { "<leader>fn", mode = { "n" }, "<cmd>Obsidian new<cr>", desc = "New Note" },
+      { "<leader>fo", "<cmd>Obsidian quick_switch<cr>", desc = "Obsidian files" },
+      { "<leader>fn", "<cmd>Obsidian new<cr>", desc = "New Note" },
     },
     opts = {
       legacy_commands = false,
@@ -96,7 +96,7 @@ return {
       end,
     },
     keys = {
-      { "<leader>n", "<cmd>GlobalNote<cr>", mode = { "n" }, desc = "Global note" },
+      { "<leader>n", "<cmd>GlobalNote<cr>", desc = "Global note" },
     },
   },
 }

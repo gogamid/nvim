@@ -6,7 +6,7 @@ return {
     enabled = true,
     keys = {
       { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
-      { "<leader>aM", ":CopilotChatModels<CR>", desc = "CopilotChat Models", mode = { "n" } },
+      { "<leader>aM", ":CopilotChatModels<CR>", desc = "CopilotChat Models" },
       {
         "<leader>ac",
         function()
