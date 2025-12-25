@@ -63,6 +63,20 @@ return {
         width = 0.5,
         height = 0.8,
       },
+      mappings = {
+        complete = false,
+        reset = {
+          normal = "gR",
+          insert = "",
+        },
+        yank_diff = {
+          normal = "gY",
+        },
+        accept_diff = {
+          normal = "gy",
+          insert = "",
+        },
+      },
       providers = {
         copilot = {
           disabled = true,
