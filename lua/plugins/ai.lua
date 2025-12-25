@@ -52,8 +52,6 @@ return {
       },
     },
     opts = {
-      temperature = 0.1,
-      auto_insert_mode = false,
       headers = {
         user = "👤: ",
         assistant = "🤖: ",
@@ -61,16 +59,10 @@ return {
       },
       window = {
         title = "",
-        layout = "float", -- 'vertical', 'horizontal', 'float', 'replace'
+        layout = "float",
         width = 0.5,
         height = 0.8,
-
-        -- layout = "horizontal", -- 'vertical', 'horizontal', 'float'
-        -- height = 0.3,
       },
-      selection = function(source)
-        return require("CopilotChat.select").visual(source) or require("CopilotChat.select").line(source)
-      end,
       providers = {
         copilot = {
           disabled = true,
@@ -82,7 +74,6 @@ return {
           disabled = true,
         },
         gemini = {
-
           prepare_input = function(inputs, opts)
             return require("CopilotChat.config.providers").copilot.prepare_input(inputs, opts)
           end,
