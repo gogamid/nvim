@@ -9,6 +9,11 @@ return {
     display_counter = false,
     display_location = false,
     picker = "snacks.picker",
+    filetypes = {
+      ["lua"] = {
+        left = "vim.notify('",
+      },
+    },
     keymaps = {
       normal = {
         variable_below = "<leader>rv",

@@ -11,9 +11,6 @@ vim.lsp.config("lua_ls", {
           "${3rd}/luv/library",
         },
       },
-      -- diagnostics = {
-      --   globals = { "Snacks", "MiniFiles" },
-      -- },
     },
   },
 })
