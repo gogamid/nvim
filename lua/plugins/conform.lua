@@ -4,7 +4,7 @@ return {
     default_format_opts = {
       lsp_format = "fallback",
       async = true,
-      timeout_ms = 100,
+      timeout_ms = 1000,
     },
     formatters = {
       csqlfmt = {

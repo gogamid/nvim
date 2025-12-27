@@ -101,6 +101,18 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Wrap text for text filetypes",
+  pattern = "minifiles",
+  callback = function()
+    local letters = "@"
+    local digits = "48-57"
+    local accented_chars = "192-255"
+    local keywords = { letters, digits, accented_chars }
+    vim.opt_local.iskeyword = table.concat(keywords, ",")
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Wrap text for text filetypes",
   pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
   callback = function()
     vim.opt_local.wrap = true
