@@ -590,7 +590,41 @@ return {
       function()
         Snacks.picker.keymaps()
       end,
-      desc = "Keymaps",
+      desc = "Keymaps Neovim",
+    },
+    {
+      "<leader>sK",
+      function()
+        Snacks.picker({
+          finder = function(_, _)
+            local file = os.getenv("HOME") .. "/personal/cheatsheet.csv"
+            local lines = vim.fn.readfile(file)
+
+            ---@type snacks.picker.finder.Item[] items to show instead of using a finder
+            local items = {}
+            for i, line in ipairs(lines) do
+              local parts = vim.split(line, ",")
+              if i > 1 and line ~= "" and #parts == 3 then
+                local prog, desc, key = unpack(parts)
+                table.insert(items, {
+                  text = string.format("%-20s %-30s    %20s", prog, desc, key),
+                })
+              end
+            end
+            return items
+          end,
+          format = "text",
+          title = "Keymaps",
+          layout = {
+            preset = "select",
+            layout = {
+              max_width = 80,
+              max_height = 20,
+            },
+          },
+        })
+      end,
+      desc = "Keymaps Programms",
     },
     {
       "<leader>sl",
