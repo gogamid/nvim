@@ -4,28 +4,32 @@ local function set_transparent_background(val)
   require("catppuccin").setup(opts)
 end
 return {
-  { "ribru17/bamboo.nvim" },
+  {
+    "ribru17/bamboo.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("bamboo").setup({})
+      require("bamboo").load()
+    end,
+  },
   { "sainnhe/everforest" },
-  { "rebelot/kanagawa.nvim" },
   { "rose-pine/neovim" },
   {
     "f-person/auto-dark-mode.nvim",
     opts = {
       update_interval = 1000,
       set_dark_mode = function()
-        set_transparent_background(true)
-        vim.cmd("colorscheme catppuccin-mocha")
+        vim.o.background = "dark"
       end,
       set_light_mode = function()
-        set_transparent_background(false)
-        vim.cmd("colorscheme catppuccin-latte")
+        vim.o.background = "light"
       end,
     },
   },
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    priority = 1000,
     opts = {
       color_overrides = {
         -- frappe = {
