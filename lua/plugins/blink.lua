@@ -32,6 +32,10 @@ return {
         },
       },
       menu = {
+        auto_show = function(ctx, items)
+          return vim.bo.filetype ~= "markdown"
+        end,
+
         draw = {
           treesitter = { "lsp" },
         },

@@ -46,6 +46,11 @@ vim.keymap.set({ "n", "v" }, "-", "<C-x>", { desc = "Decrement numbers", noremap
 -- Better J behavior
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
 
+vim.keymap.set("x", "<leader>ri", function()
+  local lines = vim.fn.getregion(vim.fn.getpos("."), vim.fn.getpos("v"), { type = vim.fn.mode() })
+  vim.fn.feedkeys(":" .. "lua print(vim.inspect(" .. lines[1] .. "))", "m")
+end, { desc = "Inspect visual selection" })
+
 -- Clear search and stop snippet on escape
 vim.keymap.set({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")

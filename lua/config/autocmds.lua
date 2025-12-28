@@ -111,6 +111,24 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+local function surround(pattern)
+  if vim.fn.mode() == "n" then
+    local word = vim.fn.expand("<cword>")
+    local col_start = vim.fn.col(".") - 1
+    local col_end = col_start + #word
+    local row = vim.fn.line(".") - 1
+    vim.api.nvim_buf_set_text(0, row, col_start, row, col_end, { pattern .. word .. pattern })
+  else
+    local vpos = vim.fn.getpos("v")
+    local dotpos = vim.fn.getpos(".")
+    local row = vpos[2] - 1
+    local col_start = vpos[3] - 1
+    local col_end = dotpos[3] - 1
+    local text = vim.api.nvim_buf_get_text(0, row, col_start, row, col_end, {})
+    vim.api.nvim_buf_set_text(0, row, col_start, row, col_end, { pattern .. text[1] .. pattern })
+  end
+end
+
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Wrap text for text filetypes",
   pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
@@ -119,6 +137,22 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.linebreak = true
     vim.opt_local.relativenumber = false
     vim.opt_local.number = false
+
+    vim.keymap.set({ "v", "n" }, "sb", function()
+      surround("**")
+    end, { desc = "Surround Bold" })
+    vim.keymap.set({ "v", "n" }, "si", function()
+      surround("*")
+    end, { desc = "Surround Italic" })
+    vim.keymap.set({ "v", "n" }, "sB", function()
+      surround("***")
+    end, { desc = "Surround Bold Italic" })
+    vim.keymap.set({ "v", "n" }, "ss", function()
+      surround("~~")
+    end, { desc = "Surround Strikethrough" })
+    vim.keymap.set({ "v", "n" }, "sc", function()
+      surround("`")
+    end, { desc = "Surround Code" })
   end,
 })
 
