@@ -8,9 +8,22 @@ return {
     "ribru17/bamboo.nvim",
     lazy = false,
     priority = 1000,
-    config = function()
-      require("bamboo").setup({})
-      require("bamboo").load()
+    config = function(_, opts)
+      require("bamboo").setup(opts)
+    end,
+  },
+  {
+    "slugbyte/lackluster.nvim",
+    lazy = false,
+    priority = 1000,
+  },
+  {
+    "mcchrish/zenbones.nvim",
+    dependencies = "rktjmp/lush.nvim",
+    lazy = false,
+    priority = 1000,
+    init = function()
+      vim.cmd("colorscheme zenbones")
     end,
   },
   { "sainnhe/everforest" },
