@@ -4,6 +4,7 @@ local function set_transparent_background(val)
   require("catppuccin").setup(opts)
 end
 return {
+  { "ribru17/bamboo.nvim" },
   { "sainnhe/everforest" },
   { "rebelot/kanagawa.nvim" },
   { "rose-pine/neovim" },

@@ -604,7 +604,7 @@ return {
             local items = {}
             for i, line in ipairs(lines) do
               local parts = vim.split(line, ",")
-              if i > 1 and line ~= "" and #parts == 3 then
+              if line ~= "" and #parts == 3 then
                 local prog, desc, key = unpack(parts)
                 table.insert(items, {
                   text = string.format("%-20s %-30s    %20s", prog, desc, key),
