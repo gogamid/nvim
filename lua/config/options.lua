@@ -73,7 +73,6 @@ vim.o.foldnestmax = 10       -- Limit number of fold levels
 vim.opt.foldtext = "v:lua.custom_foldtext()"
 
 vim.opt.fillchars = {
-  tab = "> ",
   eob = " ",
   diff = "╱",
   foldopen = "",
