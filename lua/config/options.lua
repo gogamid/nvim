@@ -14,7 +14,6 @@ vim.o.shada = "'100,<50,s10,:1000,/100,@100,h" -- Limit ShaDa file (for startup)
 -- UI =========================================================================
 vim.o.breakindent    = true       -- Indent wrapped lines to match line start
 vim.o.breakindentopt = 'list:-1'  -- Add padding for lists (if 'wrap' is set)
-vim.o.colorcolumn    = ''       -- Draw column on the right of maximum width
 vim.o.cursorline     = true       -- Enable current line highlighting
 vim.o.linebreak      = true       -- Wrap lines at 'breakat' (if 'wrap' is set)
 vim.o.list           = true       -- Show helpful text indicators
@@ -32,7 +31,6 @@ vim.o.winborder      = 'single'   -- Use border in floating windows
 vim.o.wrap           = false      -- Don't visually wrap lines (toggle with \w)
 vim.o.termguicolors  = true       -- Enable 24-bit colors
 vim.o.cmdheight      = 1          -- Command line height
-vim.o.showmode       = false      -- Don't show mode in command line
 vim.o.pumblend       = 10         -- Popup menu transparency
 vim.o.winblend       = 0          -- Floating window transparency
 -- vim.o.conceallevel   = 0          -- Don't hide markup
@@ -46,8 +44,12 @@ vim.opt.tabline = "" -- Use default tabline (empty string uses built-in)
 vim.o.cursorlineopt  = 'screenline,number' -- Show cursor line per screen line
 
 -- Special UI symbols. 
-vim.o.fillchars = 'eob: ,fold:╌'
-vim.o.listchars = 'extends:…,nbsp:␣,precedes:…,tab:> '
+vim.opt.listchars = {
+  extends = "…",
+  nbsp = "␣",
+  precedes = "…",
+  tab = "> ",
+}
 
 -- Folds (see `:h fold-commands`, `:h zM`, `:h zR`, `:h zA`, `:h zj`)
 function _G.custom_foldtext()
@@ -70,11 +72,8 @@ vim.o.foldmethod  = 'indent' -- Fold based on indent level
 vim.o.foldnestmax = 10       -- Limit number of fold levels
 vim.opt.foldtext = "v:lua.custom_foldtext()"
 
--- -- disable vim's auto-folding
--- vim.opt.foldlevel = 99
--- vim.opt.foldlevelstart = 99
-
 vim.opt.fillchars = {
+  tab = "> ",
   eob = " ",
   diff = "╱",
   foldopen = "",
