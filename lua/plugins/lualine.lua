@@ -75,43 +75,41 @@ local function ftype()
 end
 
 return {
-  {
-    "nvim-lualine/lualine.nvim",
-    opts = {
-      options = {
-        globalstatus = true, -- Use a single statusline for all windows
-        icons_enabled = not is_ssh,
-        component_separators = { left = "", right = "" },
-      },
-      sections = {
-        lualine_a = {},
-        lualine_b = {},
-        lualine_c = {
-          "filename",
-          root,
-          "%=",
-          {
-            require("modules.pomodoro").status,
-            color = function()
-              local c = require("modules.pomodoro").status_color()
-              return c
-            end,
-          },
+  "nvim-lualine/lualine.nvim",
+  opts = {
+    options = {
+      globalstatus = true, -- Use a single statusline for all windows
+      icons_enabled = not is_ssh,
+      component_separators = { left = "", right = "" },
+    },
+    sections = {
+      lualine_a = {},
+      lualine_b = {},
+      lualine_c = {
+        "filename",
+        root,
+        "%=",
+        {
+          require("modules.pomodoro").status,
+          color = function()
+            local c = require("modules.pomodoro").status_color()
+            return c
+          end,
         },
-        lualine_x = {
-          supermaven,
-          "overseer",
-          overseer_status,
-          "diagnostics",
-          "diff",
-          "progress",
-          ftype,
-          formatter,
-          lsp,
-        },
-        lualine_y = {},
-        lualine_z = {},
       },
+      lualine_x = {
+        supermaven,
+        "overseer",
+        overseer_status,
+        "diagnostics",
+        "diff",
+        "progress",
+        ftype,
+        formatter,
+        lsp,
+      },
+      lualine_y = {},
+      lualine_z = {},
     },
   },
 }
