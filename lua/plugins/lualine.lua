@@ -1,6 +1,20 @@
 -- local is_ssh = os.getenv("SSH_CONNECTION") ~= nil or os.getenv("TERM_PROGRAM") == "Termius"
 local is_ssh = false --webssh supports icons
 
+local function root()
+  local path = vim.g.root
+  path = vim.fn.fnamemodify(path, ":~")
+  if #path > 50 then
+    local parts = vim.fn.split(path, "/")
+    if #parts >= 4 then
+      local first_two = parts[1] .. "/" .. parts[2]
+      local last_two = parts[#parts - 1] .. "/" .. parts[#parts]
+      path = first_two .. "/../" .. last_two
+    end
+  end
+  return path
+end
+
 local function supermaven()
   local icon = is_ssh and "smvn" or " "
   return require("supermaven-nvim.api").is_running() and icon or ""
@@ -65,45 +79,16 @@ return {
     "nvim-lualine/lualine.nvim",
     opts = {
       options = {
-        theme = "auto", -- Use your current colorscheme's theme or set a specific one
         globalstatus = true, -- Use a single statusline for all windows
         icons_enabled = not is_ssh,
-        component_separators = { left = "", right = "" },
-        section_separators = { left = "", right = "" },
-        disabled_filetypes = {
-          statusline = {},
-          winbar = {},
-        },
-        ignore_focus = {},
-        always_divide_middle = true,
-        always_show_tabline = true,
-        refresh = {
-          statusline = 1000,
-          tabline = 1000,
-          winbar = 1000,
-          refresh_time = 16, -- ~60fps
-          events = {
-            "WinEnter",
-            "BufEnter",
-            "BufWritePost",
-            "SessionLoadPost",
-            "FileChangedShellPost",
-            "VimResized",
-            "Filetype",
-            "CursorMoved",
-            "CursorMovedI",
-            "ModeChanged",
-            "User OverseerTaskUpdate", -- Custom event for overseer updates
-          },
-        },
+        component_separators = { left = "", right = "" },
       },
       sections = {
         lualine_a = {},
         lualine_b = {},
         lualine_c = {
-          ftype,
-          formatter,
-          lsp,
+          "filename",
+          root,
           "%=",
           {
             require("modules.pomodoro").status,
@@ -113,44 +98,20 @@ return {
             end,
           },
         },
-        lualine_x = { supermaven, "overseer", overseer_status, "diagnostics", "diff", "progress" },
+        lualine_x = {
+          supermaven,
+          "overseer",
+          overseer_status,
+          "diagnostics",
+          "diff",
+          "progress",
+          ftype,
+          formatter,
+          lsp,
+        },
         lualine_y = {},
         lualine_z = {},
       },
-      inactive_sections = {
-        lualine_a = {},
-        lualine_b = {},
-        -- lualine_c = { "filename" },
-        lualine_x = { "location" },
-        lualine_y = {},
-        lualine_z = {},
-      },
-      tabline = {
-        -- lualine_a = {},
-        -- lualine_b = {},
-        -- lualine_c = {},
-        -- lualine_x = { "filename" },
-        -- lualine_y = {},
-        -- lualine_z = {},
-      },
-      winbar = {
-        -- lualine_a = {},
-        -- lualine_b = {},
-        -- lualine_c = { "filename" },
-        -- lualine_x = {},
-        -- lualine_y = {},
-        -- lualine_z = {},
-      },
-      inactive_winbar = {},
-      extensions = {},
     },
-  },
-  {
-    "b0o/incline.nvim",
-    config = function()
-      require("incline").setup()
-    end,
-    -- Optional: Lazy load Incline
-    event = "VeryLazy",
   },
 }
