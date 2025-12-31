@@ -6,10 +6,10 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
     vim.o.autochdir = false
 
     local root = vim.fs.root(data.buf, { { "Dockerfile", "Buildfile.yaml", "service.yaml", "Makefile" }, ".git" })
-    vim.g.root = root
-    if root == nil then
+    if root == nil or root == vim.fn.getcwd() then
       return
     end
+    vim.g.root = root
     vim.fn.chdir(root)
     vim.api.nvim_echo({ { "chdir to " .. root, "Conceal" } }, true, {})
   end,
