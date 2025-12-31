@@ -20,8 +20,4 @@ return {
       { "<leader>h", "", desc = "hunks", mode = { "n", "v" } },
     },
   },
-  keys = {},
-  config = function(_, opts)
-    require("which-key").setup(opts)
-  end,
 }
