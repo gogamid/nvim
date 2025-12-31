@@ -1,14 +1,11 @@
 return {
   "saghen/blink.cmp",
   build = "cargo build --release",
-  -- version = "1.*",
   opts_extend = {
     "sources.completion.enabled_providers",
     "sources.compat",
     "sources.default",
   },
-  event = "InsertEnter",
-
   opts = {
     snippets = { preset = "luasnip" },
     appearance = {
@@ -64,8 +61,15 @@ return {
     keymap = {
       preset = "enter",
     },
+    cmdline = {
+      keymap = {
+        preset = "none",
+        ["<CR>"] = { "select_and_accept", "fallback" },
+        ["<Tab>"] = { "show_and_insert_or_accept_single", "select_next" },
+        ["<S-Tab>"] = { "show_and_insert_or_accept_single", "select_prev" },
+        ["<C-space>"] = { "show", "fallback" },
+        ["<C-e>"] = { "cancel", "fallback" },
+      },
+    },
   },
-  config = function(_, opts)
-    require("blink.cmp").setup(opts)
-  end,
 }

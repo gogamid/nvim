@@ -64,40 +64,15 @@ return {
         end,
         desc = "Toggle Supermaven Completion",
       },
-      {
-        "<C-i>",
-        function()
-          require("supermaven-nvim.completion_preview").on_accept_suggestion()
-        end,
-        mode = { "i" },
-        silent = true,
-        desc = "Accept next block",
-      },
-      {
-        "<C-o>",
-        function()
-          require("supermaven-nvim.completion_preview").on_accept_suggestion_word()
-        end,
-        mode = { "i" },
-        remap = true,
-        silent = true,
-        desc = "Accept next word",
-      },
-      {
-        "<C-x>",
-        function()
-          require("supermaven-nvim.completion_preview").on_dispose_inlay()
-        end,
-        mode = { "i" },
-        remap = true,
-        silent = true,
-        desc = "Clear completion",
-      },
     },
     opts = {
       disable_inline_completion = false,
-      disable_keymaps = true,
       ignore_filetypes = { "copilot-chat, opencode_ask", "snacks_picker_input" },
+      keymaps = {
+        accept_suggestion = "<C-y>",
+        clear_suggestion = "<C-x>",
+        accept_word = "<C-j>",
+      },
     },
     config = function(_, opts)
       require("supermaven-nvim").setup(opts)
@@ -111,7 +86,7 @@ return {
   },
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    enabled = true,
+    enabled = false,
     keys = {
       { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
       { "<leader>aM", ":CopilotChatModels<CR>", desc = "CopilotChat Models" },
@@ -213,5 +188,62 @@ return {
         end,
       })
     end,
+  },
+  {
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    opts = {
+      adapters = {
+        http = {
+          gemini = function()
+            return require("codecompanion.adapters").extend("gemini", {
+              env = {
+                api_key = "GEMINI_API_KEY",
+              },
+              schema = {
+                model = {
+                  default = "gemini-3-flash-preview",
+                },
+              },
+            })
+          end,
+        },
+      },
+      interactions = {
+        chat = {
+          adapter = "opencode",
+          model = "glm-4.7-free",
+        },
+        inline = {
+          adapter = "gemini",
+        },
+      },
+      display = {
+        chat = {
+          window = {
+            layout = "float",
+          },
+        },
+      },
+    },
+    keys = {
+      { "<leader>at", ":CodeCompanionChat Toggle<CR>", desc = "CodeCompanion Chat Toggle", mode = { "n" } },
+      { "<leader>aa", ":CodeCompanionChat Add<CR>", desc = "CodeCompanion Add", mode = { "v" } },
+      { "<leader>ai", ":CodeCompanion<CR>", desc = "CodeCompanion Inline", mode = { "v" } },
+      { "<leader>ad", ":CodeCompanion /lsp<CR>", desc = "CodeCompanion Diagnostics", mode = { "v" } },
+      { "<leader>ae", ":CodeCompanion /explain<CR>", desc = "CodeCompanion Exlain", mode = { "v" } },
+      {
+        "q",
+        "<cmd>CodeCompanionChat Toggle<cr>",
+        desc = "CodeCompanion Chat Toggle",
+        ft = "codecompanion",
+        nowait = true,
+        silent = true,
+        noremap = true,
+      },
+    },
   },
 }
