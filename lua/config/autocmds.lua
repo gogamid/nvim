@@ -2,10 +2,10 @@
 
 vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
   desc = "Change current directory to buffer's root",
-  callback = function(data)
+  callback = function(args)
     vim.o.autochdir = false
 
-    local root = vim.fs.root(data.buf, { { "Dockerfile", "Buildfile.yaml", "service.yaml", "Makefile" }, ".git" })
+    local root = vim.fs.root(args.buf, { { "Dockerfile", "Buildfile.yaml", "service.yaml", "Makefile" }, ".git" })
     if root == nil or root == vim.fn.getcwd() then
       return
     end
@@ -48,11 +48,11 @@ vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   desc = "Create directories when saving files",
-  callback = function(event)
-    if event.match:match("^%w%w+:[\\/][\\/]") then
+  callback = function(args)
+    if args.match:match("^%w%w+:[\\/][\\/]") then
       return
     end
-    local file = vim.uv.fs_realpath(event.match) or event.match
+    local file = vim.uv.fs_realpath(args.match) or args.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
@@ -177,14 +177,14 @@ vim.api.nvim_create_autocmd("FileType", {
     "startuptime",
     "tsplayground",
   },
-  callback = function(event)
-    vim.bo[event.buf].buflisted = false
+  callback = function(args)
+    vim.bo[args.buf].buflisted = false
     vim.schedule(function()
       vim.keymap.set("n", "q", function()
         vim.cmd("close")
-        pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+        pcall(vim.api.nvim_buf_delete, args.buf, { force = true })
       end, {
-        buffer = event.buf,
+        buffer = args.buf,
         silent = true,
         desc = "Quit buffer",
       })
