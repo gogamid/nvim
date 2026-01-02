@@ -1,4 +1,118 @@
 {
+  "Status Error with Code": {
+    "prefix": "grpcerr",
+    "scope": "go",
+    "description": "Return gRPC status error",
+    "body": [
+      "return nil, status.Error(status.ErrorOptions{",
+      "\tCode:   codes.${1:InvalidArgument},",
+      "\tReason: \"${2:error reason}\",",
+      "\tCause:  ${3:err},",
+      "})"
+    ]
+  },
+  "Service Main Setup": {
+    "prefix": "grpcmain",
+    "scope": "go",
+    "description": "Complete gRPC service main() setup pattern",
+    "body": [
+      "func main() {",
+      "\tdefer setup.LogPanics()",
+      "\tctx := context.Background()",
+      "\t",
+      "\tserviceUser, err := pbAuth.LoginServiceUserFromEnv(ctx)",
+      "\tif err != nil {",
+      "\t\tpanic(err)",
+      "\t}",
+      "\t",
+      "\toraDb, err := wawidb.NewWawiDB(60 * time.Second)",
+      "\tif err != nil {",
+      "\t\tpanic(fmt.Errorf(\"database connection failed: %w\", err))",
+      "\t}",
+      "\t",
+      "\tsvc := &${1:ServiceName}{ db: oraDb }",
+      "\t",
+      "\tconfig := setup.Config{",
+      "\t\tGRPC: &setup.GRPCConfig{",
+      "\t\t\tRegister: func(server *grpc.Server) {",
+      "\t\t\t\tpb.Register${1:ServiceName}Server(server, svc)",
+      "\t\t\t},",
+      "\t\t},",
+      "\t\tShutdown: func(ctx context.Context) error {",
+      "\t\t\treturn oraDb.Shutdown(ctx)",
+      "\t\t},",
+      "\t}",
+      "\t",
+      "\tsetup.Run(config)",
+      "}"
+    ]
+  },
+  "Span with Context": {
+    "prefix": "span",
+    "scope": "go",
+    "description": "Start tracing span",
+    "body": [
+      "ctx, span := tracing.StartSpan(ctx, \"${1:operationName}\", tracing.WithTags(",
+      "\tattribute.String(\"${2:key}\", \"${3:value}\"),",
+      "))",
+      "defer span.End()",
+      "${0:}"
+    ]
+  },
+  "Span with Error Handling": {
+    "prefix": "spanerr",
+    "scope": "go",
+    "description": "Start tracing span with error handling",
+    "body": [
+      "ctx, span := tracing.StartSpan(ctx, \"${1:operationName}\")",
+      "defer func() {",
+      "\tif err != nil {",
+      "\t\tspan.RecordError(err)",
+      "\t\tspan.SetStatus(codes.Error, err.Error())",
+      "\t}",
+      "\tspan.End()",
+      "}()"
+    ]
+  },
+  "Retry with Backoff": {
+    "prefix": "retry",
+    "scope": "go",
+    "description": "Retry operation with exponential backoff",
+    "body": [
+      "_, err := retry.Backoff(ctx, retry.${1|LongrunningConfig(),InteractiveConfig(),EventSourcingConfig()|}(),",
+      "\tfunc(ctx context.Context) (any, error) {",
+      "\t\t${0:// operation to retry}",
+      "\t\treturn nil, nil",
+      "\t},",
+      ")"
+    ]
+  },
+  "WaitGroup Pattern": {
+    "prefix": "wggroup",
+    "scope": "go",
+    "description": "Use sync.WaitGroup for goroutine synchronization",
+    "body": [
+      "var wg sync.WaitGroup",
+      "for _, ${1:item} := range ${2:items} {",
+      "\twg.Add(1)",
+      "\tgo func(${1:item} ${3:ItemType}) {",
+      "\t\tdefer wg.Done()",
+      "\t\t${0:// do work}",
+      "\t}(${1:item})",
+      "}",
+      "wg.Wait()"
+    ]
+  },
+  "Error Check with Wrap": {
+    "prefix": "errrwrap",
+    "scope": "go",
+    "description": "Check error and return with context wrapping",
+    "body": [
+      "if err != nil {",
+      "\treturn fmt.Errorf(\"${1:operation description}: %w\", err)",
+      "}"
+    ]
+  },
   "todo gamidli": {
     "prefix": "todo",
     "body": ["// TODO(ig): "]
@@ -8,15 +122,27 @@
     "prefix": "test structure",
     "body": [
       "func Test${1:Function}(t *testing.T) {",
-      "\ttype given struct {}",
-      "\ttype expected struct {}",
+      "\ttype given struct {",
+      "\t\t// given things",
+      "\t}",
+      "\ttype expected struct {",
+      "\t\t// expected things",
+      "\t}",
       "\ttests := []struct {",
       "\t\tname     string",
       "\t\tgiven    given",
       "\t\texpected expected",
-      "\t}{{name: \"first test\", given: given{}, expected: expected{}}}",
+      "\t}{",
+      "\t\t{",
+      "\t\t\tname:     \"first test\",",
+      "\t\t\tgiven:    given{},",
+      "\t\t\texpected: expected{},",
+      "\t\t},",
+      "\t}",
       "\tfor _, tt := range tests {",
-      "\t\tt.Run(tt.name, func(t *testing.T) {})",
+      "\t\tt.Run(tt.name, func(t *testing.T) {",
+      "\t\t\t// check",
+      "\t\t})",
       "\t}",
       "}"
     ]
@@ -188,17 +314,18 @@
       "//TODO add policy ${1:serviceName}${2:Method} to the domain_service_users.go"
     ]
   },
-  "errgroup": {
-    "prefix": "errgroup",
+  "Errgroup for Goroutines": {
+    "prefix": "eggroup",
+    "scope": "go",
+    "description": "Use errgroup to manage multiple goroutines",
     "body": [
-      "g, ctx := errgroup.WithContext(ctx)",
-      "",
-      "g.Go(func() error {",
-      "\treturn function(ctx)",
+      "eg, egctx := errgroup.WithContext(ctx)",
+      "eg.Go(func() error {",
+      "\t${0:// do work}",
+      "\treturn nil",
       "})",
-      "",
-      "if err := g.Wait(); err != nil {",
-      "\treturn err",
+      "if err := eg.Wait(); err != nil {",
+      "\treturn fmt.Errorf(\"group failed: %w\", err)",
       "}"
     ]
   },
@@ -243,5 +370,244 @@
       "\t)",
       "})"
     ]
+  },
+  "single import": {
+    "prefix": "single import",
+    "body": "import \"${1:package}\"",
+    "description": "Snippet for import statement"
+  },
+  "multiple imports": {
+    "prefix": "multiple imports",
+    "body": "import (\n\t\"${1:package}\"\n)",
+    "description": "Snippet for a import block"
+  },
+  "single constant": {
+    "prefix": "single constant",
+    "body": "const ${1:name} = ${2:value}",
+    "description": "Snippet for a constant"
+  },
+  "multiple constants": {
+    "prefix": "multiple constants",
+    "body": "const (\n\t${1:name} = ${2:value}\n)",
+    "description": "Snippet for a constant block"
+  },
+  "type function declaration": {
+    "prefix": "type function declaration",
+    "body": "type ${1:name} func($3) $4",
+    "description": "Snippet for a type function declaration"
+  },
+  "type interface declaration": {
+    "prefix": "type interface declaration",
+    "body": "type ${1:name} interface {\n\t$0\n}",
+    "description": "Snippet for a type interface"
+  },
+  "type struct declaration": {
+    "prefix": "type struct declaration",
+    "body": "type ${1:name} struct {\n\t$0\n}",
+    "description": "Snippet for a struct declaration"
+  },
+  "package main and main function": {
+    "prefix": "package main and main function",
+    "body": "package main\n\nfunc main() {\n\t$0\n}",
+    "description": "Snippet for main package & function"
+  },
+  "function declaration": {
+    "prefix": "function declaration",
+    "body": "func $1($2) $3 {\n\t$0\n}",
+    "description": "Snippet for function declaration"
+  },
+  "variable declaration": {
+    "prefix": "variable declaration",
+    "body": "var ${1:name} ${2:type}",
+    "description": "Snippet for a variable"
+  },
+  "variables declaration": {
+    "prefix": "variables declaration",
+    "body": "var (\n\t${1:name} ${2:type} = ${3:value}\n)",
+    "description": "Snippet for a variable"
+  },
+  "switch statement": {
+    "prefix": "switch statement",
+    "body": "switch ${1:expression} {\ncase ${2:condition}:\n\t$0\n}",
+    "description": "Snippet for switch statement"
+  },
+  "select statement": {
+    "prefix": "select statement",
+    "body": "select {\ncase ${1:condition}:\n\t$0\n}",
+    "description": "Snippet for select statement"
+  },
+  "case clause": {
+    "prefix": "case clause",
+    "body": "case ${1:condition}:$0",
+    "description": "Snippet for case clause"
+  },
+  "for statement": {
+    "prefix": "for statement",
+    "body": "for ${1}{\n\t$0\n}",
+    "description": "Snippet for a pure for loop"
+  },
+  "for n statement": {
+    "prefix": "for n statement",
+    "body": "for ${1:i} := ${2:0}; $1 < ${3:count}; $1${4:++} {\n\t$0\n}",
+    "description": "Snippet for a for loop"
+  },
+  "for range statement": {
+    "prefix": "for range statement",
+    "body": "for ${1:_, }${2:v} := range ${3:v} {\n\t$0\n}",
+    "description": "Snippet for a for range loop"
+  },
+  "channel declaration": {
+    "prefix": "channel declaration",
+    "body": "chan ${1:type}",
+    "description": "Snippet for a channel"
+  },
+  "map declaration": {
+    "prefix": "map declaration",
+    "body": "map[${1:type}]${2:type}",
+    "description": "Snippet for a map"
+  },
+  "if statement": {
+    "prefix": "if statement",
+    "body": "if ${1:condition} {\n\t$0\n}",
+    "description": "Snippet for if statement"
+  },
+  "else branch": {
+    "prefix": "else branch",
+    "body": "else {\n\t$0\n}",
+    "description": "Snippet for else branch"
+  },
+  "if else statement": {
+    "prefix": "if else statement",
+    "body": "if ${1:condition} {\n\t$2\n} else {\n\t$0\n}",
+    "description": "Snippet for if else"
+  },
+  "if err != nil": {
+    "prefix": "if err != nil",
+    "body": "if err != nil {\n\treturn ${1:nil}, ${2:err}\n}",
+    "description": "Snippet for if err != nil"
+  },
+  "fmt.Println": {
+    "prefix": "fmt.Println",
+    "body": "fmt.Println(\"$1\")",
+    "description": "Snippet for fmt.Println()"
+  },
+  "fmt.Printf": {
+    "prefix": "fmt.Printf",
+    "body": "fmt.Printf(\"$1\", ${2:var})",
+    "description": "Snippet for fmt.Printf()"
+  },
+  "log.Println": {
+    "prefix": "log.Println",
+    "body": "log.Println(\"$1\")",
+    "description": "Snippet for log.Println()"
+  },
+  "log.Printf": {
+    "prefix": "log.Printf",
+    "body": "log.Printf(\"$1\", ${2:var})",
+    "description": "Snippet for log.Printf()"
+  },
+  "log variable content": {
+    "prefix": "log variable content",
+    "body": "log.Printf(\"${1:var}: %#+v\\\\n\", ${1:var})",
+    "description": "Snippet for log.Printf() with variable content"
+  },
+  "t.Log": {
+    "prefix": "t.Log",
+    "body": "t.Log(\"$1\")",
+    "description": "Snippet for t.Log()"
+  },
+  "t.Logf": {
+    "prefix": "t.Logf",
+    "body": "t.Logf(\"$1\", ${2:var})",
+    "description": "Snippet for t.Logf()"
+  },
+  "t.Logf variable content": {
+    "prefix": "t.Logf variable content",
+    "body": "t.Logf(\"${1:var}: %#+v\\\\n\", ${1:var})",
+    "description": "Snippet for t.Logf() with variable content"
+  },
+  "make(...)": {
+    "prefix": "make(...)",
+    "body": "make(${1:type}, ${2:0})",
+    "description": "Snippet for make statement"
+  },
+  "new(...)": {
+    "prefix": "new(...)",
+    "body": "new(${1:type})",
+    "description": "Snippet for new statement"
+  },
+  "panic(...)": {
+    "prefix": "panic(...)",
+    "body": "panic(\"$0\")",
+    "description": "Snippet for panic"
+  },
+  "goroutine anonymous function": {
+    "prefix": "goroutine anonymous function",
+    "body": "go func($1) {\n\t$0\n}($2)",
+    "description": "Snippet for anonymous goroutine declaration"
+  },
+  "goroutine function": {
+    "prefix": "goroutine function",
+    "body": "go ${1:func}($0)",
+    "description": "Snippet for goroutine declaration"
+  },
+  "defer statement": {
+    "prefix": "defer statement",
+    "body": "defer ${1:func}($0)",
+    "description": "Snippet for defer statement"
+  },
+  "test function": {
+    "prefix": "test function",
+    "body": "func Test$1(t *testing.T) {\n\t$0\n}",
+    "description": "Snippet for Test function"
+  },
+  "test main": {
+    "prefix": "test main",
+    "body": "func TestMain(m *testing.M) {\n\t$1\n\n\tos.Exit(m.Run())\n}",
+    "description": "Snippet for TestMain function"
+  },
+  "benchmark function": {
+    "prefix": "benchmark function",
+    "body": "func Benchmark$1(b *testing.B) {\n\tfor ${2:i} := 0; ${2:i} < b.N; ${2:i}++ {\n\t\t$0\n\t}\n}",
+    "description": "Snippet for Benchmark function"
+  },
+  "example function": {
+    "prefix": "example function",
+    "body": "func Example$1() {\n\t$2\n\t//Output:\n\t$3\n}",
+    "description": "Snippet for Example function"
+  },
+  "init function": {
+    "prefix": "init function",
+    "body": "func init() {\n\t$1\n}",
+    "description": "Snippet for init function"
+  },
+  "main function": {
+    "prefix": "main function",
+    "body": "func main() {\n\t$1\n}",
+    "description": "Snippet for main function"
+  },
+  "method declaration": {
+    "prefix": "method declaration",
+    "body": "func (${1:receiver} ${2:type}) ${3:method}($4) $5 {\n\t$0\n}",
+    "description": "Snippet for method declaration"
+  },
+  "hello world web app": {
+    "prefix": "hello world web app",
+    "body": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"time\"\n)\n\nfunc greet(w http.ResponseWriter, r *http.Request) {\n\tfmt.Fprintf(w, \"Hello World! %s\", time.Now())\n}\n\nfunc main() {\n\thttp.HandleFunc(\"/\", greet)\n\thttp.ListenAndServe(\":8080\", nil)\n}",
+    "description": "Snippet for sample hello world webapp"
+  },
+  "json tag": {
+    "prefix": "json tag",
+    "body": "`json:\"$1\"`",
+    "description": "Snippet for struct json tag"
+  },
+  "xml tag": {
+    "prefix": "xml tag",
+    "body": "`xml:\"$1\"`",
+    "description": "Snippet for struct xml tag"
+  },
+  "if key in a map": {
+    "prefix": "if key in a map",
+    "body": "if ${1:value}, ok := ${2:map}[${3:key}]; ok {\n\t$4\n}"
   }
 }
