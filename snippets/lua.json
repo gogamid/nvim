@@ -1,14 +1,14 @@
 {
   "Plugin Confing": {
-    "prefix": "conf",
+    "prefix": "config option",
     "body": [
       "config = function(_, opts)",
       "  require(\"${1:plugin}\").setup(opts)",
       "end,"
     ]
   },
-  "Lazyvim plugin": {
-    "prefix": "full lazy plugin",
+  "lazy plugin": {
+    "prefix": "return lazy plugin",
     "body": [
       "return {",
       "  {",
@@ -19,9 +19,6 @@
       "    },",
       "    opts = {",
       "    },",
-      "    config = function(_, opts)",
-      "      require(\"${1:plugin}\").setup(opts)",
-      "    end,",
       "  },",
       "}"
     ]
@@ -31,19 +28,14 @@
     "body": ["-- TODO ${1:comment}"]
   },
   "Create Auto Command": {
-    "prefix": "autocmd",
+    "prefix": "autocommand",
     "body": [
       "vim.api.nvim_create_autocmd(\"${1:event}\", {",
-      "  group = vim.api.nvim_create_augroup(\"${2:group}\", { clear = true }),",
-      "  callback = function(ev)",
-      "    ${0}",
+      "  callback = function(args)",
+      "    ${2}",
       "  end",
       "})"
     ]
-  },
-  "Create Auto Command Group": {
-    "prefix": "augroup",
-    "body": ["vim.api.nvim_create_augroup(\"${1:group}\", { clear = true })$0"]
   },
   "Current Win": {
     "prefix": "win",
