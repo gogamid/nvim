@@ -14,6 +14,7 @@ return {
   {
     "saghen/blink.cmp",
     opts = {
+      snippets = { preset = "luasnip" },
       completion = {
         list = {
           max_items = 3,
@@ -30,6 +31,11 @@ return {
       },
       sources = {
         min_keyword_length = 2,
+        providers = {
+          snippets = {
+            score_offset = 1000,
+          },
+        },
       },
       signature = {
         enabled = true,
@@ -46,6 +52,8 @@ return {
           ["<CR>"] = { "select_and_accept", "fallback" },
           ["<Tab>"] = { "show_and_insert_or_accept_single", "select_next" },
           ["<S-Tab>"] = { "show_and_insert_or_accept_single", "select_prev" },
+          ["<C-n>"] = { "select_next", "fallback" },
+          ["<C-p>"] = { "select_prev", "fallback" },
           ["<C-space>"] = { "show", "fallback" },
           ["<C-e>"] = { "cancel", "fallback" },
         },
