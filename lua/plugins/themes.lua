@@ -23,7 +23,18 @@ return {
     lazy = false,
     priority = 1000,
     init = function()
+      vim.g.zenbones = { italic_strings = false, transparent_background = true }
       vim.cmd("colorscheme zenbones")
+
+      local lush = require("lush")
+      local zb = require("zenbones")
+
+      local specs = lush.parse(function()
+        return {
+          String({ zb.String, fg = "#819B69" }),
+        }
+      end)
+      lush.apply(lush.compile(specs))
     end,
   },
   { "sainnhe/everforest" },
