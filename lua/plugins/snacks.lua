@@ -225,7 +225,7 @@ return {
     picker = picker_options,
     image = {},
     dashboard = {
-      enabled = true,
+      enabled = false,
       preset = {
         keys = {},
         header = require("modules.headers").hello_papi,

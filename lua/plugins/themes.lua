@@ -1,18 +1,5 @@
 return {
   {
-    "ribru17/bamboo.nvim",
-    lazy = false,
-    priority = 1000,
-    config = function(_, opts)
-      require("bamboo").setup(opts)
-    end,
-  },
-  {
-    "slugbyte/lackluster.nvim",
-    lazy = false,
-    priority = 1000,
-  },
-  {
     "mcchrish/zenbones.nvim",
     dependencies = "rktjmp/lush.nvim",
     lazy = false,
@@ -32,8 +19,6 @@ return {
       lush.apply(lush.compile(specs))
     end,
   },
-  { "sainnhe/everforest" },
-  { "rose-pine/neovim" },
   {
     "f-person/auto-dark-mode.nvim",
     opts = {
@@ -45,5 +30,20 @@ return {
         vim.o.background = "light"
       end,
     },
+  },
+  {
+    "ribru17/bamboo.nvim",
+    enabled = false,
+    lazy = false,
+    priority = 1000,
+    config = function(_, opts)
+      require("bamboo").setup(opts)
+    end,
+  },
+  {
+    "slugbyte/lackluster.nvim",
+    enabled = false,
+    lazy = false,
+    priority = 1000,
   },
 }
