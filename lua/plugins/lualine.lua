@@ -1,6 +1,3 @@
--- local is_ssh = os.getenv("SSH_CONNECTION") ~= nil or os.getenv("TERM_PROGRAM") == "Termius"
-local is_ssh = false --webssh supports icons
-
 local function root()
   local path = vim.g.root
   path = vim.fn.fnamemodify(path, ":~")
@@ -16,7 +13,7 @@ local function root()
 end
 
 local function supermaven()
-  local icon = is_ssh and "smvn" or " "
+  local icon = vim.g.icons_enabled and " " or "smvn"
   return require("supermaven-nvim.api").is_running() and icon or ""
 end
 
@@ -44,7 +41,7 @@ local function overseer_status()
 end
 
 local function formatter()
-  local icon = is_ssh and "fmt:" or "󰉶 "
+  local icon = vim.g.icons_enabled and "󰉶 " or "fmt:"
 
   local formatters, use_lsp = require("conform").list_formatters_to_run(0)
   local names = {}
@@ -57,7 +54,7 @@ local function formatter()
 end
 
 local function lsp()
-  local icon = is_ssh and "lsp:" or " "
+  local icon = vim.g.icons_enabled and " " or "lsp:"
 
   local client_names = {}
   for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
@@ -68,8 +65,7 @@ local function lsp()
 end
 
 local function ftype()
-  local ft_icon = " "
-  local icon = is_ssh and "ft:" or ft_icon
+  local icon = vim.g.icons_enabled and " " or "ft:"
   local ft = vim.bo.filetype
   return icon .. ft
 end
@@ -78,9 +74,8 @@ return {
   "nvim-lualine/lualine.nvim",
   opts = {
     options = {
-      globalstatus = true, -- Use a single statusline for all windows
-      icons_enabled = not is_ssh,
-      component_separators = { left = "", right = "" },
+      globalstatus = true,
+      component_separators = { left = "|", right = "|" },
     },
     sections = {
       lualine_a = {},

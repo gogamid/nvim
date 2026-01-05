@@ -175,3 +175,5 @@ if vim.g.neovide then
   vim.g.neovide_show_border = false
   vim.g.neovide_background_color = "#2A3035"
 end
+
+vim.g.icons_enabled = true

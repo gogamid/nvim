@@ -745,9 +745,21 @@ return {
             end,
           })
           :map("<leader>ua")
+        Snacks.toggle
+          .new({
+            id = "icons",
+            name = "Ic[o]ns",
+            get = function()
+              return vim.g.icons_enabled
+            end,
+            set = function(state)
+              vim.g.icons_enabled = state
+            end,
+          })
+          :map("<leader>uo")
         Snacks.toggle.animate():map("<leader>uA")
-        Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
-        Snacks.toggle.line_number():map("<leader>ul")
+        Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>ul")
+        Snacks.toggle.line_number():map("<leader>uL")
         Snacks.toggle.scroll():map("<leader>us")
         Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>uS")
         Snacks.toggle.diagnostics():map("<leader>ud")
