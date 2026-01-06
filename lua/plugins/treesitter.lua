@@ -3,16 +3,6 @@ return {
     "nvim-treesitter/nvim-treesitter",
     branch = "master",
     build = ":TSUpdate",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-      {
-        "nvim-treesitter/nvim-treesitter-context",
-        opts = {
-          mode = "cursor",
-          max_lines = 3,
-        },
-      },
-    },
     config = function()
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
@@ -33,14 +23,13 @@ return {
       local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
       parser_config.go = {
         install_info = {
-          url = "/Users/gamidli/personal/tree-sitter-go", -- your local path
+          url = "/Users/gamidli/personal/tree-sitter-go",
           files = { "src/parser.c" },
-          -- optional entries:
           branch = "master",
           generate_requires_npm = false,
-          requires_generate_from_grammar = false, -- you have pre-generated src/parser.c
+          requires_generate_from_grammar = false,
         },
-        filetype = "go", -- Gupta files typically use .apt extension
+        filetype = "go",
       }
     end,
   },
@@ -89,6 +78,13 @@ return {
         desc = "previous function",
         mode = { "n", "x", "o" },
       },
+    },
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    opts = {
+      mode = "cursor",
+      max_lines = 3,
     },
   },
 }
