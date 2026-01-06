@@ -70,61 +70,6 @@ end, { desc = "Go to URL under cursor" })
 require("modules.bionic").setup({ prefix_length = 2, auto_activate = false, filetypes = { "markdown" } })
 vim.keymap.set("n", "<leader>uB", ":BionicToggle<CR>", { desc = "Toggle Bionic Read" })
 
---stylua: ignore
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-
-    vim.lsp.inlay_hint.enable(true)
-
-    -- Information
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = args.buf, desc = "Hover" })
-
-    -- Code actions
-    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { buffer = args.buf, desc = "Code Action" })
-    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = args.buf, desc = "Rename" })
-    vim.keymap.set("n", '<leader>cl', vim.lsp.codelens.run, { buffer = args.buf, desc = "CodeLens" })
-
-    -- Diagnostics
-    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = args.buf, desc = "Open Diagnostic" })
-    vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, { buffer = args.buf, desc = "Quickfix Diagnostics" })
-
-    -- Code actions
-    vim.keymap.set("n", "gd", function() Snacks.picker.lsp_definitions() end, { desc = "Definitions" })
-    vim.keymap.set("n", "gD", function() Snacks.picker.lsp_declarations() end, { desc = "Declarations" })
-    vim.keymap.set("n", "gr", function() Snacks.picker.lsp_references() end, { nowait = true, desc = "References" })
-    vim.keymap.set("n", "gi", function() Snacks.picker.lsp_implementations() end, { desc = "Implementation" })
-    vim.keymap.set("n", "gt", function() Snacks.picker.lsp_type_definitions() end, { desc = "Type Definition" })
-
-  end,
-})
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-  desc = "Organize imports for Go files",
-  pattern = "*.go",
-  callback = function()
-    vim.inspect("Organize imports for Go files")
-    local params = vim.lsp.util.make_range_params(0, "utf-8")
-    vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, result, _)
-      if err or not result or vim.tbl_isempty(result) then
-        return
-      end
-      for _, action in pairs(result) do
-        if action.kind == "source.organizeImports" then
-          if action.command then
-            vim.lsp.buf.code_action({
-              apply = true,
-              context = { only = { "source.organizeImports" }, diagnostics = {} },
-            })
-          elseif action.edit then
-            vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
-          end
-          return
-        end
-      end
-    end)
-  end,
-})
-
 local diagnostic_goto = function(next, severity)
   return function()
     vim.diagnostic.jump({

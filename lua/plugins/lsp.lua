@@ -5,12 +5,6 @@ vim.lsp.config("lua_ls", {
         arrayIndex = "Disable",
       },
       codeLens = { enable = false },
-      workspace = {
-        library = {
-          vim.env.VIMRUNTIME,
-          "${3rd}/luv/library",
-        },
-      },
     },
   },
 })
@@ -48,7 +42,7 @@ vim.lsp.config("vtsls", {
 vim.lsp.config("gopls", {
   settings = {
     gopls = {
-      gofumpt = true,
+      gofumpt = false,
       buildFlags = { "-tags=manual_test" },
       ["local"] = os.getenv("GO_LOCAL_PKG"),
       staticcheck = true,
@@ -70,23 +64,58 @@ vim.lsp.config("gopls", {
         assignVariableTypes = false,
         parameterNames = false,
       },
-      -- codelenses = {
-      -- gc_details = false,
-      -- generate = true,
-      -- regenerate_cgo = true,
-      -- run_govulncheck = true,
-      -- test = true,
-      -- tidy = true,
-      -- upgrade_dependency = true,
-      -- vendor = true,
-      -- },
       usePlaceholders = true,
       completeUnimported = true,
       directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
-      semanticTokens = false, -- overrides injections
+      semanticTokens = true, -- overrides injections for 20s
       diagnosticsTrigger = "Save",
     },
   },
+  on_attach = function(client, _)
+    -- Set semantic tokens provider if not already set
+    if not client.server_capabilities.semanticTokensProvider then
+      local semantic = client.config.capabilities.textDocument.semanticTokens
+      if not semantic then
+        vim.notify("LSP server does not support semantic tokens")
+        return
+      end
+      client.server_capabilities.semanticTokensProvider = {
+        full = true,
+        legend = { tokenModifiers = semantic.tokenModifiers, tokenTypes = semantic.tokenTypes },
+        range = true,
+      }
+    end
+
+    -- Hide semantic highlights so Tree-sitter injections show through
+    vim.api.nvim_set_hl(0, "@lsp.type.string.go", { link = "" })
+
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      desc = "Auto-organize imports for go",
+      pattern = "*.go",
+      callback = function()
+        local params = vim.lsp.util.make_range_params(0, "utf-8")
+        vim.lsp.buf_request(0, "textDocument/codeAction", params, function(err, result, _)
+          if err or not result or vim.tbl_isempty(result) then
+            return
+          end
+          for _, action in pairs(result) do
+            if action.kind == "source.organizeImports" then
+              vim.notify("Organizing imports...")
+              if action.command then
+                vim.lsp.buf.code_action({
+                  apply = true,
+                  context = { only = { "source.organizeImports" }, diagnostics = {} },
+                })
+              elseif action.edit then
+                vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
+              end
+              return
+            end
+          end
+        end)
+      end,
+    })
+  end,
 })
 
 -- used when buf lsp is buggy
@@ -468,6 +497,41 @@ vim.lsp.enable({
   -- "ziggy_schema",
   -- "zk",
   -- "zls",
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    vim.lsp.inlay_hint.enable(true)
+
+    -- Information
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = args.buf, desc = "Hover" })
+
+    -- Code actions
+    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { buffer = args.buf, desc = "Code Action" })
+    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = args.buf, desc = "Rename" })
+    vim.keymap.set("n", "<leader>cl", vim.lsp.codelens.run, { buffer = args.buf, desc = "CodeLens" })
+
+    -- Diagnostics
+    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = args.buf, desc = "Open Diagnostic" })
+    vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, { buffer = args.buf, desc = "Quickfix Diagnostics" })
+
+    -- Code actions
+    vim.keymap.set("n", "gd", function()
+      Snacks.picker.lsp_definitions()
+    end, { desc = "Definitions", buffer = args.buf })
+    vim.keymap.set("n", "gD", function()
+      Snacks.picker.lsp_declarations()
+    end, { desc = "Declarations", buffer = args.buf })
+    vim.keymap.set("n", "gr", function()
+      Snacks.picker.lsp_references()
+    end, { nowait = true, desc = "References", buffer = args.buf })
+    vim.keymap.set("n", "gi", function()
+      Snacks.picker.lsp_implementations()
+    end, { desc = "Implementation", buffer = args.buf })
+    vim.keymap.set("n", "gt", function()
+      Snacks.picker.lsp_type_definitions()
+    end, { desc = "Type Definition", buffer = args.buf })
+  end,
 })
 
 vim.env.PATH = vim.env.PATH .. ":" .. vim.fn.stdpath("data") .. "/mason/bin"
