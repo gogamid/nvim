@@ -1,36 +1,39 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    lazy = false,
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "markdown",
-          -- "go",
-          "lua",
-        },
-        ignore_install = {},
-        sync_install = true,
-        modules = {},
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = false,
-        },
-        indent = { enable = true },
-        auto_install = true,
+      require("nvim-treesitter").install("all")
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "TSUpdate",
+        callback = function()
+          ---@diagnostic disable-next-line: missing-fields
+          require("nvim-treesitter.parsers").go = {
+            ---@diagnostic disable-next-line: missing-fields
+            install_info = {
+              path = "~/personal/tree-sitter-go",
+            },
+          }
+        end,
       })
-      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-      parser_config.go = {
-        install_info = {
-          url = "/Users/gamidli/personal/tree-sitter-go",
-          files = { "src/parser.c" },
-          branch = "master",
-          generate_requires_npm = false,
-          requires_generate_from_grammar = false,
-        },
-        filetype = "go",
-      }
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "*",
+        callback = function(args)
+          local ft = vim.bo[args.buf].filetype
+          local lang = vim.treesitter.language.get_lang(ft) or ft
+
+          local is_available = vim.tbl_contains(require("nvim-treesitter").get_available(), lang)
+          if not is_available then
+            return
+          end
+
+          vim.treesitter.start(args.buf)
+          vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
+      })
     end,
   },
   {
