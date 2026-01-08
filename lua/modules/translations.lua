@@ -16,7 +16,7 @@ end
 
 local default_opts = {
   translation_file = "en_DEV.json",
-  highlight = "Conceal",
+  highlight = "Comment",
   active = {
     typescript = true,
     vue = true,
@@ -51,6 +51,14 @@ local go_translation_query = [[
   operand: (identifier) @ident 
   index: (interpreted_string_literal 
     (interpreted_string_literal_content) @translation.key)) 
+  (#any-of? @ident "translations" "translation")) 
+
+((index_expression 
+    operand: (selector_expression 
+      operand: (identifier) 
+      field: (field_identifier) @ident) 
+    index: (interpreted_string_literal 
+      (interpreted_string_literal_content) @translation.key))
   (#any-of? @ident "translations" "translation")) 
 ]]
 
