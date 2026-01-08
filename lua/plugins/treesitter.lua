@@ -16,7 +16,23 @@ return {
               path = "~/personal/tree-sitter-go",
             },
           }
+
+          require("nvim-treesitter.parsers").gupta = {
+            filetype = "gupta",
+            install_info = {
+              path = "~/personal/tree-sitter-gupta",
+            },
+          }
         end,
+      })
+
+      vim.filetype.add({
+        extension = {
+          apt = "gupta",
+        },
+        pattern = {
+          [".*%.apt%.indented"] = "gupta",
+        },
       })
 
       vim.api.nvim_create_autocmd("FileType", {

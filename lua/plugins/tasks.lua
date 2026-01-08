@@ -1,7 +1,7 @@
 return {
   {
     "stevearc/overseer.nvim",
-    -- version = "1.6.0", -- before major refactoring
+    commit = "afbac6c612b12772591640d801fad65423af02b9", --slow performance
     opts = {
       dap = false,
       task_list = {
