@@ -531,6 +531,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "gt", function()
       Snacks.picker.lsp_type_definitions()
     end, { desc = "Type Definition", buffer = args.buf })
+    vim.keymap.set("n", "gI", function()
+      Snacks.picker.lsp_incoming_calls()
+    end, { desc = "Incoming Calls", buffer = args.buf })
+    vim.keymap.set("n", "gO", function()
+      Snacks.picker.lsp_outgoing_calls()
+    end, { desc = "Outgoing Calls", buffer = args.buf })
   end,
 })
 
