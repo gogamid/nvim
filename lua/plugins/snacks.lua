@@ -435,30 +435,23 @@ return {
     {
       "<leader>gg",
       function()
-        Snacks.lazygit()
-      end,
-      desc = "Lazygit",
-    },
-    {
-      "<leader>gl",
-      function()
         Snacks.picker.git_log()
       end,
-      desc = "Logs",
-    },
-    {
-      "<leader>gb",
-      function()
-        Snacks.picker.git_log_line()
-      end,
-      desc = "Blame Logs",
+      desc = "Git Logs",
     },
     {
       "<leader>gf",
       function()
         Snacks.picker.git_log_file()
       end,
-      desc = "File Logs",
+      desc = "Git Log File",
+    },
+    {
+      "<leader>gl",
+      function()
+        Snacks.picker.git_log_line()
+      end,
+      desc = "Git Log Line",
     },
     {
       "<leader>gs",
@@ -467,33 +460,41 @@ return {
       end,
       desc = "Status",
     },
-    -- {
-    --   "<leader>gd",
-    --   function()
-    --     Snacks.picker.git_diff()
-    --   end,
-    --   desc = "Diffs",
-    -- },
     {
-      "<leader>go",
+      "<leader>gS",
+      function()
+        Snacks.picker.git_stash()
+      end,
+      desc = "Status",
+    },
+    {
+      "<leader>gt",
+      function()
+        Snacks.lazygit()
+      end,
+      desc = "Lazygit Tui",
+    },
+    {
+      "gb",
       function()
         Snacks.gitbrowse()
       end,
-      desc = "Open in browser",
-      mode = { "n", "v" },
+      desc = "Gitbrowse",
+      mode = { "v" },
     },
     {
-      "<leader>gy",
+      "gy",
       function()
         Snacks.gitbrowse({
           open = function(url)
             vim.fn.setreg("+", url)
+            vim.notify("URL copied")
           end,
           notify = false,
         })
       end,
-      desc = "Yank code url",
-      mode = { "n", "x" },
+      desc = "Gitbrowse yank",
+      mode = { "x" },
     },
 
     -- search and grep
