@@ -1,3 +1,23 @@
+local function service_dir()
+  local dir = vim.fs.root(0, { "service.yaml" })
+  if dir == nil then
+    vim.notify("No service.yaml file found", vim.log.levels.WARN)
+  end
+  return dir
+end
+
+local function domain_dir()
+  local dir = vim.fs.root(0, { "sonar-project.properties" })
+  if dir == nil then
+    vim.notify("No sonar-project.properties file found", vim.log.levels.WARN)
+  end
+  return dir
+end
+
+local function parent_dir()
+  return vim.fs.dirname(vim.api.nvim_buf_get_name(0))
+end
+
 local git_options = {
   actions = {
     ["diffview"] = function(picker)
@@ -10,7 +30,7 @@ local git_options = {
     ["codediff"] = function(picker)
       local curr = picker:current().commit
       if not curr then
-        err("No commit selected", "codediff")
+        vim.notify("No commit selected", vim.log.levels.ERROR)
         return
       end
       local prev = vim.trim(vim.fn.system("git rev-parse --short " .. curr .. "^"))
@@ -24,9 +44,9 @@ local git_options = {
         if pr_number then
           local url = os.getenv("AZURE_PR_URL") .. pr_number
           vim.fn.setreg("+", url)
-          info(string.format("PR URL copied: %s", url))
+          vim.notify(string.format("PR URL copied: %s", url))
         else
-          err("PR number not found in message.")
+          vim.notify("PR number not found in message.", vim.log.levels.ERROR)
         end
       end
     end,
@@ -38,7 +58,7 @@ local git_options = {
           local url = os.getenv("AZURE_PR_URL") .. pr_number
           vim.fn.system({ "open", url })
         else
-          err("PR number not found in message.")
+          vim.notify("PR number not found in message.", vim.log.levels.ERROR)
         end
       end
     end,
@@ -54,175 +74,172 @@ local git_options = {
   },
 }
 
-local picker_options = {
-  ---@class snacks.picker.matcher.Config
-  matcher = {
-    fuzzy = true, -- use fuzzy matching
-    smartcase = true, -- use smartcase
-    ignorecase = true, -- use ignorecase
-    sort_empty = false, -- sort results when the search string is empty
-    filename_bonus = true, -- give bonus for matching file names (last part of the path)
-    file_pos = true, -- support patterns like `file:line:col` and `file:line`
-    -- the bonusses below, possibly require string concatenation and path normalization,
-    -- so this can have a performance impact for large lists and increase memory usage
-    cwd_bonus = false, -- give bonus for matching files in the cwd
-    frecency = true, -- frecency bonus
-    history_bonus = false, -- give more weight to chronological order
-  },
-  sources = {
-    git_log = git_options,
-    git_log_file = git_options,
-    git_log_line = git_options,
-  },
-  win = {
-    input = {
-      keys = {
-        -- disable unnecessary keys since we want the help menu to be usefult
-        ["/"] = false,
-        ["<C-Down>"] = false,
-        ["<C-Up>"] = false,
-        -- ["<C-c>"] = false,
-        -- ["<C-w>"] = false,
-        -- ["<CR>"] = false,
-        ["<Down>"] = false,
-        -- ["<Esc>"] = false,
-        ["<S-CR>"] = false,
-        ["<S-Tab>"] = false,
-        ["<Tab>"] = false,
-        ["<Up>"] = false,
-        ["<a-d>"] = false,
-        ["<a-f>"] = false,
-        ["<a-h>"] = false,
-        ["<a-i>"] = false,
-        ["<a-r>"] = false,
-        ["<a-m>"] = false,
-        ["<a-p>"] = false,
-        ["<a-w>"] = false,
-        -- ["<c-a>"] = false,
-        -- ["<c-b>"] = false,
-        -- ["<c-d>"] = false,
-        -- ["<c-f>"] = false,
-        -- ["<c-g>"] = false,
-        -- ["<c-j>"] = false,
-        -- ["<c-k>"] = false,
-        -- ["<c-n>"] = false,
-        -- ["<c-p>"] = false,
-        -- ["<c-q>"] = false,
-        -- ["<c-s>"] = false,
-        ["<c-t>"] = false,
-        -- ["<c-u>"] = false,
-        -- ["<c-v>"] = false,
-        ["<c-r>#"] = false,
-        ["<c-r>%"] = false,
-        ["<c-r><c-a>"] = false,
-        ["<c-r><c-f>"] = false,
-        ["<c-r><c-l>"] = false,
-        ["<c-r><c-p>"] = false,
-        ["<c-r><c-w>"] = false,
-        ["<c-w>H"] = false,
-        ["<c-w>J"] = false,
-        ["<c-w>K"] = false,
-        ["<c-w>L"] = false,
-        -- ["?"] = false,
-        ["G"] = false,
-        ["gg"] = false,
-        ["j"] = false,
-        ["k"] = false,
-        -- ["q"] = true,
-
-        -- used keys
-
-        ["<C-c>"] = { "cancel", mode = "i" },
-        ["<CR>"] = { "confirm", mode = { "n", "i" } },
-
-        ["<c-s>"] = { "edit_split", mode = { "i", "n" } },
-        ["<c-v>"] = { "edit_vsplit", mode = { "i", "n" } },
-
-        ["<c-z>"] = { "toggle_maximize", mode = { "n", "i" } },
-        ["<c-h>"] = { "toggle_help_input", mode = { "i", "n" } },
-        ["<c-e>"] = { "cycle_win", mode = { "i", "n" } },
-
-        ["<c-,>"] = { "toggle_ignored", mode = { "i", "n" } },
-        ["<c-.>"] = { "toggle_hidden", mode = { "i", "n" } },
-        ["<c-g>"] = { "toggle_live", mode = { "i", "n" } },
-        ["<c-r>"] = { "toggle_regex", mode = { "i", "n" } },
-
-        ["<c-k>"] = { "history_back", mode = { "i", "n" } },
-        ["<c-j>"] = { "history_forward", mode = { "i", "n" } },
-
-        ["<c-l>"] = { "select_and_next", mode = { "n", "i" } },
-        ["<c-a>"] = { "select_all", mode = { "n", "i" } },
-
-        ["<c-w>"] = { "<c-s-w>", mode = { "i" }, expr = true, desc = "delete word" },
-
-        ["<c-n>"] = { "list_down", mode = { "i", "n" } },
-        ["<c-p>"] = { "list_up", mode = { "i", "n" } },
-        ["<c-u>"] = { "list_scroll_up", mode = { "i", "n" } },
-        ["<c-d>"] = { "list_scroll_down", mode = { "i", "n" } },
-        ["<c-b>"] = { "preview_scroll_up", mode = { "i", "n" } },
-        ["<c-f>"] = { "preview_scroll_down", mode = { "i", "n" } },
-
-        -- ["<c-q>"] = quickfix
-
-        ["<c-i>"] = { "inspect", mode = { "n", "i" } },
-      },
-      b = {
-        minipairs_disable = true,
-      },
-    },
-    list = {
-      keys = {
-        ["<c-e>"] = "cycle_win",
-      },
-    },
-    preview = {
-      minimal = false,
-      wo = {
-        cursorline = false,
-        colorcolumn = "",
-      },
-      keys = {
-        ["<c-e>"] = "cycle_win",
-      },
-    },
-  },
-  layout = { preset = "custom" },
-  layouts = {
-    custom = {
-      layout = {
-        backdrop = false,
-        row = 1,
-        width = 0.7,
-        min_width = 80,
-        height = 0.95,
-        border = "none",
-        box = "vertical",
-        { win = "preview", height = 0.6, border = "rounded" },
-        {
-          box = "vertical",
-          border = "rounded",
-          title = "{source} {live}",
-          title_pos = "center",
-          { win = "input", height = 1, border = "bottom" },
-          { win = "list", border = "none" },
-        },
-      },
-    },
-  },
-  formatters = {
-    file = {
-      filename_first = true,
-      truncate = 1000,
-    },
-  },
-}
-
 return {
   "folke/snacks.nvim",
   priority = 1000,
   lazy = false,
   opts = {
-    picker = picker_options,
+    picker = {
+      matcher = {
+        fuzzy = true, -- use fuzzy matching
+        smartcase = true, -- use smartcase
+        ignorecase = true, -- use ignorecase
+        sort_empty = false, -- sort results when the search string is empty
+        filename_bonus = true, -- give bonus for matching file names (last part of the path)
+        file_pos = true, -- support patterns like `file:line:col` and `file:line`
+        -- the bonusses below, possibly require string concatenation and path normalization,
+        -- so this can have a performance impact for large lists and increase memory usage
+        cwd_bonus = false, -- give bonus for matching files in the cwd
+        frecency = true, -- frecency bonus
+        history_bonus = false, -- give more weight to chronological order
+      },
+      sources = {
+        git_log = git_options,
+        git_log_file = git_options,
+        git_log_line = git_options,
+      },
+      win = {
+        input = {
+          keys = {
+            -- disable unnecessary keys since we want the help menu to be usefult
+            ["/"] = false,
+            ["<C-Down>"] = false,
+            ["<C-Up>"] = false,
+            -- ["<C-c>"] = false,
+            -- ["<C-w>"] = false,
+            -- ["<CR>"] = false,
+            ["<Down>"] = false,
+            -- ["<Esc>"] = false,
+            ["<S-CR>"] = false,
+            ["<S-Tab>"] = false,
+            ["<Tab>"] = false,
+            ["<Up>"] = false,
+            ["<a-d>"] = false,
+            ["<a-f>"] = false,
+            ["<a-h>"] = false,
+            ["<a-i>"] = false,
+            ["<a-r>"] = false,
+            ["<a-m>"] = false,
+            ["<a-p>"] = false,
+            ["<a-w>"] = false,
+            -- ["<c-a>"] = false,
+            -- ["<c-b>"] = false,
+            -- ["<c-d>"] = false,
+            -- ["<c-f>"] = false,
+            -- ["<c-g>"] = false,
+            -- ["<c-j>"] = false,
+            -- ["<c-k>"] = false,
+            -- ["<c-n>"] = false,
+            -- ["<c-p>"] = false,
+            -- ["<c-q>"] = false,
+            -- ["<c-s>"] = false,
+            ["<c-t>"] = false,
+            -- ["<c-u>"] = false,
+            -- ["<c-v>"] = false,
+            ["<c-r>#"] = false,
+            ["<c-r>%"] = false,
+            ["<c-r><c-a>"] = false,
+            ["<c-r><c-f>"] = false,
+            ["<c-r><c-l>"] = false,
+            ["<c-r><c-p>"] = false,
+            ["<c-r><c-w>"] = false,
+            ["<c-w>H"] = false,
+            ["<c-w>J"] = false,
+            ["<c-w>K"] = false,
+            ["<c-w>L"] = false,
+            -- ["?"] = false,
+            ["G"] = false,
+            ["gg"] = false,
+            ["j"] = false,
+            ["k"] = false,
+            -- ["q"] = true,
+
+            -- used keys
+
+            ["<C-c>"] = { "cancel", mode = "i" },
+            ["<CR>"] = { "confirm", mode = { "n", "i" } },
+
+            ["<c-s>"] = { "edit_split", mode = { "i", "n" } },
+            ["<c-v>"] = { "edit_vsplit", mode = { "i", "n" } },
+
+            ["<c-z>"] = { "toggle_maximize", mode = { "n", "i" } },
+            ["<c-h>"] = { "toggle_help_input", mode = { "i", "n" } },
+            ["<c-e>"] = { "cycle_win", mode = { "i", "n" } },
+
+            ["<c-,>"] = { "toggle_ignored", mode = { "i", "n" } },
+            ["<c-.>"] = { "toggle_hidden", mode = { "i", "n" } },
+            ["<c-g>"] = { "toggle_live", mode = { "i", "n" } },
+            ["<c-r>"] = { "toggle_regex", mode = { "i", "n" } },
+
+            ["<c-k>"] = { "history_back", mode = { "i", "n" } },
+            ["<c-j>"] = { "history_forward", mode = { "i", "n" } },
+
+            ["<c-l>"] = { "select_and_next", mode = { "n", "i" } },
+            ["<c-a>"] = { "select_all", mode = { "n", "i" } },
+
+            ["<c-w>"] = { "<c-s-w>", mode = { "i" }, expr = true, desc = "delete word" },
+
+            ["<c-n>"] = { "list_down", mode = { "i", "n" } },
+            ["<c-p>"] = { "list_up", mode = { "i", "n" } },
+            ["<c-u>"] = { "list_scroll_up", mode = { "i", "n" } },
+            ["<c-d>"] = { "list_scroll_down", mode = { "i", "n" } },
+            ["<c-b>"] = { "preview_scroll_up", mode = { "i", "n" } },
+            ["<c-f>"] = { "preview_scroll_down", mode = { "i", "n" } },
+
+            -- ["<c-q>"] = quickfix
+
+            ["<c-i>"] = { "inspect", mode = { "n", "i" } },
+          },
+          b = {
+            minipairs_disable = true,
+          },
+        },
+        list = {
+          keys = {
+            ["<c-e>"] = "cycle_win",
+          },
+        },
+        preview = {
+          minimal = false,
+          wo = {
+            cursorline = false,
+            colorcolumn = "",
+          },
+          keys = {
+            ["<c-e>"] = "cycle_win",
+          },
+        },
+      },
+      layout = { preset = "custom" },
+      layouts = {
+        custom = {
+          layout = {
+            backdrop = false,
+            row = 1,
+            width = 0.7,
+            min_width = 80,
+            height = 0.95,
+            border = "none",
+            box = "vertical",
+            { win = "preview", height = 0.6, border = "rounded" },
+            {
+              box = "vertical",
+              border = "rounded",
+              title = "{source} {live}",
+              title_pos = "center",
+              { win = "input", height = 1, border = "bottom" },
+              { win = "list", border = "none" },
+            },
+          },
+        },
+      },
+      formatters = {
+        file = {
+          filename_first = true,
+          truncate = 1000,
+        },
+      },
+    },
     image = {},
     dashboard = {
       enabled = false,
@@ -320,34 +337,53 @@ return {
   keys = {
     -- files
     {
-      "<leader>ff",
+      "<leader>fc",
       function()
         Snacks.picker.files()
       end,
-      desc = "Cwd Files",
+      desc = "Cwd files",
+    },
+    {
+      "<leader>fs",
+      function()
+        Snacks.picker.files({ dirs = { service_dir() } })
+      end,
+      desc = "Service files",
+    },
+    {
+      "<leader>fd",
+      function()
+        Snacks.picker.files({ dirs = { domain_dir() } })
+      end,
+      desc = "Domain files",
     },
     {
       "<leader>fg",
       function()
         Snacks.picker.git_files({ untracked = true })
       end,
-      desc = "Git Files",
+      desc = "Git files",
     },
     {
-      "<leader>fs",
+      "<leader>fp",
       function()
-        Snacks.picker.files({ dirs = { vim.fs.root(vim.api.nvim_get_current_buf(), { "service.yaml", ".git" }) } })
+        Snacks.picker.files({ dirs = { parent_dir() } })
       end,
-      desc = "Service Files",
+      desc = "Parent dir files",
     },
     {
-      "<leader>fd",
+      "<leader>fr",
       function()
-        Snacks.picker.files({
-          dirs = { vim.fs.root(vim.api.nvim_get_current_buf(), { "sonar-project.properties", ".git" }) },
-        })
+        Snacks.picker.recent()
       end,
-      desc = "Domain Files",
+      desc = "Recent Files",
+    },
+    {
+      "<leader>fR",
+      function()
+        Snacks.picker.resume()
+      end,
+      desc = "Resume",
     },
     {
       "<leader>fb",
@@ -363,24 +399,34 @@ return {
       end,
       desc = "Buffer Files",
     },
+    -- //g1 - g9 to jump to buffers
     {
-      "<leader>fr",
+      "<leader>fu",
       function()
-        Snacks.picker.recent()
+        Snacks.picker.undo()
       end,
-      desc = "Recent Files",
+      desc = "Undo History",
     },
     {
-      "<leader>fp",
+      "<leader>fL",
       function()
-        Snacks.picker.files({ cwd = require("lazy.core.config").options.root, ft = "lua" })
+        Snacks.picker.lsp_config()
+      end,
+      desc = "LSP Configs",
+    },
+    {
+      "<leader>fP",
+      function()
+        local lazy_plugins_dir = require("lazy.core.config").options.root
+        Snacks.picker.files({ cwd = lazy_plugins_dir })
       end,
       desc = "Plugin Files",
     },
     {
-      "<leader>fc",
+      "<leader>fC",
       function()
-        Snacks.picker.files({ dirs = { os.getenv("HOME") .. "/.config" } })
+        local config_dir = os.getenv("HOME") .. "/.config"
+        Snacks.picker.files({ dirs = { config_dir } })
       end,
       desc = "Config Files",
     },
@@ -450,27 +496,34 @@ return {
       mode = { "n", "x" },
     },
 
-    -- search
+    -- search and grep
     {
       "<leader>sg",
       function()
-        Snacks.picker.grep({ cwd = Snacks.git.get_root() })
+        Snacks.picker.git_grep()
       end,
-      desc = "Git Files",
+      desc = "[g]it grep",
+    },
+    {
+      "<leader>sw",
+      function()
+        Snacks.picker.grep({ dirs = { vim.fn.getcwd() } })
+      end,
+      desc = "current [w]orking dir",
+    },
+    {
+      "<leader>sp",
+      function()
+        Snacks.picker.grep({ dirs = { parent_dir() } })
+      end,
+      desc = "[p]arent dir",
     },
     {
       "<leader>ss",
       function()
-        Snacks.picker.grep({ dirs = { vim.fs.root(vim.api.nvim_get_current_buf(), { "service.yaml" }) } })
+        Snacks.picker.grep({ dirs = { service_dir() } })
       end,
-      desc = "Service",
-    },
-    {
-      "<leader>sG",
-      function()
-        Snacks.picker.grep()
-      end,
-      desc = "Cwd",
+      desc = "[s]ervice files",
     },
     {
       "<leader>sb",
@@ -485,14 +538,6 @@ return {
         Snacks.picker.grep_buffers()
       end,
       desc = "Buffers Open",
-    },
-    {
-      "<leader>sw",
-      function()
-        Snacks.picker.grep_word()
-      end,
-      desc = "Word",
-      mode = { "n", "x" },
     },
     {
       '<leader>s"',
@@ -516,81 +561,74 @@ return {
       desc = "Autocommands",
     },
     {
-      "<leader>sb",
-      function()
-        Snacks.picker.lines()
-      end,
-      desc = "Buffer Lines",
-    },
-    {
       "<leader>sn",
       function()
         Snacks.picker.notifications()
       end,
-      desc = "Notification History",
+      desc = "search notifications",
     },
     {
       "<leader>sc",
       function()
         Snacks.picker.command_history()
       end,
-      desc = "Command History",
+      desc = "search command history",
     },
     {
       "<leader>sC",
       function()
         Snacks.picker.commands()
       end,
-      desc = "Commands",
+      desc = "search commands",
     },
     {
       "<leader>sd",
       function()
-        Snacks.picker.diagnostics()
+        Snacks.picker.diagnostics_buffer()
       end,
-      desc = "Diagnostics",
+      desc = "search buffer diagnostics",
     },
     {
       "<leader>sD",
       function()
-        Snacks.picker.diagnostics_buffer()
+        Snacks.picker.diagnostics()
       end,
-      desc = "Buffer Diagnostics",
+      desc = "search all diagnostics",
     },
     {
       "<leader>sh",
       function()
         Snacks.picker.help()
       end,
-      desc = "Help Pages",
+      desc = "search [h]elp pages",
     },
     {
       "<leader>sH",
       function()
         Snacks.picker.highlights()
       end,
-      desc = "Highlights",
+      desc = "search [H]ighlights",
     },
     {
       "<leader>si",
       function()
         Snacks.picker.icons()
       end,
-      desc = "Icons",
+      desc = "search [i]cons",
     },
     {
       "<leader>sj",
       function()
         Snacks.picker.jumps()
       end,
-      desc = "Jumps",
+      desc = "search [j]umps",
     },
     {
       "<leader>sk",
       function()
         Snacks.picker.keymaps()
       end,
-      desc = "Keymaps Neovim",
+      desc = "search neovim [k]eymaps",
     },
     {
       "<leader>sK",
@@ -624,7 +662,7 @@ return {
           },
         })
       end,
-      desc = "Keymaps Programms",
+      desc = "search programm [K]eymaps",
     },
     {
       "<leader>sl",
@@ -648,7 +686,7 @@ return {
       desc = "Man Pages",
     },
     {
-      "<leader>sp",
+      "<leader>sP",
       function()
         Snacks.picker.lazy()
       end,
@@ -662,26 +700,13 @@ return {
       desc = "Quickfix List",
     },
     {
-      "<leader>sR",
-      function()
-        Snacks.picker.resume()
-      end,
-      desc = "Resume",
-    },
-    {
-      "<leader>su",
-      function()
-        Snacks.picker.undo()
-      end,
-      desc = "Undo History",
-    },
-    {
       "<leader>sT",
       function()
         Snacks.picker.colorschemes()
       end,
       desc = "Themes",
     },
+
     -- Other
     {
       "<leader>bd",

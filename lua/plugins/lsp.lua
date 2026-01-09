@@ -538,4 +538,10 @@ vim.env.PATH = vim.env.PATH .. ":" .. vim.fn.stdpath("data") .. "/mason/bin"
 return {
   "neovim/nvim-lspconfig", -- default configs for lsps
   "mason-org/mason.nvim", -- package manager
+  {
+    "j-hui/fidget.nvim",
+    opts = {
+      -- options
+    },
+  },
 }
