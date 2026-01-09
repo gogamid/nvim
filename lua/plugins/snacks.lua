@@ -499,81 +499,53 @@ return {
 
     -- search and grep
     {
-      "<leader>sg",
+      "<leader>sp",
       function()
-        Snacks.picker.git_grep()
+        Snacks.picker.grep({ dirs = { parent_dir() } })
       end,
-      desc = "[g]it grep",
+      desc = "Parent dir grep",
     },
     {
       "<leader>sw",
       function()
         Snacks.picker.grep({ dirs = { vim.fn.getcwd() } })
       end,
-      desc = "current [w]orking dir",
+      desc = "Cwd grep",
     },
     {
-      "<leader>sp",
+      "<leader>sg",
       function()
-        Snacks.picker.grep({ dirs = { parent_dir() } })
+        Snacks.picker.git_grep()
       end,
-      desc = "[p]arent dir",
+      desc = "Git grep",
     },
     {
       "<leader>ss",
       function()
         Snacks.picker.grep({ dirs = { service_dir() } })
       end,
-      desc = "[s]ervice files",
+      desc = "Service grep",
+    },
+    {
+      "<leader>sd",
+      function()
+        Snacks.picker.grep({ dirs = { domain_dir() } })
+      end,
+      desc = "Domain grep",
     },
     {
       "<leader>sb",
       function()
-        Snacks.picker.lines()
-      end,
-      desc = "Buffer Lines",
-    },
-    {
-      "<leader>sB",
-      function()
         Snacks.picker.grep_buffers()
       end,
-      desc = "Buffers Open",
+      desc = "Buffers grep",
     },
     {
-      '<leader>s"',
-      function()
-        Snacks.picker.registers()
-      end,
-      desc = "Registers",
-    },
-    {
-      "<leader>s/",
-      function()
-        Snacks.picker.search_history()
-      end,
-      desc = "Search History",
-    },
-    {
-      "<leader>sa",
+      "<leader>sA",
       function()
         Snacks.picker.autocmds()
       end,
       desc = "Autocommands",
-    },
-    {
-      "<leader>sn",
-      function()
-        Snacks.picker.notifications()
-      end,
-      desc = "search notifications",
-    },
-    {
-      "<leader>sc",
-      function()
-        Snacks.picker.command_history()
-      end,
-      desc = "search command history",
     },
     {
       "<leader>sC",
@@ -583,18 +555,39 @@ return {
       desc = "search commands",
     },
     {
-      "<leader>sd",
+      "<leader>so",
+      function()
+        Snacks.picker.command_history()
+      end,
+      desc = "search command history",
+    },
+    {
+      "<leader>sT",
+      function()
+        Snacks.picker.colorschemes()
+      end,
+      desc = "Themes",
+    },
+    {
+      "<leader>se",
       function()
         Snacks.picker.diagnostics_buffer()
       end,
       desc = "search buffer diagnostics",
     },
     {
-      "<leader>sD",
+      "<leader>sE",
       function()
         Snacks.picker.diagnostics()
       end,
       desc = "search all diagnostics",
+    },
+    {
+      "<leader>sw",
+      function()
+        Snacks.picker.grep_word()
+      end,
+      desc = "Word grep",
     },
     {
       "<leader>sh",
@@ -611,18 +604,11 @@ return {
       desc = "search [H]ighlights",
     },
     {
-      "<leader>si",
+      "<leader>sI",
       function()
         Snacks.picker.icons()
       end,
       desc = "search [i]cons",
-    },
-    {
-      "<leader>sj",
-      function()
-        Snacks.picker.jumps()
-      end,
-      desc = "search [j]umps",
     },
     {
       "<leader>sk",
@@ -666,11 +652,11 @@ return {
       desc = "search programm [K]eymaps",
     },
     {
-      "<leader>sl",
+      "<leader>sM",
       function()
-        Snacks.picker.loclist()
+        Snacks.picker.man()
       end,
-      desc = "Location List",
+      desc = "Man Pages",
     },
     {
       "<leader>sm",
@@ -680,18 +666,11 @@ return {
       desc = "Marks",
     },
     {
-      "<leader>sM",
+      "<leader>sN",
       function()
-        Snacks.picker.man()
+        Snacks.picker.notifications()
       end,
-      desc = "Man Pages",
-    },
-    {
-      "<leader>sP",
-      function()
-        Snacks.picker.lazy()
-      end,
-      desc = "Plugin Spec",
+      desc = "search notifications",
     },
     {
       "<leader>sq",
@@ -701,11 +680,32 @@ return {
       desc = "Quickfix List",
     },
     {
-      "<leader>sT",
+      "<leader>s/",
       function()
-        Snacks.picker.colorschemes()
+        Snacks.picker.search_history()
       end,
-      desc = "Themes",
+      desc = "Search History",
+    },
+    {
+      "<leader>sL",
+      function()
+        Snacks.picker.lazy()
+      end,
+      desc = "Lazy Plugin Spec",
+    },
+    {
+      "<leader>sls",
+      function()
+        Snacks.picker.lsp_workspace_symbols()
+      end,
+      desc = "LSP Workspace Symbols",
+    },
+    {
+      "<leader>slS",
+      function()
+        Snacks.picker.lsp_workspace_symbols()
+      end,
+      desc = "LSP Symbols",
     },
 
     -- Other
