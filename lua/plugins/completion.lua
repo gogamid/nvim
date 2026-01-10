@@ -17,7 +17,7 @@ return {
       snippets = { preset = "luasnip" },
       completion = {
         list = {
-          max_items = 3,
+          max_items = 6,
         },
         documentation = {
           auto_show = true,
@@ -31,11 +31,11 @@ return {
       },
       sources = {
         min_keyword_length = 2,
-        providers = {
-          snippets = {
-            score_offset = 1000,
-          },
-        },
+        -- providers = {
+        --   snippets = {
+        --     score_offset = 1000,
+        --   },
+        -- },
       },
       signature = {
         enabled = true,
