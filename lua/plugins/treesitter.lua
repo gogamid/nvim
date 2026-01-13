@@ -4,6 +4,15 @@ return {
     lazy = false,
     build = ":TSUpdate",
     config = function()
+      -- TSReinstall {language} calls TSUninstall lang and TSInstall lang
+      vim.api.nvim_create_user_command("TSReinstall", function(args)
+        local lang = args.fargs[1]
+        require("nvim-treesitter").uninstall({ lang }):wait(3000)
+        vim.notify("Uninstalled " .. lang)
+        require("nvim-treesitter").install({ lang }):wait(10000)
+        vim.notify("Installed " .. lang)
+      end, { nargs = 1 })
+
       require("nvim-treesitter").install("all")
 
       vim.api.nvim_create_autocmd("User", {
@@ -21,6 +30,8 @@ return {
             filetype = "gupta",
             install_info = {
               path = "~/personal/tree-sitter-gupta",
+              generate = false,
+              queries = "queries",
             },
           }
         end,

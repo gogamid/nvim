@@ -1,3 +1,10 @@
 ;; extends
 
-(comment) @comment @spell
+;
+; (comment) @comment @spell
+;
+; (string) @string
+;
+; (identifier) @variable
+;
+; "Function" @keyword.function
