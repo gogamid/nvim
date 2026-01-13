@@ -135,10 +135,7 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-neotest/nvim-nio",
       "antoinemadec/FixCursorHold.nvim",
-
-      {
-        "fredrikaverpil/neotest-golang",
-      },
+      "fredrikaverpil/neotest-golang",
       "marilari88/neotest-vitest",
     },
     config = function()
