@@ -5,7 +5,10 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
   callback = function(args)
     vim.o.autochdir = false
 
-    local root = vim.fs.root(args.buf, { { "Dockerfile", "Buildfile.yaml", "service.yaml", "Makefile" }, ".git" })
+    local root = vim.fs.root(
+      args.buf,
+      { { "Dockerfile", "Buildfile.yaml", "service.yaml", "Makefile", "sonar-project.properties" }, ".git" }
+    )
     if root == nil or root == vim.fn.getcwd() then
       return
     end

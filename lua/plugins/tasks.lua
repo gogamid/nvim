@@ -1,3 +1,7 @@
+local function parent_dir()
+  return vim.fs.dirname(vim.api.nvim_buf_get_name(0))
+end
+
 local function golang_adapter()
   local opts = {
     runner = "gotestsum",
@@ -9,8 +13,8 @@ local function golang_adapter()
   local adapter = require("neotest-golang")(opts)
 
   -- root is better to be cwd (changed wit autocmd), good for monorepos
-  adapter.root = function(cwd)
-    return cwd
+  adapter.root = function()
+    return parent_dir()
   end
 
   return adapter
@@ -18,8 +22,8 @@ end
 
 local function vitest_adapter()
   local adapter = require("neotest-vitest")
-  adapter.root = function(cwd)
-    return cwd
+  adapter.root = function()
+    return parent_dir()
   end
   return adapter
 end
