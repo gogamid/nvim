@@ -13,6 +13,7 @@ return {
   },
   {
     "saghen/blink.cmp",
+    build = "cargo build --release",
     opts = {
       snippets = { preset = "luasnip" },
       completion = {
