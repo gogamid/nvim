@@ -1,3 +1,29 @@
+local function golang_adapter()
+  local opts = {
+    runner = "gotestsum",
+    go_test_args = { "-v", "-count=1", "-tags=manual_test" },
+    gotestsum_args = { "--format=testname" }, -- NOTE: can also be a function
+    -- gotestsum_args = { "--format=testdox" }, -- NOTE: can also be a function
+    warn_test_name_dupes = false,
+  }
+  local adapter = require("neotest-golang")(opts)
+
+  -- root is better to be cwd (changed wit autocmd), good for monorepos
+  adapter.root = function(cwd)
+    return cwd
+  end
+
+  return adapter
+end
+
+local function vitest_adapter()
+  local adapter = require("neotest-vitest")
+  adapter.root = function(cwd)
+    return cwd
+  end
+  return adapter
+end
+
 return {
   {
     "stevearc/overseer.nvim",
@@ -112,7 +138,6 @@ return {
 
       {
         "fredrikaverpil/neotest-golang",
-        version = "2.4.0", -- bad for monorepo with bunch of duplicate tests
       },
       "marilari88/neotest-vitest",
     },
@@ -122,13 +147,8 @@ return {
           overseer = require("neotest.consumers.overseer"),
         },
         adapters = {
-          require("neotest-golang")({
-            runner = "gotestsum",
-            go_test_args = { "-v", "-count=1", "-tags=manual_test" },
-            gotestsum_args = { "--format=testname" }, -- NOTE: can also be a function
-            -- gotestsum_args = { "--format=testdox" }, -- NOTE: can also be a function
-          }),
-          require("neotest-vitest"),
+          golang_adapter(),
+          vitest_adapter(),
         },
         icons = {
           expanded = "",
