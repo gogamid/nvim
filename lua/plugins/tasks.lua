@@ -135,6 +135,7 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-neotest/nvim-nio",
       "antoinemadec/FixCursorHold.nvim",
+      -- adapters
       "fredrikaverpil/neotest-golang",
       "marilari88/neotest-vitest",
     },
