@@ -478,7 +478,7 @@ M.menu = function()
   table.insert(items, actions.stats)
 
   Snacks.picker.select(items, {
-    prompt = "Pomodorooo",
+    prompt = "Pomodoro",
     snacks = {
       layout = {
         layout = {
