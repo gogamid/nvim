@@ -1,4 +1,3 @@
-local mini_float
 return {
   {
     "nvim-mini/mini.files",
@@ -41,76 +40,6 @@ return {
     },
     config = function(_, opts)
       require("mini.files").setup(opts)
-
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "MiniFilesExplorerClose",
-        callback = function(args)
-          if mini_float ~= nil then
-            mini_float:close()
-            mini_float = nil
-          end
-        end,
-      })
-
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "MiniFilesBufferCreate",
-        callback = function(args)
-          if mini_float ~= nil then
-            mini_float:destroy()
-            mini_float = nil
-          end
-
-          local bufname = vim.api.nvim_buf_get_name(args.buf)
-          if bufname == nil then
-            return
-          end
-
-          if bufname:match("^minifiles://") then
-            bufname = bufname:gsub("^minifiles://[0-9]+//", "/")
-          end
-
-          -- Inside the autocmd callback
-          local win_id = vim.fn.bufwinid(args.buf)
-          if win_id <= 0 then
-            return
-          end
-
-          -- Get cursor line in the preview buffer
-          local cursor_line = vim.api.nvim_win_get_cursor(win_id)[1]
-          local lines = vim.api.nvim_buf_get_lines(args.buf, cursor_line - 1, cursor_line, false)
-          local filename = lines[1]
-          local last_part = vim.fn.fnamemodify(filename, ":t")
-
-          if last_part == nil then
-            return
-          end
-
-          local full_path = bufname .. "/" .. last_part
-
-          if Snacks.image.supports(full_path) then
-            mini_float = Snacks.win({
-              width = 0.5,
-              height = 0.9,
-              border = "single",
-              relative = "editor",
-              row = 0,
-              col = 0.5,
-              title = last_part,
-            })
-            vim.schedule(function()
-              local ok, err = pcall(function()
-                Snacks.image.placement.new(mini_float.buf, full_path, {
-                  max_width = mini_float.opts.max_width,
-                  max_height = mini_float.opts.max_height,
-                })
-              end)
-              if not ok then
-                vim.notify("Failed to load image: " .. err, vim.log.levels.WARN)
-              end
-            end)
-          end
-        end,
-      })
 
       local show_dotfiles = true
       local filter_show = function(fs_entry)
