@@ -62,13 +62,32 @@ local git_options = {
         end
       end
     end,
+    ["revert_commit"] = function(picker)
+      local commit = picker:current().commit
+      if not commit or commit == "" then
+        vim.notify("No commit selected", vim.log.levels.ERROR)
+        return
+      end
+
+      Snacks.picker.select({ "Yes", "No" }, { prompt = "Revert commit?" }, function(item)
+        if item == "Yes" then
+          local cmd = string.format("git revert %s", commit)
+          vim.fn.system(cmd)
+          vim.notify("Reverted commit", vim.log.levels.INFO)
+        else
+          vim.notify("Cancelled", vim.log.levels.INFO)
+        end
+        picker:close()
+      end)
+    end,
   },
   win = {
     input = {
       keys = {
         ["<CR>"] = { "diffview", desc = "Diffview this commit", mode = { "n", "i" } },
-        ["<C-y>"] = { "copy_pr_url", desc = "Copy PR URL", mode = { "n", "i" } },
-        ["<C-o>"] = { "open_pr", desc = "Open PR", mode = { "n", "i" } },
+        ["<C-o>y"] = { "copy_pr_url", desc = "Copy PR URL", mode = { "n", "i" } },
+        ["<C-o>b"] = { "open_pr", desc = "Open PR", mode = { "n", "i" } },
+        ["<C-o>r"] = { "revert_commit", desc = "Revert commit", mode = { "n", "i" } },
       },
     },
   },
