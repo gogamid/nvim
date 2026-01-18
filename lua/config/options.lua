@@ -1,6 +1,8 @@
 -- stylua: ignore start
 -- General ====================================================================
-vim.g.mapleader = ' ' -- Use `<Space>` as <Leader> key
+vim.g.mapleader = " " -- Set leader key to space
+vim.g.maplocalleader = "\\" -- Set local leader key
+
 
 vim.o.mouse           = 'a'                    -- Enable mouse
 -- vim.o.mousescroll     = 'ver:25,hor:6'         -- Customize mouse scroll
