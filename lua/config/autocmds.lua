@@ -29,17 +29,17 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
-local workspace = vim.fn.expand("$NEXUS_REPO")
-vim.api.nvim_create_autocmd("BufEnter", {
-  desc = "nexus actions",
-  pattern = workspace .. "**",
-  callback = function()
-    vim.env.DEPLOY_TO_MULTI_REGION = false
-    require("modules.translations").setup()
-    require("modules.imports").add_snippets()
-  end,
-  once = true,
-})
+-- local workspace = vim.fn.expand("$NEXUS_REPO")
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--   desc = "nexus actions",
+--   pattern = workspace .. "**",
+--   callback = function()
+--     vim.env.DEPLOY_TO_MULTI_REGION = false
+--     require("modules.translations").setup()
+--     require("modules.imports").add_snippets()
+--   end,
+--   once = true,
+-- })
 
 vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
   desc = "Refresh codelenses",
