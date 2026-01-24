@@ -178,4 +178,4 @@ if vim.g.neovide then
   vim.g.neovide_background_color = "#2A3035"
 end
 
-vim.g.icons_enabled = true
+vim.g.icons_enabled = false
