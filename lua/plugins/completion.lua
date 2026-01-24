@@ -13,8 +13,9 @@ return {
   },
   {
     "saghen/blink.cmp",
-    build = "cargo build --release",
+    version = '1.*',
     opts = {
+      fuzzy = { implementation = "prefer_rust" },
       snippets = { preset = "luasnip" },
       completion = {
         list = {
@@ -40,9 +41,6 @@ return {
       },
       signature = {
         enabled = true,
-      },
-      fuzzy = {
-        implementation = "prefer_rust_with_warning",
       },
       keymap = {
         preset = "enter",
