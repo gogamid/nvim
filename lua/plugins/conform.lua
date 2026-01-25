@@ -6,23 +6,6 @@ return {
       async = true,
       timeout_ms = 1000,
     },
-    formatters = {
-      csqlfmt = {
-        command = "sql-formatter",
-        enabled = vim.fn.executable("sql-formatter"),
-        args = { "--language", "plsql" },
-      },
-      terraform = {
-        command = "terraform",
-        enabled = vim.fn.executable("terraform"),
-        args = { "fmt", "-no-color", "-" },
-      },
-      terragrunt = {
-        command = "terragrunt",
-        enabled = vim.fn.executable("terragrunt"),
-        args = { "hclfmt", "-no-color", "-" },
-      },
-    },
     formatters_by_ft = {
       typst = { "typstyle" },
       lua = { "stylua" },
@@ -39,6 +22,7 @@ return {
       xml = { "xmlformatter" },
       terraform = { "terraform" },
       hcl = { "terragrunt" },
+      sql = { "sql_formatter" },
     },
   },
   keys = {
@@ -49,6 +33,14 @@ return {
       end,
       mode = { "n", "x" },
       desc = "Format Injected Langs",
+    },
+    {
+      "<leader>cf",
+      function()
+        require("conform").format()
+      end,
+      mode = { "n", "x" },
+      desc = "Format",
     },
   },
   config = function(_, opts)
@@ -68,8 +60,12 @@ return {
       return gaf == nil or gaf
     end
 
+    local always_disabled_fts = { "sql" }
     vim.api.nvim_create_autocmd("BufWritePre", {
       callback = function(event)
+        if vim.tbl_contains(always_disabled_fts, vim.bo[event.buf].filetype) then
+          return
+        end
         if autoformat_enabled(event.buf) then
           require("conform").format({ bufnr = event.buf })
         end

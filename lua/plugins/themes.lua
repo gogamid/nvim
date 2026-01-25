@@ -12,6 +12,8 @@ local function mod_theme()
     }
   end)
   lush.apply(lush.compile(specs))
+
+  vim.api.nvim_set_hl(0, "DebugPrintLine", { link = "DiagnosticHint" })
 end
 
 return {
