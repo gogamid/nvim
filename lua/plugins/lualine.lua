@@ -70,6 +70,16 @@ local function ftype()
   return icon .. ft
 end
 
+local function pomodoro()
+  return {
+    require("modules.pomodoro").status,
+    color = function()
+      local c = require("modules.pomodoro").status_color()
+      return c
+    end,
+  }
+end
+
 return {
   "nvim-lualine/lualine.nvim",
   opts = {
@@ -84,13 +94,7 @@ return {
         "filename",
         root,
         "%=",
-        {
-          require("modules.pomodoro").status,
-          color = function()
-            local c = require("modules.pomodoro").status_color()
-            return c
-          end,
-        },
+        pomodoro,
       },
       lualine_x = {
         supermaven,
