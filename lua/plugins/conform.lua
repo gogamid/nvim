@@ -6,7 +6,14 @@ return {
       async = true,
       timeout_ms = 1000,
     },
+    formatters = {
+      cformatter42 = {
+        enabled = vim.fn.executable("c_formatter_42"),
+        command = "c_formatter_42",
+      },
+    },
     formatters_by_ft = {
+      c = { "cformatter42" },
       typst = { "typstyle" },
       lua = { "stylua" },
       proto = { "buf" },
