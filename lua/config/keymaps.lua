@@ -15,15 +15,11 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 
 -- Better window navigation
-vim.keymap.set("n", "<C-h>", require("smart-splits").move_cursor_left)
-vim.keymap.set("n", "<C-j>", require("smart-splits").move_cursor_down)
-vim.keymap.set("n", "<C-k>", require("smart-splits").move_cursor_up)
-vim.keymap.set("n", "<C-l>", require("smart-splits").move_cursor_right)
-
-vim.keymap.set("v", "<C-h>", require("smart-splits").resize_left)
-vim.keymap.set("v", "<C-j>", require("smart-splits").resize_down)
-vim.keymap.set("v", "<C-k>", require("smart-splits").resize_up)
-vim.keymap.set("v", "<C-l>", require("smart-splits").resize_right)
+-- later replaced with smart-splits
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- Splitting
 vim.keymap.set("n", "<leader>|", ":vsplit<CR>", { desc = "Split window vertically" })
@@ -67,8 +63,10 @@ vim.keymap.set("n", "go", function()
   end
 end, { desc = "Go to URL under cursor" })
 
-require("modules.bionic").setup({ prefix_length = 2, auto_activate = false, filetypes = { "markdown" } })
-vim.keymap.set("n", "<leader>uB", ":BionicToggle<CR>", { desc = "Toggle Bionic Read" })
+
+-- create user command
+-- require("modules.bionic").setup({ prefix_length = 2, auto_activate = false, filetypes = { "markdown" } })
+-- vim.keymap.set("n", "<leader>uB", ":BionicToggle<CR>", { desc = "Toggle Bionic Read" })
 
 local diagnostic_goto = function(next, severity)
   return function()
@@ -91,6 +89,7 @@ vim.keymap.set("n", "<leader>uI", function()
   vim.cmd("EditQuery")
 end, { desc = "Inspect and Edit Query" })
 
-vim.keymap.set("n", "<leader>p", require("modules.pomodoro").menu, { desc = "Pomodoro Menu" })
+-- create user command
+-- vim.keymap.set("n", "<leader>p", require("modules.pomodoro").menu, { desc = "Pomodoro Menu" })
 
 vim.keymap.set("n", "<leader>fl", ":e!<CR>", { desc = "Load file" })
