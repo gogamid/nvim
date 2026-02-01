@@ -8,7 +8,7 @@ local opts = {
   break_interval = 5 * 60,
   long_interval = 15 * 60,
   count = 4,
-  refresh_interval_ms = 1 * 1000,
+  refresh_interval_ms = 60 * 1000,
   dir = vim.fs.joinpath(vim.fn.stdpath("data"), "pomodoro"),
   default_task_name = "work",
   work_text = " ",
@@ -569,7 +569,7 @@ M.status = function()
   local diff = state.elapsed_seconds
   local minutes = math.floor((diff % 3600) / 60)
   local seconds = diff % 60
-  local elapsed = string.format("%02d:%02d", minutes, seconds)
+  local elapsed = string.format("%02d", minutes)
 
   local count = string.format("%d/%d", state.completed, opts.count)
 
