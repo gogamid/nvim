@@ -512,7 +512,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "<leader>cl", vim.lsp.codelens.run, { buffer = args.buf, desc = "CodeLens" })
 
     -- Diagnostics
-    vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { buffer = args.buf, desc = "Open Diagnostic" })
     vim.keymap.set("n", "<leader>cD", vim.diagnostic.setloclist, { buffer = args.buf, desc = "Quickfix Diagnostics" })
 
     -- Code actions
