@@ -18,9 +18,9 @@ return {
       fuzzy = { implementation = "prefer_rust" },
       snippets = { preset = "luasnip" },
       completion = {
-        list = {
-          max_items = 6,
-        },
+        -- list = {
+        --   max_items = 6,
+        -- },
         documentation = {
           auto_show = true,
         },
