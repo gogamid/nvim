@@ -22,6 +22,7 @@ vim.o.splitbelow = true -- Horizontal splits will be below
 vim.o.splitright = true -- Vertical splits will be to the right
 
 vim.o.foldmethod = "indent" -- Fold based on indent level
+vim.opt.foldlevel = 99 -- Do not fold by default
 
 vim.o.ignorecase = true -- Ignore case during search
 vim.o.smartcase = true -- Respect case if search pattern has upper case
