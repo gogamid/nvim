@@ -16,10 +16,10 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 
 -- Better window navigation
 -- later replaced with smart-splits
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
+vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
+vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
+vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
 -- Splitting
 vim.keymap.set("n", "<leader>|", ":vsplit<CR>", { desc = "Split window vertically" })
@@ -63,7 +63,6 @@ vim.keymap.set("n", "go", function()
   end
 end, { desc = "Go to URL under cursor" })
 
-
 -- create user command
 -- require("modules.bionic").setup({ prefix_length = 2, auto_activate = false, filetypes = { "markdown" } })
 -- vim.keymap.set("n", "<leader>uB", ":BionicToggle<CR>", { desc = "Toggle Bionic Read" })
@@ -91,5 +90,9 @@ end, { desc = "Inspect and Edit Query" })
 
 -- create user command
 -- vim.keymap.set("n", "<leader>p", require("modules.pomodoro").menu, { desc = "Pomodoro Menu" })
+
+vim.api.nvim_create_user_command("Pomodoro", function()
+  require("modules.pomodoro").menu()
+end, { desc = "Pomodoro Menu" })
 
 vim.keymap.set("n", "<leader>fl", ":e!<CR>", { desc = "Load file" })
