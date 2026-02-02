@@ -452,6 +452,7 @@ return {
     }
 
     --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
+    --  add capabilities and enable
     local capabilities = require("blink.cmp").get_lsp_capabilities()
     for _, name in ipairs(servers) do
       local server = {}
