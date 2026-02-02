@@ -1,9 +1,9 @@
 return {
   {
     "stevearc/conform.nvim",
+    lazy = false,
     dependencies = {
       "folke/snacks.nvim", -- toggles
-      "nvim-lualine/lualine.nvim", -- formatters on statusline
     },
     opts = {
       default_format_opts = {
@@ -73,6 +73,7 @@ return {
       end
 
       local always_disabled_fts = { "sql" }
+
       vim.api.nvim_create_autocmd("BufWritePre", {
         callback = function(event)
           if vim.tbl_contains(always_disabled_fts, vim.bo[event.buf].filetype) then
