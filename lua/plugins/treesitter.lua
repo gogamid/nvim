@@ -1,19 +1,32 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    lazy = false,
     build = ":TSUpdate",
     config = function()
-      -- TSReinstall {language} calls TSUninstall lang and TSInstall lang
-      vim.api.nvim_create_user_command("TSReinstall", function(args)
-        local lang = args.fargs[1]
-        require("nvim-treesitter").uninstall({ lang }):wait(3000)
-        vim.notify("Uninstalled " .. lang)
-        require("nvim-treesitter").install({ lang }):wait(10000)
-        vim.notify("Installed " .. lang)
-      end, { nargs = 1 })
-
-      require("nvim-treesitter").install("all")
+      local filetypes = {
+        "bash",
+        "c",
+        "diff",
+        "html",
+        "lua",
+        "luadoc",
+        "markdown",
+        "markdown_inline",
+        "query",
+        "vim",
+        "vimdoc",
+        "go",
+        "vue",
+        "typescript",
+        "javascript",
+      }
+      require("nvim-treesitter").install(filetypes)
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = filetypes,
+        callback = function()
+          vim.treesitter.start()
+        end,
+      })
 
       vim.api.nvim_create_autocmd("User", {
         pattern = "TSUpdate",
@@ -34,31 +47,6 @@ return {
               queries = "queries",
             },
           }
-        end,
-      })
-
-      vim.filetype.add({
-        extension = {
-          apt = "gupta",
-        },
-        pattern = {
-          [".*%.apt%.indented"] = "gupta",
-        },
-      })
-
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = "*",
-        callback = function(args)
-          local ft = vim.bo[args.buf].filetype
-          local lang = vim.treesitter.language.get_lang(ft) or ft
-
-          local is_available = vim.tbl_contains(require("nvim-treesitter").get_available(), lang)
-          if not is_available then
-            return
-          end
-
-          vim.treesitter.start(args.buf)
-          vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
         end,
       })
     end,
