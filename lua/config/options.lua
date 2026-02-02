@@ -30,6 +30,8 @@ vim.o.smartcase = true -- Respect case if search pattern has upper case
 vim.opt.autoread = true -- Auto reload files changed outside vim
 vim.opt.autochdir = true
 
+vim.o.confirm = true
+
 vim.diagnostic.config({
   virtual_text = true,
   underline = true,
@@ -63,6 +65,15 @@ if vim.g.neovide then
   vim.g.neovide_show_border = false
   vim.g.neovide_background_color = "#2A3035"
 end
+
+vim.filetype.add({
+  extension = {
+    apt = "gupta",
+  },
+  pattern = {
+    [".*%.apt%.indented"] = "gupta",
+  },
+})
 
 ------------------------------------------------- BACKUP -------------------------------------------------------------------------------
 -- -- stylua: ignore start
