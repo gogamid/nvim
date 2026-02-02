@@ -106,16 +106,4 @@ return {
       })
     end,
   },
-  {
-    "nvim-mini/mini.hipatterns",
-    opts = {
-      delay = {
-        text_change = 100,
-        scroll = 50,
-      },
-      highlighters = {
-        hex_color = require("mini.hipatterns").gen_highlighter.hex_color(),
-      },
-    },
-  },
 }

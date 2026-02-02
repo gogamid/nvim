@@ -541,12 +541,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 vim.env.PATH = vim.env.PATH .. ":" .. vim.fn.stdpath("data") .. "/mason/bin"
 return {
-  "neovim/nvim-lspconfig", -- default configs for lsps
-  "mason-org/mason.nvim", -- package manager
+  { "neovim/nvim-lspconfig" }, -- default configs for lsps
+  {
+    "mason-org/mason.nvim",
+    opts = {},
+  },
   {
     "j-hui/fidget.nvim",
-    opts = {
-      -- options
-    },
+    opts = {},
   },
 }
