@@ -50,7 +50,7 @@ return {
       directory = "~/work/obsidian/work",
       title = "Scratchpad",
       window_config = function()
-        local w = 80
+        local w = 100
         local h = math.floor(vim.o.lines * 0.8)
         return {
           relative = "editor",
