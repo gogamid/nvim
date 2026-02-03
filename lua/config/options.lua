@@ -32,6 +32,16 @@ vim.opt.autochdir = true
 
 vim.o.confirm = true
 
+vim.o.winborder = "single"
+
+vim.opt.fillchars = {
+  eob = " ",
+  diff = "╱",
+  foldopen = "",
+  foldclose = "",
+  foldsep = "▕",
+}
+
 vim.diagnostic.config({
   virtual_text = true,
   underline = true,
@@ -95,7 +105,6 @@ vim.filetype.add({
 -- vim.o.showmode       = false      -- Don't show mode in command line
 -- vim.o.signcolumn     = 'yes'      -- Always show signcolumn (less flicker)
 -- vim.o.splitkeep      = 'screen'   -- Reduce scroll during window split
--- vim.o.winborder      = 'single'   -- Use border in floating windows
 -- vim.o.wrap           = false      -- Don't visually wrap lines
 -- vim.o.termguicolors  = true       -- Enable 24-bit colors
 -- vim.o.cmdheight      = 1          -- Command line height
@@ -137,14 +146,6 @@ vim.filetype.add({
 -- vim.o.foldlevel   = 10       -- Fold nothing by default; set to 0 or 1 to fold
 -- vim.o.foldnestmax = 10       -- Limit number of fold levels
 -- vim.opt.foldtext = "v:lua.custom_foldtext()"
---
--- vim.opt.fillchars = {
---   eob = " ",
---   diff = "╱",
---   foldopen = "",
---   foldclose = "",
---   foldsep = "▕",
--- }
 --
 -- -- Editing ====================================================================
 -- vim.o.expandtab     = true    -- Convert tabs to spaces
