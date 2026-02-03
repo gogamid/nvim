@@ -168,7 +168,7 @@ local function on_win(_, win, buf, top, bottom)
     return false
   end
 
-  local json_file = vim.fn.findfile(M.opts.translation_file)
+  local json_file = vim.fn.findfile(M.opts.translation_file, vim.fn.getcwd() .. "/**")
   local translations = load_translations(json_file)
 
   -- Update cache
