@@ -94,7 +94,7 @@ return {
         "filename",
         root,
         "%=",
-        pomodoro(),
+        -- pomodoro(),
       },
       lualine_x = {
         supermaven,

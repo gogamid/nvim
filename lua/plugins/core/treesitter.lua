@@ -19,6 +19,7 @@ return {
         "vue",
         "typescript",
         "javascript",
+        "gupta",
       }
       require("nvim-treesitter").install(filetypes)
       vim.api.nvim_create_autocmd("FileType", {
