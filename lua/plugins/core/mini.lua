@@ -9,7 +9,12 @@ return {
           hex_color = hipatterns.gen_highlighter.hex_color(),
         },
       })
+
       require("mini.surround").setup()
+
+      require("mini.icons").setup({
+        style = vim.g.icons_enabled and "glyph" or "ascii",
+      })
     end,
   },
   {
