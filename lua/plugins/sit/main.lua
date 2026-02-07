@@ -1,11 +1,8 @@
-local workspace = vim.fn.expand("$NEXUS_REPO")
-
 vim.api.nvim_create_autocmd("BufEnter", {
-  desc = "nexus actions",
-  pattern = workspace .. "**",
+  pattern = vim.fn.expand("$NEXUS_REPO") .. "**",
   callback = function()
-    require("modules.translations").setup()
     require("modules.imports").add_snippets()
+    require("modules.translations").setup()
   end,
   once = true,
 })
@@ -152,6 +149,73 @@ return {
             },
           }
           vim.notify("Installed custom gupta parser")
+        end,
+      })
+    end,
+  },
+  {
+    "stevearc/overseer.nvim",
+    config = function()
+      local overseer = require("overseer")
+
+      overseer.register_template({
+        name = "skaffold dev",
+        condition = {
+          dir = vim.fn.expand("$NEXUS_REPO"),
+        },
+        builder = function()
+          local service = vim.fs.basename(service_dir())
+          if service == nil then
+            return {}
+          end
+
+          return {
+            name = service .. "[dev]",
+            cmd = {
+              "make",
+              "-C",
+              service_dir,
+              "skaffold-dev-remotedev",
+              "ALIAS=" .. (os.getenv("USER") or "user"),
+            },
+          }
+        end,
+      })
+
+      overseer.register_template({
+        name = "auth skaffold dev",
+        condition = {
+          dir = vim.fn.expand("$NEXUS_REPO"),
+        },
+        builder = function()
+          return {
+            name = "auth[dev]",
+            cmd = {
+              "make",
+              "-C",
+              vim.env.NEXUS_REPO .. "/domains/wam/services/auth",
+              "skaffold-dev-remotedev",
+              "ALIAS=" .. vim.env.USER,
+            },
+          }
+        end,
+      })
+
+      overseer.register_template({
+        name = "generate all models",
+        condition = {
+          dir = vim.fn.expand("$NEXUS_REPO"),
+        },
+        builder = function()
+          return {
+            name = "gen",
+            cmd = {
+              "make",
+              "-C",
+              vim.env.NEXUS_REPO,
+              "generate-models",
+            },
+          }
         end,
       })
     end,
