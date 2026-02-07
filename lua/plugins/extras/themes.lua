@@ -1,5 +1,5 @@
 local function mod_theme()
-  vim.g.zenbones = { italic_strings = false, transparent_background = false }
+  vim.g.zenbones = { italic_strings = true, transparent_background = false, darkness = "stark" }
   vim.cmd("colorscheme zenbones")
 
   local lush = require("lush")
