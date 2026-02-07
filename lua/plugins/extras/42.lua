@@ -1,3 +1,4 @@
 return {
-  "42paris/42header",
+  { "42paris/42header" },
+  { "hardyrafael17/norminette42.nvim" },
 }

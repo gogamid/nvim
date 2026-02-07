@@ -1,7 +1,7 @@
 local leet_arg = "leetcode.nvim"
 return {
   "kawre/leetcode.nvim",
-  enabled = true,
+  enabled = false,
   lazy = leet_arg ~= vim.fn.argv()[1],
   cmd = "Leet",
   opts = {

@@ -1,1 +1,1 @@
-return { "kmonad/kmonad-vim" }
+return { "kmonad/kmonad-vim", enabled = false }

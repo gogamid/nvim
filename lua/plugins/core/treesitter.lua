@@ -28,28 +28,6 @@ return {
           vim.treesitter.start()
         end,
       })
-
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "TSUpdate",
-        callback = function()
-          ---@diagnostic disable-next-line: missing-fields
-          require("nvim-treesitter.parsers").go = {
-            ---@diagnostic disable-next-line: missing-fields
-            install_info = {
-              path = "~/personal/tree-sitter-go",
-            },
-          }
-
-          require("nvim-treesitter.parsers").gupta = {
-            filetype = "gupta",
-            install_info = {
-              path = "~/personal/tree-sitter-gupta",
-              generate = false,
-              queries = "queries",
-            },
-          }
-        end,
-      })
     end,
   },
   {

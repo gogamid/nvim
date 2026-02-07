@@ -1,6 +1,7 @@
 return {
   {
     "obsidian-nvim/obsidian.nvim",
+    enabled = false,
     version = "*",
     lazy = true,
     ft = "markdown",
@@ -47,8 +48,8 @@ return {
     "backdround/global-note.nvim",
     opts = {
       filename = "Scratchpad.md",
-      directory = "~/work/obsidian/work",
-      title = "Scratchpad",
+      directory = "~/aligner",
+      title = "notes",
       window_config = function()
         local w = 100
         local h = math.floor(vim.o.lines * 0.8)
