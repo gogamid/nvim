@@ -53,7 +53,7 @@ return {
     "backdround/global-note.nvim",
     opts = {
       filename = "Scratchpad.md",
-      directory = "~/aligner",
+      directory = vim.env.GLOBAL_NOTE_PATH,
       title = "notes",
       window_config = function()
         local w = 100
@@ -78,6 +78,12 @@ return {
     keys = {
       { "<leader>n", "<cmd>GlobalNote<cr>", desc = "Global note" },
     },
+    config = function(_, opts)
+      require("global-note").setup(opts)
+      if vim.env.GLOBAL_NOTE_PATH == nil then
+        vim.notify("GLOBAL_NOTE_PATH is not set", vim.log.levels.ERROR)
+      end
+    end,
   },
   {
     "MeanderingProgrammer/render-markdown.nvim",
