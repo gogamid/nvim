@@ -1,7 +1,6 @@
 return {
   {
     "obsidian-nvim/obsidian.nvim",
-    enabled = false,
     version = "*",
     lazy = true,
     ft = "markdown",
@@ -16,8 +15,8 @@ return {
       },
       workspaces = {
         {
-          name = "work",
-          path = "~/work/obsidian/work",
+          name = "general",
+          path = vim.env.OBSIDIAN_PATH,
         },
       },
       note_id_func = function(title)
@@ -43,6 +42,12 @@ return {
         enabled = true,
       },
     },
+    config = function(_, opts)
+      require("obsidian").setup(opts)
+      if vim.env.OBSIDIAN_PATH == nil then
+        vim.notify("OBSIDIAN_PATH is not set", vim.log.levels.ERROR)
+      end
+    end,
   },
   {
     "backdround/global-note.nvim",
