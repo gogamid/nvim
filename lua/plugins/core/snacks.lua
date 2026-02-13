@@ -57,22 +57,25 @@ return {
   opts = {
     picker = {
       matcher = {
-        fuzzy = true,
+        frecency = true,
+        -- fuzzy = true,
         smartcase = true,
         ignorecase = true,
-        sort_empty = false, -- sort results when the search string is empty
-        filename_bonus = true, -- give bonus for matching file names (last part of the path)
-        file_pos = true, -- support patterns like `file:line:col` and `file:line`
+        -- filename_bonus = true, -- give bonus for matching file names (last part of the path)
+        -- file_pos = true, -- support patterns like `file:line:col` and `file:line`
         -- the bonusses below, possibly require string concatenation and path normalization,
         -- so this can have a performance impact for large lists and increase memory usage
-        cwd_bonus = false, -- give bonus for matching files in the cwd
-        frecency = true, -- frecency bonus
-        history_bonus = false, -- give more weight to chronological order
+        cwd_bonus = false,
+        sort_empty = false,
+        history_bonus = false,
       },
       sources = {
         git_log = git_options,
         git_log_file = git_options,
         git_log_line = git_options,
+        -- select = {
+        --   frecency = true,
+        -- },
       },
       win = {
         input = {

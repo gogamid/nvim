@@ -22,7 +22,7 @@ return {
         typst = { "typstyle" },
         lua = { "stylua" },
         proto = { "buf" },
-        go = { "goimports", "gofumpt" },
+        go = { "gofumpt", "goimports", lsp_format = "last" },
         yaml = { "prettier" },
         markdown = { "prettier" },
         json = { "prettier" },
