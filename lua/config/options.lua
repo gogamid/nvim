@@ -15,6 +15,7 @@ vim.opt.clipboard = "unnamedplus"
 -------------------------------------------------- QOL --------------------------------------------------------------------------------
 vim.opt.scrolloff = 10 -- Keep 10 lines above/below cursor
 
+vim.o.wrap = false
 vim.o.breakindent = true -- Indent wrapped lines to match line start
 vim.o.linebreak = true -- Wrap lines at 'breakat' (if 'wrap' is set)
 

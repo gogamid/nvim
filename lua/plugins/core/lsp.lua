@@ -128,7 +128,7 @@ return {
       -- "ccls",
       -- "cds_lsp",
       -- "circom-lsp",
-      -- "clangd",
+      "clangd",
       -- "clarinet",
       -- "clojure_lsp",
       -- "cmake",
@@ -554,7 +554,7 @@ return {
           usePlaceholders = true,
           completeUnimported = true,
           directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
-          semanticTokens = true, -- overrides injections for 20s
+          semanticTokens = false, -- overrides injections
           diagnosticsTrigger = "Save",
         },
       },

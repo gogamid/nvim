@@ -7,6 +7,35 @@ vim.api.nvim_create_autocmd("BufEnter", {
   once = true,
 })
 
+vim.api.nvim_create_autocmd("User", {
+  pattern = "TSUpdate",
+  callback = function()
+    require("nvim-treesitter.parsers").go = {
+      install_info = {
+        path = "~/personal/tree-sitter-go",
+      },
+    }
+    vim.notify("Installed custom go parser")
+
+    require("nvim-treesitter.parsers").gupta = {
+      filetype = "gupta",
+      install_info = {
+        path = "~/personal/tree-sitter-gupta",
+        generate = false,
+        queries = "queries",
+      },
+    }
+    vim.notify("Installed custom gupta parser")
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "gupta", "go" },
+  callback = function()
+    vim.treesitter.start()
+  end,
+})
+
 local function service_dir()
   local dir = vim.fs.root(0, { "service.yaml" })
   if dir == nil then
@@ -62,6 +91,7 @@ local git_options = {
 }
 
 return {
+  { "nvim-treesitter/nvim-treesitter" },
   {
     "folke/snacks.nvim",
     opts = {
@@ -125,32 +155,6 @@ return {
           end,
         })
         :map("<leader>ua")
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    config = function()
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "TSUpdate",
-        callback = function()
-          require("nvim-treesitter.parsers").go = {
-            install_info = {
-              path = "~/personal/tree-sitter-go",
-            },
-          }
-          vim.notify("Installed custom go parser")
-
-          require("nvim-treesitter.parsers").gupta = {
-            filetype = "gupta",
-            install_info = {
-              path = "~/personal/tree-sitter-gupta",
-              generate = false,
-              queries = "queries",
-            },
-          }
-          vim.notify("Installed custom gupta parser")
-        end,
-      })
     end,
   },
   {
