@@ -178,7 +178,7 @@ return {
             cmd = {
               "make",
               "-C",
-              service_dir,
+              service_dir(),
               "skaffold-dev-remotedev",
               "ALIAS=" .. (os.getenv("USER") or "user"),
             },
