@@ -1,6 +1,7 @@
 local function mod_theme()
+  local zenversion = "zenbones"
   vim.g.zenbones = { italic_strings = true, transparent_background = false, darkness = "stark" }
-  vim.cmd("colorscheme zenbones")
+  vim.cmd("colorscheme " .. zenversion)
 
   local lush = require("lush")
   local zb = require("zenbones")
@@ -19,6 +20,7 @@ end
 return {
   {
     "mcchrish/zenbones.nvim",
+    enabled = true,
     dependencies = "rktjmp/lush.nvim",
     lazy = false,
     priority = 1000,
@@ -54,5 +56,8 @@ return {
     enabled = false,
     lazy = false,
     priority = 1000,
+    init = function()
+      vim.cmd("colorscheme lackluster")
+    end,
   },
 }
