@@ -294,8 +294,9 @@ return {
     },
     explorer = { enabled = false },
     indent = {
+      enabled = false,
       indent = {
-        char = "",
+        char = "",
       },
     },
     scope = { enabled = true },
