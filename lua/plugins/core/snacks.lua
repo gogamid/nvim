@@ -195,7 +195,7 @@ return {
           layout = {
             backdrop = false,
             row = 1,
-            width = 0.7,
+            width = 0.8,
             min_width = 80,
             height = 0.95,
             border = "none",
@@ -204,7 +204,7 @@ return {
             {
               box = "vertical",
               border = "rounded",
-              title = "{source} {live}",
+              title = "{source} {live} {flags}",
               title_pos = "center",
               { win = "input", height = 1, border = "bottom" },
               { win = "list", border = "none" },
@@ -215,7 +215,7 @@ return {
       formatters = {
         file = {
           filename_first = true,
-          truncate = 1000,
+          truncate = "left",
         },
       },
     },
