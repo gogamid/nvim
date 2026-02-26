@@ -1,3 +1,4 @@
+local jsFormatter = { "prettier", lsp_format = "never" }
 return {
   {
     "stevearc/conform.nvim",
@@ -26,9 +27,9 @@ return {
         yaml = { "prettier" },
         markdown = { "prettier" },
         json = { "prettier" },
-        vue = { "prettier", lsp_format = "first" },
-        typescript = { "prettier", lsp_format = "first" },
-        javascript = { "prettier", lsp_format = "first" },
+        vue = jsFormatter,
+        typescript = jsFormatter,
+        javascript = jsFormatter,
         toml = { "taplo" },
         sh = { "shfmt" },
         xml = { "xmlformatter" },
