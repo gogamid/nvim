@@ -1,13 +1,13 @@
 return {
-  {
-    "folke/lazydev.nvim",
-    ft = "lua", -- only load on lua files
-    opts = {
-      library = {
-        "lazy.nvim",
-        "snacks.nvim",
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-      },
+  "folke/lazydev.nvim",
+  ft = "lua",
+  cmd = "LazyDev",
+  opts = {
+    library = {
+      { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      { path = "LazyVim", words = { "LazyVim" } },
+      { path = "snacks.nvim", words = { "Snacks" } },
+      { path = "lazy.nvim", words = { "LazyVim" } },
     },
   },
 }
