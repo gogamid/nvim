@@ -159,9 +159,10 @@ return {
   },
   {
     "stevearc/overseer.nvim",
-    config = function()
-      local overseer = require("overseer")
+    config = function(_, opts)
+      require("overseer").setup(opts)
 
+      local overseer = require("overseer")
       overseer.register_template({
         name = "skaffold dev",
         condition = {
