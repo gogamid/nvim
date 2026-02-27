@@ -57,16 +57,16 @@ return {
   opts = {
     picker = {
       matcher = {
-        frecency = true,
-        -- fuzzy = true,
+        sort_empty = false, -- sort results when the search string is empty
+        fuzzy = false,
         smartcase = true,
         ignorecase = true,
-        -- filename_bonus = true, -- give bonus for matching file names (last part of the path)
-        -- file_pos = true, -- support patterns like `file:line:col` and `file:line`
+        filename_bonus = true, -- give bonus for matching file names (last part of the path)
+        file_pos = true, -- support patterns like `file:line:col` and `file:line`
         -- the bonusses below, possibly require string concatenation and path normalization,
         -- so this can have a performance impact for large lists and increase memory usage
+        frecency = true,
         cwd_bonus = false,
-        sort_empty = false,
         history_bonus = false,
       },
       sources = {
@@ -84,11 +84,7 @@ return {
             ["/"] = false,
             ["<C-Down>"] = false,
             ["<C-Up>"] = false,
-            -- ["<C-c>"] = false,
-            -- ["<C-w>"] = false,
-            -- ["<CR>"] = false,
             ["<Down>"] = false,
-            -- ["<Esc>"] = false,
             ["<S-CR>"] = false,
             ["<S-Tab>"] = false,
             ["<Tab>"] = false,
@@ -101,20 +97,7 @@ return {
             ["<a-m>"] = false,
             ["<a-p>"] = false,
             ["<a-w>"] = false,
-            -- ["<c-a>"] = false,
-            -- ["<c-b>"] = false,
-            -- ["<c-d>"] = false,
-            -- ["<c-f>"] = false,
-            -- ["<c-g>"] = false,
-            -- ["<c-j>"] = false,
-            -- ["<c-k>"] = false,
-            -- ["<c-n>"] = false,
-            -- ["<c-p>"] = false,
-            -- ["<c-q>"] = false,
-            -- ["<c-s>"] = false,
             ["<c-t>"] = false,
-            -- ["<c-u>"] = false,
-            -- ["<c-v>"] = false,
             ["<c-r>#"] = false,
             ["<c-r>%"] = false,
             ["<c-r><c-a>"] = false,
@@ -122,50 +105,46 @@ return {
             ["<c-r><c-l>"] = false,
             ["<c-r><c-p>"] = false,
             ["<c-r><c-w>"] = false,
+            ["<c-w>"] = false,
             ["<c-w>H"] = false,
             ["<c-w>J"] = false,
             ["<c-w>K"] = false,
             ["<c-w>L"] = false,
-            -- ["?"] = false,
             ["G"] = false,
             ["gg"] = false,
             ["j"] = false,
             ["k"] = false,
-            -- ["q"] = true,
 
             -- used keys
-
-            ["<C-c>"] = { "cancel", mode = "i" },
-            ["<CR>"] = { "confirm", mode = { "n", "i" } },
-
-            ["<c-s>"] = { "edit_split", mode = { "i", "n" } },
-            ["<c-v>"] = { "edit_vsplit", mode = { "i", "n" } },
-
-            ["<c-z>"] = { "toggle_maximize", mode = { "n", "i" } },
             ["<c-h>"] = { "toggle_help_input", mode = { "i", "n" } },
-            ["<c-e>"] = { "cycle_win", mode = { "i", "n" } },
 
-            ["<c-,>"] = { "toggle_ignored", mode = { "i", "n" } },
-            ["<c-.>"] = { "toggle_hidden", mode = { "i", "n" } },
-            ["<c-g>"] = { "toggle_live", mode = { "i", "n" } },
-            ["<c-r>"] = { "toggle_regex", mode = { "i", "n" } },
-
-            ["<c-k>"] = { "history_back", mode = { "i", "n" } },
-            ["<c-j>"] = { "history_forward", mode = { "i", "n" } },
-
-            ["<c-l>"] = { "select_and_next", mode = { "n", "i" } },
-            ["<c-a>"] = { "select_all", mode = { "n", "i" } },
-
-            ["<c-w>"] = { "<c-s-w>", mode = { "i" }, expr = true, desc = "delete word" },
-
+            -- navigation
             ["<c-n>"] = { "list_down", mode = { "i", "n" } },
             ["<c-p>"] = { "list_up", mode = { "i", "n" } },
             ["<c-u>"] = { "list_scroll_up", mode = { "i", "n" } },
             ["<c-d>"] = { "list_scroll_down", mode = { "i", "n" } },
             ["<c-b>"] = { "preview_scroll_up", mode = { "i", "n" } },
             ["<c-f>"] = { "preview_scroll_down", mode = { "i", "n" } },
+            ["<c-e>"] = { "cycle_win", mode = { "i", "n" } },
+            ["<C-c>"] = { "cancel", mode = "i" },
+            ["<CR>"] = { "confirm", mode = { "n", "i" } },
+            ["<c-k>"] = { "history_back", mode = { "i", "n" } },
+            ["<c-j>"] = { "history_forward", mode = { "i", "n" } },
 
-            -- ["<c-q>"] = quickfix
+            ["<c-s>"] = { "edit_split", mode = { "i", "n" } },
+            ["<c-v>"] = { "edit_vsplit", mode = { "i", "n" } },
+
+            ["<c-l>"] = { "select_and_next", mode = { "n", "i" } },
+            ["<c-a>"] = { "select_all", mode = { "n", "i" } },
+
+            -- toggles
+            ["<c-g>"] = { "toggle_live", mode = { "i", "n" } },
+            ["<c-.>h"] = { "toggle_hidden", mode = { "i", "n" } },
+            ["<c-.>i"] = { "toggle_ignored", mode = { "i", "n" } },
+            ["<c-.>r"] = { "toggle_regex", mode = { "i", "n" } },
+            ["<c-.>f"] = { "toggle_follow", mode = { "i", "n" } }, -- symlinks
+            ["<c-.>m"] = { "toggle_maximize", mode = { "i", "n" } },
+            ["<c-.>p"] = { "toggle_preview", mode = { "i", "n" } },
 
             ["<c-i>"] = { "inspect", mode = { "n", "i" } },
           },
@@ -179,11 +158,7 @@ return {
           },
         },
         preview = {
-          minimal = false,
-          wo = {
-            cursorline = false,
-            colorcolumn = "",
-          },
+          minimal = true,
           keys = {
             ["<c-e>"] = "cycle_win",
           },
