@@ -19,8 +19,17 @@ end
 
 return {
   {
+    "oskarnurm/koda.nvim",
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      -- require("koda").setup({ transparent = true })
+      vim.cmd("colorscheme koda")
+    end,
+  },
+  {
     "mcchrish/zenbones.nvim",
-    enabled = true,
+    enabled = false,
     dependencies = "rktjmp/lush.nvim",
     lazy = false,
     priority = 1000,
@@ -34,11 +43,11 @@ return {
       update_interval = 1000,
       set_dark_mode = function()
         vim.o.background = "dark"
-        mod_theme()
+        -- mod_theme()
       end,
       set_light_mode = function()
         vim.o.background = "light"
-        mod_theme()
+        -- mod_theme()
       end,
     },
   },
