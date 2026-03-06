@@ -159,6 +159,29 @@ return {
   },
   {
     "stevearc/overseer.nvim",
+    keys = {
+      {
+        "<localleader>l",
+        function()
+          require("overseer").run_task({ name = "make lint" })
+        end,
+        desc = "Make lint",
+      },
+      {
+        "<localleader>t",
+        function()
+          require("overseer").run_task({ name = "make test" })
+        end,
+        desc = "Make test",
+      },
+      {
+        "<localleader>s",
+        function()
+          require("overseer").run_task({ name = "skaffold dev" })
+        end,
+        desc = "skaffold dev",
+      },
+    },
     config = function(_, opts)
       require("overseer").setup(opts)
 
