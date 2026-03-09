@@ -15,8 +15,6 @@ vim.api.nvim_create_autocmd("User", {
         path = "~/personal/tree-sitter-go",
       },
     }
-    vim.notify("Installed custom go parser")
-
     require("nvim-treesitter.parsers").gupta = {
       filetype = "gupta",
       install_info = {
@@ -25,7 +23,6 @@ vim.api.nvim_create_autocmd("User", {
         queries = "queries",
       },
     }
-    vim.notify("Installed custom gupta parser")
   end,
 })
 
