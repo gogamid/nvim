@@ -161,23 +161,26 @@ return {
     "stevearc/overseer.nvim",
     keys = {
       {
-        "<localleader>l",
+        "<leader>ml",
         function()
           require("overseer").run_task({ name = "make lint" })
+          vim.notify("Running make lint")
         end,
         desc = "Make lint",
       },
       {
-        "<localleader>t",
+        "<leader>mt",
         function()
           require("overseer").run_task({ name = "make test" })
+          vim.notify("Running make test")
         end,
         desc = "Make test",
       },
       {
-        "<localleader>s",
+        "<leader>ms",
         function()
           require("overseer").run_task({ name = "skaffold dev" })
+          vim.notify("Running skaffold dev")
         end,
         desc = "skaffold dev",
       },
