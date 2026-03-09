@@ -1,10 +1,16 @@
-local filter_hide = function(fs_entry)
-  return not vim.startswith(fs_entry.name, ".")
-end
 return {
   {
     "nvim-mini/mini.nvim",
     version = false,
+    keys = {
+      {
+        "<leader>e",
+        function()
+          require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
+        end,
+        desc = "Open mini.files (Directory of Current File)",
+      },
+    },
     config = function()
       local hipatterns = require("mini.hipatterns")
       hipatterns.setup({
@@ -18,59 +24,45 @@ return {
       require("mini.icons").setup({
         style = vim.g.icons_enabled and "glyph" or "ascii",
       })
-    end,
-  },
-  {
-    "nvim-mini/mini.files",
-    lazy = false,
-    opts = {
-      mappings = {
-        close = "q",
-        go_in = "L",
-        go_in_plus = "l",
-        go_out = "h",
-        go_out_plus = "H",
-        mark_goto = "'",
-        mark_set = "m",
-        reset = "<BS>",
-        reveal_cwd = "@",
-        show_help = "g?",
-        synchronize = "=",
-        trim_left = "<",
-        trim_right = ">",
-      },
-      windows = {
-        max_number = 2,
-        preview = true,
-        width_focus = 60,
-        width_preview = 60,
-      },
-      options = {
-        -- replaces netrw
-        use_as_default_explorer = true,
-      },
-      content = {
-        filter = filter_hide,
-      },
-    },
-    keys = {
-      {
-        "<leader>e",
-        function()
-          require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
-        end,
-        desc = "Open mini.files (Directory of Current File)",
-      },
-    },
-    config = function(_, opts)
-      require("mini.files").setup(opts)
+
+      local filter_hide = function(fs_entry)
+        return not vim.startswith(fs_entry.name, ".")
+      end
+
+      require("mini.files").setup({
+        mappings = {
+          close = "q",
+          go_in = "L",
+          go_in_plus = "l",
+          go_out = "h",
+          go_out_plus = "H",
+          mark_goto = "'",
+          mark_set = "m",
+          reset = "<BS>",
+          reveal_cwd = "@",
+          show_help = "g?",
+          synchronize = "=",
+          trim_left = "<",
+          trim_right = ">",
+        },
+        windows = {
+          max_number = 2,
+          preview = true,
+          width_focus = 60,
+          width_preview = 60,
+        },
+        options = {
+          -- replaces netrw
+          use_as_default_explorer = true,
+        },
+        content = {
+          filter = filter_hide,
+        },
+      })
 
       local show_dotfiles = false
       local filter_show = function(fs_entry)
         return true
-      end
-      local filter_hide = function(fs_entry)
-        return not vim.startswith(fs_entry.name, ".")
       end
 
       local toggle_dotfiles = function()
@@ -114,12 +106,11 @@ return {
         pattern = "MiniFilesBufferCreate",
         callback = function(args)
           local buf = args.data.buf_id
-
           vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf, desc = "Toggle hidden files" })
           vim.keymap.set("n", "go", ui_open, { buffer = buf, desc = "OS open" })
           vim.keymap.set("n", "gf", show_in_finder, { buffer = buf, desc = "Show in finder" })
           vim.keymap.set("n", "gy", yank_path, { buffer = buf, desc = "Yank path" })
-          vim.keymap.set("n", "<C-x>", untar, { buffer = buf, desc = "Untar" })
+          vim.keymap.set("n", "gt", untar, { buffer = buf, desc = "Untar" })
         end,
       })
     end,
