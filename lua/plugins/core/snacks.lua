@@ -201,8 +201,9 @@ return {
     lazygit = {
       enabled = true,
       win = {
-        width = 0.99,
-        height = 0.99,
+        width = 0.80,
+        height = 0.80,
+        border = "rounded",
       },
     },
     terminal = { enabled = false },
