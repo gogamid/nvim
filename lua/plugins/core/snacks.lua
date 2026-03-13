@@ -285,23 +285,44 @@ return {
     {
       "<leader>ff",
       function()
-        Snacks.picker.files()
+        local buf_dir = vim.fs.dirname(vim.api.nvim_buf_get_name(0))
+        local original_cwd
+        Snacks.picker.files({
+          actions = {
+            toggle_buf_dir = function(picker)
+              if not original_cwd then
+                original_cwd = picker:cwd()
+              end
+              if picker:cwd() == buf_dir then
+                picker:set_cwd(original_cwd)
+              else
+                picker:set_cwd(buf_dir)
+              end
+              picker:find()
+            end,
+          },
+          win = {
+            input = {
+              keys = {
+                ["<C-o>b"] = { "toggle_buf_dir", mode = { "i", "n" }, desc = "Toggle Buffer directory" },
+              },
+            },
+          },
+        })
       end,
-      desc = "Cwd files",
+      desc = "Files cwd or buf_dir",
     },
     {
       "<leader>fg",
       function()
-        Snacks.picker.git_files({ untracked = true })
+        -- Snacks.picker.git_files({ untracked = true })
+        Snacks.picker.files({
+          dirs = { vim.fs.root(0, { ".git" }) },
+          hidden = true,
+          ignored = true,
+        })
       end,
       desc = "Git files",
-    },
-    {
-      "<leader>fp",
-      function()
-        Snacks.picker.files({ dirs = { parent_dir() } })
-      end,
-      desc = "Parent dir files",
     },
     {
       "<leader>fr",
@@ -332,7 +353,7 @@ return {
       desc = "LSP Configs",
     },
     {
-      "<leader>fP",
+      "<leader>fp",
       function()
         local lazy_plugins_dir = require("lazy.core.config").options.root
         Snacks.picker.files({ cwd = lazy_plugins_dir })
@@ -418,7 +439,8 @@ return {
     {
       "<leader>sg",
       function()
-        Snacks.picker.git_grep()
+        -- Snacks.picker.git_grep()
+        Snacks.picker.grep({ cwd = vim.fs.root(0, { ".git" }) })
       end,
       desc = "Git grep",
     },
