@@ -399,7 +399,7 @@ return {
       desc = "Status",
     },
     {
-      "<leader>gt",
+      "<leader>go",
       function()
         Snacks.lazygit()
       end,

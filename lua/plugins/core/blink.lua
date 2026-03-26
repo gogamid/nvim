@@ -33,6 +33,7 @@ return {
       },
       keymap = {
         preset = "enter",
+        ["<C-o>"] = { "show", "fallback" },
       },
       cmdline = {
         keymap = {
@@ -42,7 +43,7 @@ return {
           ["<S-Tab>"] = { "show_and_insert_or_accept_single", "select_prev" },
           ["<C-n>"] = { "select_next", "fallback" },
           ["<C-p>"] = { "select_prev", "fallback" },
-          ["<C-space>"] = { "show", "fallback" },
+          ["<C-o>"] = { "show", "fallback" },
           ["<C-e>"] = { "cancel", "fallback" },
         },
       },
