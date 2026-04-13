@@ -132,26 +132,6 @@ return {
     },
     config = function(_, opts)
       require("snacks").setup(opts)
-      Snacks.toggle
-        .new({
-          id = "goarch",
-          name = "GOARCH and CGO_ENABLED",
-          get = function()
-            return vim.env.GOARCH
-          end,
-          set = function(state)
-            if state then
-              vim.env.ORACLE_HOME = vim.env.HOMEBREW_PREFIX
-              vim.env.GOARCH = "amd64"
-              vim.env.CGO_ENABLED = "1"
-            else
-              vim.env.ORACLE_HOME = vim.env.HOMEBREW_PREFIX
-              vim.env.GOARCH = nil
-              vim.env.CGO_ENABLED = nil
-            end
-          end,
-        })
-        :map("<leader>ua")
     end,
   },
   {
