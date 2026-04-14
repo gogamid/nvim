@@ -97,4 +97,13 @@ return {
       { "<leader>um", ":RenderMarkdown toggle<cr>", desc = "Toggle Render Markdown" },
     },
   },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = "cd app && bun install",
+    keys = {
+      { "<leader>uM", ":MarkdownPreviewToggle<cr>", desc = "Toggle Markdown Preview" },
+    },
+  },
 }
