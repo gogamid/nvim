@@ -1,9 +1,6 @@
 return {
   "andrewferrier/debugprint.nvim",
-  dependencies = {
-    "nvim-mini/mini.hipatterns",
-    "folke/snacks.nvim",
-  },
+  dependencies = { "folke/snacks.nvim" },
   lazy = false,
   opts = {
     display_counter = false,
