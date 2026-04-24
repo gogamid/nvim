@@ -91,8 +91,8 @@ return {
       lualine_a = {},
       lualine_b = {},
       lualine_c = {
-        "filename",
         root,
+        "filename",
         "%=",
         -- pomodoro(),
       },
