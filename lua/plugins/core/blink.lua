@@ -1,8 +1,13 @@
 return {
   {
     "saghen/blink.cmp",
+    dependencies = {
+      "saghen/blink.lib",
+      -- optional
+      "rafamadriz/friendly-snippets",
+    },
     lazy = false,
-    version = "1.*",
+    -- version = "1.*",
     opts = {
       fuzzy = { implementation = "prefer_rust" },
       snippets = { preset = "luasnip" },
@@ -22,11 +27,6 @@ return {
       },
       sources = {
         min_keyword_length = 2,
-        -- providers = {
-        --   snippets = {
-        --     score_offset = 1000,
-        --   },
-        -- },
       },
       signature = {
         enabled = true,
