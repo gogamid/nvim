@@ -20,6 +20,7 @@ return {
       },
       formatters_by_ft = {
         c = { "cformatter42" },
+        dart = { "dart_format" },
         typst = { "typstyle" },
         lua = { "stylua" },
         proto = { "buf" },

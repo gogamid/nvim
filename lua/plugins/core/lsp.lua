@@ -150,7 +150,7 @@ return {
       -- "daedalus_ls",
       -- "dafny",
       -- "dagger",
-      -- "dartls",
+      "dartls",
       -- "dcmls",
       -- "debputy",
       -- "denols",
