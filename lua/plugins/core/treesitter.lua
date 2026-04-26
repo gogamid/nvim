@@ -3,7 +3,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
-      local filetypes = {
+      local ensure_installed = {
         "bash",
         "c",
         "diff",
@@ -19,14 +19,26 @@ return {
         "vue",
         "typescript",
         "javascript",
-        "gupta",
         "dart",
       }
-      require("nvim-treesitter").install(filetypes)
+      require("nvim-treesitter").install(ensure_installed)
+
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = filetypes,
-        callback = function()
-          vim.treesitter.start()
+        callback = function(args)
+          local bufnr = args.buf
+          local ft = vim.bo[bufnr].filetype
+
+          local lang = vim.treesitter.language.get_lang(ft)
+          if not lang then
+            return
+          end
+
+          local ok = pcall(vim.treesitter.get_parser, bufnr, lang)
+          if not ok then
+            return
+          end
+
+          pcall(vim.treesitter.start, bufnr, lang)
         end,
       })
     end,
