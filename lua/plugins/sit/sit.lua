@@ -226,6 +226,33 @@ return {
           }
         end,
       })
+
+      overseer.register_template({
+        name = "port forward 50051",
+        condition = {
+          dir = vim.fn.expand("$NEXUS_REPO"),
+        },
+        builder = function()
+          local service = vim.fs.basename(service_dir())
+          local domain = vim.fs.basename(domain_dir())
+          if service == nil or domain == nil then
+            vim.notify("No service or domain found", vim.log.levels.WARN)
+            return {}
+          end
+
+          return {
+            name = service .. "[pf]",
+            cmd = {
+              "kubectl",
+              "-n",
+              domain,
+              "port-forward",
+              "service/" .. service,
+              "50051",
+            },
+          }
+        end,
+      })
     end,
   },
 }
