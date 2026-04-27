@@ -1,19 +1,3 @@
-local function service_dir()
-  local dir = vim.fs.root(0, { "service.yaml" })
-  if dir == nil then
-    vim.notify("No service.yaml file found", vim.log.levels.WARN)
-  end
-  return dir
-end
-
-local function domain_dir()
-  local dir = vim.fs.root(0, { "sonar-project.properties" })
-  if dir == nil then
-    vim.notify("No sonar-project.properties file found", vim.log.levels.WARN)
-  end
-  return dir
-end
-
 local function parent_dir()
   return vim.fs.dirname(vim.api.nvim_buf_get_name(0))
 end
@@ -36,31 +20,6 @@ local git_options = {
       local prev = vim.trim(vim.fn.system("git rev-parse --short " .. curr .. "^"))
       prev = prev:match("[a-f0-9]+")
       vim.cmd(string.format("CodeDiff %s %s", prev, curr))
-    end,
-    ["copy_pr_url"] = function(picker)
-      local currentMsg = picker:current().msg
-      if currentMsg then
-        local pr_number = string.match(currentMsg, "Merged PR (%d+):")
-        if pr_number then
-          local url = os.getenv("AZURE_PR_URL") .. pr_number
-          vim.fn.setreg("+", url)
-          vim.notify(string.format("PR URL copied: %s", url))
-        else
-          vim.notify("PR number not found in message.", vim.log.levels.ERROR)
-        end
-      end
-    end,
-    ["open_pr"] = function(picker)
-      local currentMsg = picker:current().msg
-      if currentMsg then
-        local pr_number = string.match(currentMsg, "Merged PR (%d+):")
-        if pr_number then
-          local url = os.getenv("AZURE_PR_URL") .. pr_number
-          vim.fn.system({ "open", url })
-        else
-          vim.notify("PR number not found in message.", vim.log.levels.ERROR)
-        end
-      end
     end,
     ["revert_commit"] = function(picker)
       local commit = picker:current().commit
@@ -85,8 +44,6 @@ local git_options = {
     input = {
       keys = {
         ["<CR>"] = { "diffview", desc = "Diffview this commit", mode = { "n", "i" } },
-        ["<C-o>y"] = { "copy_pr_url", desc = "Copy PR URL", mode = { "n", "i" } },
-        ["<C-o>b"] = { "open_pr", desc = "Open PR", mode = { "n", "i" } },
         ["<C-o>r"] = { "revert_commit", desc = "Revert commit", mode = { "n", "i" } },
       },
     },
@@ -100,22 +57,25 @@ return {
   opts = {
     picker = {
       matcher = {
-        fuzzy = true, -- use fuzzy matching
-        smartcase = true, -- use smartcase
-        ignorecase = true, -- use ignorecase
         sort_empty = false, -- sort results when the search string is empty
+        fuzzy = false,
+        smartcase = true,
+        ignorecase = true,
         filename_bonus = true, -- give bonus for matching file names (last part of the path)
         file_pos = true, -- support patterns like `file:line:col` and `file:line`
         -- the bonusses below, possibly require string concatenation and path normalization,
         -- so this can have a performance impact for large lists and increase memory usage
-        cwd_bonus = false, -- give bonus for matching files in the cwd
-        frecency = true, -- frecency bonus
-        history_bonus = false, -- give more weight to chronological order
+        frecency = true,
+        cwd_bonus = false,
+        history_bonus = false,
       },
       sources = {
         git_log = git_options,
         git_log_file = git_options,
         git_log_line = git_options,
+        -- select = {
+        --   frecency = true,
+        -- },
       },
       win = {
         input = {
@@ -124,11 +84,7 @@ return {
             ["/"] = false,
             ["<C-Down>"] = false,
             ["<C-Up>"] = false,
-            -- ["<C-c>"] = false,
-            -- ["<C-w>"] = false,
-            -- ["<CR>"] = false,
             ["<Down>"] = false,
-            -- ["<Esc>"] = false,
             ["<S-CR>"] = false,
             ["<S-Tab>"] = false,
             ["<Tab>"] = false,
@@ -141,20 +97,7 @@ return {
             ["<a-m>"] = false,
             ["<a-p>"] = false,
             ["<a-w>"] = false,
-            -- ["<c-a>"] = false,
-            -- ["<c-b>"] = false,
-            -- ["<c-d>"] = false,
-            -- ["<c-f>"] = false,
-            -- ["<c-g>"] = false,
-            -- ["<c-j>"] = false,
-            -- ["<c-k>"] = false,
-            -- ["<c-n>"] = false,
-            -- ["<c-p>"] = false,
-            -- ["<c-q>"] = false,
-            -- ["<c-s>"] = false,
             ["<c-t>"] = false,
-            -- ["<c-u>"] = false,
-            -- ["<c-v>"] = false,
             ["<c-r>#"] = false,
             ["<c-r>%"] = false,
             ["<c-r><c-a>"] = false,
@@ -162,50 +105,46 @@ return {
             ["<c-r><c-l>"] = false,
             ["<c-r><c-p>"] = false,
             ["<c-r><c-w>"] = false,
+            ["<c-w>"] = false,
             ["<c-w>H"] = false,
             ["<c-w>J"] = false,
             ["<c-w>K"] = false,
             ["<c-w>L"] = false,
-            -- ["?"] = false,
             ["G"] = false,
             ["gg"] = false,
             ["j"] = false,
             ["k"] = false,
-            -- ["q"] = true,
 
             -- used keys
-
-            ["<C-c>"] = { "cancel", mode = "i" },
-            ["<CR>"] = { "confirm", mode = { "n", "i" } },
-
-            ["<c-s>"] = { "edit_split", mode = { "i", "n" } },
-            ["<c-v>"] = { "edit_vsplit", mode = { "i", "n" } },
-
-            ["<c-z>"] = { "toggle_maximize", mode = { "n", "i" } },
             ["<c-h>"] = { "toggle_help_input", mode = { "i", "n" } },
-            ["<c-e>"] = { "cycle_win", mode = { "i", "n" } },
 
-            ["<c-,>"] = { "toggle_ignored", mode = { "i", "n" } },
-            ["<c-.>"] = { "toggle_hidden", mode = { "i", "n" } },
-            ["<c-g>"] = { "toggle_live", mode = { "i", "n" } },
-            ["<c-r>"] = { "toggle_regex", mode = { "i", "n" } },
-
-            ["<c-k>"] = { "history_back", mode = { "i", "n" } },
-            ["<c-j>"] = { "history_forward", mode = { "i", "n" } },
-
-            ["<c-l>"] = { "select_and_next", mode = { "n", "i" } },
-            ["<c-a>"] = { "select_all", mode = { "n", "i" } },
-
-            ["<c-w>"] = { "<c-s-w>", mode = { "i" }, expr = true, desc = "delete word" },
-
+            -- navigation
             ["<c-n>"] = { "list_down", mode = { "i", "n" } },
             ["<c-p>"] = { "list_up", mode = { "i", "n" } },
             ["<c-u>"] = { "list_scroll_up", mode = { "i", "n" } },
             ["<c-d>"] = { "list_scroll_down", mode = { "i", "n" } },
             ["<c-b>"] = { "preview_scroll_up", mode = { "i", "n" } },
             ["<c-f>"] = { "preview_scroll_down", mode = { "i", "n" } },
+            ["<c-e>"] = { "cycle_win", mode = { "i", "n" } },
+            ["<C-c>"] = { "cancel", mode = "i" },
+            ["<CR>"] = { "confirm", mode = { "n", "i" } },
+            ["<c-k>"] = { "history_back", mode = { "i", "n" } },
+            ["<c-j>"] = { "history_forward", mode = { "i", "n" } },
 
-            -- ["<c-q>"] = quickfix
+            ["<c-s>"] = { "edit_split", mode = { "i", "n" } },
+            ["<c-v>"] = { "edit_vsplit", mode = { "i", "n" } },
+
+            ["<c-l>"] = { "select_and_next", mode = { "n", "i" } },
+            ["<c-a>"] = { "select_all", mode = { "n", "i" } },
+
+            -- toggles
+            ["<c-g>"] = { "toggle_live", mode = { "i", "n" } },
+            ["<c-.>h"] = { "toggle_hidden", mode = { "i", "n" } },
+            ["<c-.>i"] = { "toggle_ignored", mode = { "i", "n" } },
+            ["<c-.>r"] = { "toggle_regex", mode = { "i", "n" } },
+            ["<c-.>f"] = { "toggle_follow", mode = { "i", "n" } }, -- symlinks
+            ["<c-.>m"] = { "toggle_maximize", mode = { "i", "n" } },
+            ["<c-.>p"] = { "toggle_preview", mode = { "i", "n" } },
 
             ["<c-i>"] = { "inspect", mode = { "n", "i" } },
           },
@@ -219,11 +158,7 @@ return {
           },
         },
         preview = {
-          minimal = false,
-          wo = {
-            cursorline = false,
-            colorcolumn = "",
-          },
+          minimal = true,
           keys = {
             ["<c-e>"] = "cycle_win",
           },
@@ -235,7 +170,7 @@ return {
           layout = {
             backdrop = false,
             row = 1,
-            width = 0.7,
+            width = 0.8,
             min_width = 80,
             height = 0.95,
             border = "none",
@@ -244,7 +179,7 @@ return {
             {
               box = "vertical",
               border = "rounded",
-              title = "{source} {live}",
+              title = "{source} {live} {flags}",
               title_pos = "center",
               { win = "input", height = 1, border = "bottom" },
               { win = "list", border = "none" },
@@ -255,29 +190,27 @@ return {
       formatters = {
         file = {
           filename_first = true,
-          truncate = 1000,
+          truncate = "left",
         },
       },
     },
     image = {},
     dashboard = {
-      enabled = false,
-      preset = {
-        keys = {},
-        header = require("modules.headers").hello_papi,
-      },
-      formats = { key = { "" } },
+      enabled = true,
       sections = {
         { section = "header" },
-        { section = "keys", gap = 1, padding = 1 },
+        { icon = " ", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
+        { icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+        { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
         { section = "startup" },
       },
     },
     lazygit = {
       enabled = true,
       win = {
-        width = 0.99,
-        height = 0.99,
+        width = 0.80,
+        height = 0.80,
+        border = "rounded",
       },
     },
     terminal = { enabled = false },
@@ -344,8 +277,9 @@ return {
     },
     explorer = { enabled = false },
     indent = {
+      enabled = false,
       indent = {
-        char = "",
+        char = "",
       },
     },
     scope = { enabled = true },
@@ -356,39 +290,46 @@ return {
   keys = {
     -- files
     {
-      "<leader>fc",
+      "<leader>ff",
       function()
-        Snacks.picker.files()
+        local buf_dir = vim.fs.dirname(vim.api.nvim_buf_get_name(0))
+        local original_cwd
+        Snacks.picker.files({
+          actions = {
+            toggle_buf_dir = function(picker)
+              if not original_cwd then
+                original_cwd = picker:cwd()
+              end
+              if picker:cwd() == buf_dir then
+                picker:set_cwd(original_cwd)
+              else
+                picker:set_cwd(buf_dir)
+              end
+              picker:find()
+            end,
+          },
+          win = {
+            input = {
+              keys = {
+                ["<C-o>b"] = { "toggle_buf_dir", mode = { "i", "n" }, desc = "Toggle Buffer directory" },
+              },
+            },
+          },
+        })
       end,
-      desc = "Cwd files",
-    },
-    {
-      "<leader>fs",
-      function()
-        Snacks.picker.files({ dirs = { service_dir() } })
-      end,
-      desc = "Service files",
-    },
-    {
-      "<leader>fd",
-      function()
-        Snacks.picker.files({ dirs = { domain_dir() } })
-      end,
-      desc = "Domain files",
+      desc = "Files cwd or buf_dir",
     },
     {
       "<leader>fg",
       function()
-        Snacks.picker.git_files({ untracked = true })
+        -- Snacks.picker.git_files({ untracked = true })
+        Snacks.picker.files({
+          dirs = { vim.fs.root(0, { ".git" }) },
+          hidden = true,
+          ignored = true,
+        })
       end,
       desc = "Git files",
-    },
-    {
-      "<leader>fp",
-      function()
-        Snacks.picker.files({ dirs = { parent_dir() } })
-      end,
-      desc = "Parent dir files",
     },
     {
       "<leader>fr",
@@ -398,27 +339,12 @@ return {
       desc = "Recent Files",
     },
     {
-      "<leader>fR",
-      function()
-        Snacks.picker.resume()
-      end,
-      desc = "Resume",
-    },
-    {
-      "<leader>fb",
-      function()
-        Snacks.picker.buffers()
-      end,
-      desc = "Buffer Files",
-    },
-    {
       "<leader>,",
       function()
         Snacks.picker.buffers()
       end,
       desc = "Buffer Files",
     },
-    -- //g1 - g9 to jump to buffers
     {
       "<leader>fu",
       function()
@@ -434,7 +360,7 @@ return {
       desc = "LSP Configs",
     },
     {
-      "<leader>fP",
+      "<leader>fp",
       function()
         local lazy_plugins_dir = require("lazy.core.config").options.root
         Snacks.picker.files({ cwd = lazy_plugins_dir })
@@ -442,10 +368,10 @@ return {
       desc = "Plugin Files",
     },
     {
-      "<leader>fC",
+      "<leader>fc",
       function()
         local config_dir = os.getenv("HOME") .. "/.config"
-        Snacks.picker.files({ dirs = { config_dir } })
+        Snacks.picker.files({ cwd = config_dir })
       end,
       desc = "Config Files",
     },
@@ -480,21 +406,14 @@ return {
       desc = "Status",
     },
     {
-      "<leader>gS",
-      function()
-        Snacks.picker.git_stash()
-      end,
-      desc = "Status",
-    },
-    {
-      "<leader>gt",
+      "<leader>go",
       function()
         Snacks.lazygit()
       end,
       desc = "Lazygit Tui",
     },
     {
-      "gb",
+      "<leader>gb",
       function()
         Snacks.gitbrowse()
       end,
@@ -502,7 +421,7 @@ return {
       mode = { "v" },
     },
     {
-      "gy",
+      "<leader>gy",
       function()
         Snacks.gitbrowse({
           open = function(url)
@@ -518,39 +437,26 @@ return {
 
     -- search and grep
     {
-      "<leader>sp",
+      "<leader>sf",
       function()
-        Snacks.picker.grep({ dirs = { parent_dir() } })
+        Snacks.picker.grep({ cwd = vim.fn.getcwd() })
       end,
-      desc = "Parent dir grep",
-    },
-    {
-      "<leader>sw",
-      function()
-        Snacks.picker.grep({ dirs = { vim.fn.getcwd() } })
-      end,
-      desc = "Cwd grep",
+      desc = "Grep cwd",
     },
     {
       "<leader>sg",
       function()
-        Snacks.picker.git_grep()
+        -- Snacks.picker.git_grep()
+        Snacks.picker.grep({ cwd = vim.fs.root(0, { ".git" }) })
       end,
       desc = "Git grep",
     },
     {
-      "<leader>ss",
+      "<leader>sp",
       function()
-        Snacks.picker.grep({ dirs = { service_dir() } })
+        Snacks.picker.grep({ cwd = parent_dir() })
       end,
-      desc = "Service grep",
-    },
-    {
-      "<leader>sd",
-      function()
-        Snacks.picker.grep({ dirs = { domain_dir() } })
-      end,
-      desc = "Domain grep",
+      desc = "Parent dir grep",
     },
     {
       "<leader>sb",
@@ -637,40 +543,6 @@ return {
       desc = "search neovim [k]eymaps",
     },
     {
-      "<leader>sK",
-      function()
-        Snacks.picker({
-          finder = function(_, _)
-            local file = os.getenv("HOME") .. "/personal/cheatsheet.csv"
-            local lines = vim.fn.readfile(file)
-
-            ---@type snacks.picker.finder.Item[] items to show instead of using a finder
-            local items = {}
-            for i, line in ipairs(lines) do
-              local parts = vim.split(line, ",")
-              if line ~= "" and #parts == 3 then
-                local prog, desc, key = unpack(parts)
-                table.insert(items, {
-                  text = string.format("%-20s %-30s    %20s", prog, desc, key),
-                })
-              end
-            end
-            return items
-          end,
-          format = "text",
-          title = "Keymaps",
-          layout = {
-            preset = "select",
-            layout = {
-              max_width = 80,
-              max_height = 20,
-            },
-          },
-        })
-      end,
-      desc = "search programm [K]eymaps",
-    },
-    {
       "<leader>sM",
       function()
         Snacks.picker.man()
@@ -743,22 +615,6 @@ return {
       desc = "Rename File",
     },
     {
-      "]]",
-      function()
-        Snacks.words.jump(vim.v.count1)
-      end,
-      desc = "Next Reference",
-      mode = { "n", "t" },
-    },
-    {
-      "[[",
-      function()
-        Snacks.words.jump(-vim.v.count1)
-      end,
-      desc = "Prev Reference",
-      mode = { "n", "t" },
-    },
-    {
       "<leader>un",
       function()
         Snacks.notifier.hide()
@@ -770,26 +626,6 @@ return {
     vim.api.nvim_create_autocmd("User", {
       pattern = "VeryLazy",
       callback = function()
-        Snacks.toggle
-          .new({
-            id = "goarch",
-            name = "GOARCH and CGO_ENABLED",
-            get = function()
-              return vim.env.GOARCH
-            end,
-            set = function(state)
-              if state then
-                vim.env.ORACLE_HOME = vim.env.HOMEBREW_PREFIX
-                vim.env.GOARCH = "amd64"
-                vim.env.CGO_ENABLED = "1"
-              else
-                vim.env.ORACLE_HOME = vim.env.HOMEBREW_PREFIX
-                vim.env.GOARCH = nil
-                vim.env.CGO_ENABLED = nil
-              end
-            end,
-          })
-          :map("<leader>ua")
         Snacks.toggle
           .new({
             id = "icons",
@@ -833,7 +669,6 @@ return {
         Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
         Snacks.toggle.words():map("<leader>uW")
         Snacks.toggle.zoom():map("<leader>uz")
-        Snacks.toggle.zen():map("<leader>uZ")
         Snacks.toggle.zen():map("<leader>uZ")
       end,
     })

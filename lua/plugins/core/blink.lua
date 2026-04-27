@@ -1,25 +1,20 @@
 return {
   {
-    "L3MON4D3/LuaSnip",
-    dependencies = { "rafamadriz/friendly-snippets" },
-    config = function(_, opts)
-      require("luasnip").setup(opts)
-      require("luasnip.loaders.from_vscode").lazy_load() -- friendly snippets
-
-      local snippets_path = vim.fn.stdpath("config") .. "/snippets"
-      require("luasnip.loaders.from_vscode").lazy_load({ paths = { snippets_path } })
-      require("luasnip.loaders.from_lua").lazy_load({ paths = { snippets_path } })
-    end,
-  },
-  {
     "saghen/blink.cmp",
-    build = "cargo build --release",
+    dependencies = {
+      "saghen/blink.lib",
+      -- optional
+      "rafamadriz/friendly-snippets",
+    },
+    lazy = false,
+    -- version = "1.*",
     opts = {
+      fuzzy = { implementation = "prefer_rust" },
       snippets = { preset = "luasnip" },
       completion = {
-        list = {
-          max_items = 6,
-        },
+        -- list = {
+        --   max_items = 6,
+        -- },
         documentation = {
           auto_show = true,
         },
@@ -32,20 +27,13 @@ return {
       },
       sources = {
         min_keyword_length = 2,
-        -- providers = {
-        --   snippets = {
-        --     score_offset = 1000,
-        --   },
-        -- },
       },
       signature = {
         enabled = true,
       },
-      fuzzy = {
-        implementation = "prefer_rust_with_warning",
-      },
       keymap = {
         preset = "enter",
+        ["<C-o>"] = { "show", "fallback" },
       },
       cmdline = {
         keymap = {
@@ -55,10 +43,22 @@ return {
           ["<S-Tab>"] = { "show_and_insert_or_accept_single", "select_prev" },
           ["<C-n>"] = { "select_next", "fallback" },
           ["<C-p>"] = { "select_prev", "fallback" },
-          ["<C-space>"] = { "show", "fallback" },
+          ["<C-o>"] = { "show", "fallback" },
           ["<C-e>"] = { "cancel", "fallback" },
         },
       },
     },
+  },
+  {
+    "L3MON4D3/LuaSnip",
+    dependencies = { "rafamadriz/friendly-snippets" },
+    config = function(_, opts)
+      require("luasnip").setup(opts)
+      require("luasnip.loaders.from_vscode").lazy_load() -- friendly snippets
+
+      local snippets_path = vim.fn.stdpath("config") .. "/snippets"
+      require("luasnip.loaders.from_vscode").lazy_load({ paths = { snippets_path } })
+      require("luasnip.loaders.from_lua").lazy_load({ paths = { snippets_path } })
+    end,
   },
 }

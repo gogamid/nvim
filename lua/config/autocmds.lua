@@ -29,26 +29,6 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
-local workspace = vim.fn.expand("$NEXUS_REPO")
-vim.api.nvim_create_autocmd("BufEnter", {
-  desc = "nexus actions",
-  pattern = workspace .. "**",
-  callback = function()
-    vim.env.DEPLOY_TO_MULTI_REGION = false
-    require("modules.translations").setup()
-    require("modules.imports").add_snippets()
-  end,
-  once = true,
-})
-
-vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-  desc = "Refresh codelenses",
-  pattern = { "*.go", "*.lua" },
-  callback = function()
-    vim.lsp.codelens.refresh()
-  end,
-})
-
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   desc = "Create directories when saving files",
   callback = function(args)
@@ -76,17 +56,6 @@ vim.api.nvim_create_autocmd("VimResized", {
   end,
 })
 
-vim.api.nvim_create_autocmd("TermOpen", {
-  desc = "Add q mapping to quit terminal window",
-  callback = function(args)
-    vim.keymap.set("n", "q", "<cmd>close<CR>", {
-      buffer = args.buf,
-      silent = true,
-      desc = "Quit terminal window",
-    })
-  end,
-})
-
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   desc = "Reload file when it changed outside of vim",
   callback = function()
@@ -97,7 +66,6 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 })
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  desc = "Set conceallevel to 0 for json files",
   pattern = { "json", "jsonc", "json5" },
   callback = function()
     vim.opt_local.conceallevel = 0

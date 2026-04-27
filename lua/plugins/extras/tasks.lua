@@ -84,53 +84,6 @@ return {
     config = function(_, opts)
       local overseer = require("overseer")
       overseer.setup(opts)
-
-      overseer.register_template({
-        name = "skaffold dev",
-        condition = {
-          dir = os.getenv("NEXUS_REPO"),
-        },
-        builder = function()
-          local service_dir = vim.fs.root(0, { "service.yaml" })
-          if service_dir == nil then
-            return nil
-          end
-          local service = vim.fs.basename(service_dir)
-          if service == nil then
-            return nil
-          end
-
-          return {
-            name = service .. "[dev]",
-            cmd = {
-              "make",
-              "-C",
-              service_dir,
-              "skaffold-dev-remotedev",
-              "ALIAS=" .. (os.getenv("USER") or "user"),
-            },
-          }
-        end,
-      })
-
-      overseer.register_template({
-        name = "auth skaffold dev",
-        condition = {
-          dir = os.getenv("NEXUS_REPO"),
-        },
-        builder = function()
-          return {
-            name = "auth[dev]",
-            cmd = {
-              "make",
-              "-C",
-              (os.getenv("NEXUS_REPO") or "") .. "/domains/wam/services/auth",
-              "skaffold-dev-remotedev",
-              "ALIAS=" .. (os.getenv("USER") or "user"),
-            },
-          }
-        end,
-      })
     end,
   },
   {

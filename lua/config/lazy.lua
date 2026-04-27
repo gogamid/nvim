@@ -29,6 +29,11 @@ local opts = {
     },
   },
 }
-require("lazy").setup({ import = "plugins" }, opts)
+require("lazy").setup({
+  { import = "plugins.core" },
+  { import = "plugins.extras" },
+  { import = "plugins.optional" },
+  { import = "plugins.sit" },
+}, opts)
 
 vim.keymap.set("n", "<leader>L", ":Lazy<CR>", { desc = "Lazy", silent = true })

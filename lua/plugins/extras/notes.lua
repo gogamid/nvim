@@ -15,8 +15,8 @@ return {
       },
       workspaces = {
         {
-          name = "work",
-          path = "~/work/obsidian/work",
+          name = "general",
+          path = vim.env.OBSIDIAN_PATH,
         },
       },
       note_id_func = function(title)
@@ -42,15 +42,21 @@ return {
         enabled = true,
       },
     },
+    config = function(_, opts)
+      require("obsidian").setup(opts)
+      if vim.env.OBSIDIAN_PATH == nil then
+        vim.notify("OBSIDIAN_PATH is not set", vim.log.levels.ERROR)
+      end
+    end,
   },
   {
     "backdround/global-note.nvim",
     opts = {
       filename = "Scratchpad.md",
-      directory = "~/work/obsidian/work",
-      title = "Scratchpad",
+      directory = vim.env.GLOBAL_NOTE_PATH,
+      title = "notes",
       window_config = function()
-        local w = 80
+        local w = 100
         local h = math.floor(vim.o.lines * 0.8)
         return {
           relative = "editor",
@@ -72,17 +78,39 @@ return {
     keys = {
       { "<leader>n", "<cmd>GlobalNote<cr>", desc = "Global note" },
     },
+    config = function(_, opts)
+      require("global-note").setup(opts)
+      if vim.env.GLOBAL_NOTE_PATH == nil then
+        vim.notify("GLOBAL_NOTE_PATH is not set", vim.log.levels.ERROR)
+      end
+    end,
   },
   {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {
+      enabled = true,
+
+      render_modes = { "n" },
+      preset = "obsidian",
       heading = {
-        sign = false,
+        icons = {},
+      },
+      anti_conceal = {
+        enabled = false,
       },
     },
     ft = { "markdown", "norg", "rmd", "org", "codecompanion", "Avante" },
     keys = {
       { "<leader>um", ":RenderMarkdown toggle<cr>", desc = "Toggle Render Markdown" },
+    },
+  },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = "cd app && bun install",
+    keys = {
+      { "<leader>uM", ":MarkdownPreviewToggle<cr>", desc = "Toggle Markdown Preview" },
     },
   },
 }

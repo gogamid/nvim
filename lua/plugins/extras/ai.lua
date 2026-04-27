@@ -52,6 +52,49 @@ local gemini_via_api_provider = {
   end,
 }
 
+local openrouter = {
+  prepare_input = function(inputs, opts)
+    return require("CopilotChat.config.providers").copilot.prepare_input(inputs, opts)
+  end,
+
+  prepare_output = function(output, opts)
+    return require("CopilotChat.config.providers").copilot.prepare_output(output, opts)
+  end,
+
+  get_headers = function()
+    local api_key = assert(os.getenv("OPENROUTER_API_KEY"), "OPENROUTER_API_KEY env not set")
+    return {
+      ["Content-Type"] = "application/json",
+      Authorization = "Bearer " .. api_key,
+    }
+  end,
+
+  get_models = function(headers)
+    local response, err = require("CopilotChat.utils.curl").get("https://openrouter.ai/api/v1/models", {
+      headers = headers,
+      json_response = true,
+    })
+
+    if err then
+      error(err)
+    end
+
+    return vim
+      .iter(response.body.data)
+      :map(function(model)
+        return {
+          id = model.id,
+          name = model.name,
+        }
+      end)
+      :totable()
+  end,
+
+  get_url = function()
+    return "https://openrouter.ai/api/v1/chat/completions"
+  end,
+}
+
 return {
   {
     "supermaven-inc/supermaven-nvim",
@@ -80,6 +123,7 @@ return {
   },
   {
     "sourcegraph/amp.nvim",
+    enabled = false,
     branch = "main",
     lazy = false,
     opts = { auto_start = true, log_level = "info" },
@@ -172,9 +216,10 @@ return {
         github_embeddings = {
           disabled = true,
         },
-        gemini = gemini_via_api_provider,
+        -- gemini = gemini_via_api_provider,
+        openrouter = openrouter,
       },
-      model = "models/gemini-3-flash-preview",
+      model = "nvidia/nemotron-3-nano-30b-a3b",
     },
     config = function(_, opts)
       require("CopilotChat").setup(opts)
