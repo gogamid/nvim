@@ -88,9 +88,15 @@ return {
   {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {
-      enabled = false,
+      enabled = true,
+
+      render_modes = { "n" },
+      preset = "obsidian",
       heading = {
-        sign = false,
+        icons = {},
+      },
+      anti_conceal = {
+        enabled = false,
       },
     },
     ft = { "markdown", "norg", "rmd", "org", "codecompanion", "Avante" },
