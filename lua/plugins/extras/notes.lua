@@ -89,8 +89,6 @@ return {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {
       enabled = true,
-
-      render_modes = { "n" },
       preset = "obsidian",
       heading = {
         icons = {},
