@@ -29,7 +29,7 @@ return {
               String({ zb.String, fg = stringColor }),
               SnacksPicker({ bg = "NONE" }),
               NormalFloat({ bg = "NONE" }),
-              FloatBorder({ zb.FlotBorder, bg = "NONE" }),
+              FloatBorder({ zb.FloatBorder, bg = "NONE" }),
             }
           end)
           lush.apply(lush.compile(specs))
