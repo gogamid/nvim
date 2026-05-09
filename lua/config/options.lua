@@ -29,7 +29,6 @@ vim.o.ignorecase = true -- Ignore case during search
 vim.o.smartcase = true -- Respect case if search pattern has upper case
 
 vim.opt.autoread = true -- Auto reload files changed outside vim
-vim.opt.autochdir = true
 
 vim.o.confirm = true -- ":q" and ":e" will ask for confirmation
 vim.opt.writebackup = false -- Don't create backup before writing
