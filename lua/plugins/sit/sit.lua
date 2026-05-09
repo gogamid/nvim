@@ -154,6 +154,22 @@ return {
         desc = "Make test",
       },
       {
+        "<leader>mc",
+        function()
+          require("overseer").run_task({ name = "make check" })
+          vim.notify("Running make check")
+        end,
+        desc = "Make check",
+      },
+      {
+        "<leader>mg",
+        function()
+          require("overseer").run_task({ name = "generate all models" })
+          vim.notify("Running make generate")
+        end,
+        desc = "Make generate models",
+      },
+      {
         "<leader>ms",
         function()
           require("overseer").run_task({ name = "skaffold dev" })
