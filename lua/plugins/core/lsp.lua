@@ -56,7 +56,7 @@ return {
 
     vim.api.nvim_create_autocmd("LspAttach", {
       callback = function(args)
-        vim.lsp.inlay_hint.enable(true)
+        vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
 
         local map = function(keys, func, desc, mode)
           mode = mode or "n"
