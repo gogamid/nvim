@@ -1,7 +1,6 @@
 return {
   "andrewferrier/debugprint.nvim",
   dependencies = { "folke/snacks.nvim" },
-  lazy = false,
   opts = {
     display_counter = false,
     display_location = false,
