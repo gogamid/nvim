@@ -105,7 +105,7 @@ end
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Wrap text for text filetypes",
   pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
-  callback = function()
+  callback = function(args)
     vim.opt_local.wrap = true
     vim.opt_local.linebreak = true
     vim.opt_local.relativenumber = false
@@ -113,19 +113,19 @@ vim.api.nvim_create_autocmd("FileType", {
 
     vim.keymap.set({ "v", "n" }, "sb", function()
       surround("**")
-    end, { desc = "Surround Bold" })
+    end, { buffer = args.buf, desc = "Surround Bold" })
     vim.keymap.set({ "v", "n" }, "si", function()
       surround("*")
-    end, { desc = "Surround Italic" })
+    end, { buffer = args.buf, desc = "Surround Italic" })
     vim.keymap.set({ "v", "n" }, "sB", function()
       surround("***")
-    end, { desc = "Surround Bold Italic" })
+    end, { buffer = args.buf, desc = "Surround Bold Italic" })
     vim.keymap.set({ "v", "n" }, "ss", function()
       surround("~~")
-    end, { desc = "Surround Strikethrough" })
+    end, { buffer = args.buf, desc = "Surround Strikethrough" })
     vim.keymap.set({ "v", "n" }, "sc", function()
       surround("`")
-    end, { desc = "Surround Code" })
+    end, { buffer = args.buf, desc = "Surround Code" })
   end,
 })
 
