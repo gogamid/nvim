@@ -1,4 +1,33 @@
 local jsFormatter = { "prettier", lsp_format = "never" }
+
+local function organize_go_imports(bufnr)
+  local client = vim.lsp.get_clients({ name = "gopls", bufnr = bufnr })[1]
+  if not client then
+    return
+  end
+
+  local params = vim.lsp.util.make_range_params(0, client.offset_encoding or "utf-8")
+  params.context = { only = { "source.organizeImports" }, diagnostics = {} }
+
+  local result = client:request_sync("textDocument/codeAction", params, 3000, bufnr)
+  if not result or result.err or not result.result or vim.tbl_isempty(result.result) then
+    return
+  end
+
+  for _, action in ipairs(result.result) do
+    if action.kind == "source.organizeImports" then
+      vim.notify("Organizing imports...")
+      if action.edit then
+        vim.lsp.util.apply_workspace_edit(action.edit, client.offset_encoding or "utf-8")
+      end
+      if action.command then
+        client:request_sync("workspace/executeCommand", action.command, 3000, bufnr)
+      end
+      return
+    end
+  end
+end
+
 return {
   {
     "stevearc/conform.nvim",
@@ -78,11 +107,15 @@ return {
 
       vim.api.nvim_create_autocmd("BufWritePre", {
         callback = function(event)
-          if vim.tbl_contains(always_disabled_fts, vim.bo[event.buf].filetype) then
+          local filetype = vim.bo[event.buf].filetype
+          if vim.tbl_contains(always_disabled_fts, filetype) then
             return
           end
           if autoformat_enabled(event.buf) then
-            require("conform").format({ bufnr = event.buf })
+            require("conform").format({ bufnr = event.buf, async = false, timeout_ms = 3000 })
+            -- if filetype == "go" then
+            --   organize_go_imports(event.buf)
+            -- end
           end
         end,
       })
