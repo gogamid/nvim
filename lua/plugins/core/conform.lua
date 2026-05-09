@@ -1,7 +1,7 @@
 local jsFormatter = { "prettier", lsp_format = "never" }
 
 local function organize_go_imports(bufnr)
-  local client = vim.lsp.get_clients({ name = "gopls", bufnr = bufnr })[1]
+  local client = vim.lsp.get_clients({ n ame = "gopls", bufnr = bufnr })[1]
   if not client then
     return
   end
