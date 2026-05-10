@@ -371,7 +371,8 @@ return {
       "<leader>fc",
       function()
         local config_dir = os.getenv("HOME") .. "/.config"
-        Snacks.picker.files({ cwd = config_dir })
+        local pi_config_dir = os.getenv("HOME") .. "/.pi/agent"
+        Snacks.picker.files({ dirs = { config_dir, pi_config_dir } })
       end,
       desc = "Config Files",
     },
