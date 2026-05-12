@@ -363,7 +363,8 @@ return {
       "<leader>fp",
       function()
         local lazy_plugins_dir = require("lazy.core.config").options.root
-        Snacks.picker.files({ cwd = lazy_plugins_dir })
+        local bun_packages_dir = os.getenv("HOME") .. "/.bun/install/global/node_modules"
+        Snacks.picker.files({ dirs = { lazy_plugins_dir, bun_packages_dir } })
       end,
       desc = "Plugin Files",
     },
@@ -372,7 +373,8 @@ return {
       function()
         local config_dir = os.getenv("HOME") .. "/.config"
         local pi_config_dir = os.getenv("HOME") .. "/.pi/agent"
-        Snacks.picker.files({ dirs = { config_dir, pi_config_dir } })
+        local nexus_tools_dir = os.getenv("HOME") .. "/work/nexus-tools"
+        Snacks.picker.files({ dirs = { config_dir, pi_config_dir, nexus_tools_dir } })
       end,
       desc = "Config Files",
     },
