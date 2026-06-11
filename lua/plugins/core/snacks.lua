@@ -7,6 +7,8 @@ local git_options = {
     ["diffview"] = function(picker)
       local currentCommit = picker:current().commit
       if currentCommit then
+        -- copy and open
+        vim.fn.setreg("+", currentCommit)
         local args = { currentCommit .. "^" .. "!" }
         require("diffview").open(args)
       end

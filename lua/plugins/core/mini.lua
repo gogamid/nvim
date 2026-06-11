@@ -80,6 +80,16 @@ return {
         vim.fn.setreg(vim.v.register, path)
       end
 
+      -- Yank path relative to current working directory (root)
+      local yank_relative_path = function()
+        local entry = MiniFiles.get_fs_entry()
+        if entry == nil then
+          return vim.notify("Cursor is not on valid entry")
+        end
+        local relpath = vim.fn.fnamemodify(entry.path, ":.")
+        vim.fn.setreg(vim.v.register, relpath)
+      end
+
       -- Open path with system default handler (useful for non-text files)
       local ui_open = function()
         vim.ui.open(MiniFiles.get_fs_entry().path)
@@ -110,7 +120,8 @@ return {
           vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf, desc = "Toggle hidden files" })
           vim.keymap.set("n", "go", ui_open, { buffer = buf, desc = "OS open" })
           vim.keymap.set("n", "gf", show_in_finder, { buffer = buf, desc = "Show in finder" })
-          vim.keymap.set("n", "gy", yank_path, { buffer = buf, desc = "Yank path" })
+          vim.keymap.set("n", "gp", yank_relative_path, { buffer = buf, desc = "Yank relative path" })
+          vim.keymap.set("n", "gy", yank_path, { buffer = buf, desc = "Yank absolute path" })
           vim.keymap.set("n", "gt", untar, { buffer = buf, desc = "Untar" })
         end,
       })
