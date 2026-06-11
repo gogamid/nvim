@@ -82,9 +82,11 @@ end
 vim.filetype.add({
   extension = {
     apt = "gupta",
+    apl = "gupta",
   },
   pattern = {
     [".*%.apt%.indented"] = "gupta",
+    [".*%.apl%.indented"] = "gupta",
   },
 })
 
