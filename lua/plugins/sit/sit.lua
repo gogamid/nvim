@@ -177,6 +177,28 @@ return {
         end,
         desc = "skaffold dev",
       },
+      {
+        "<leader>mr",
+        function()
+          local country_code = vim.fn.input("Country code: ")
+          if country_code == "" then
+            vim.notify("Country code required", vim.log.levels.ERROR)
+            return
+          end
+          local dir = service_dir()
+          if dir == nil then
+            return
+          end
+          local task = require("overseer").new_task({
+            cmd = { "make", "-C", dir, "run" },
+            env = { WAWI_COUNTRY = country_code, WAWI_ENV = "dev" },
+            name = string.format("%s[run]", country_code),
+          })
+          task:start()
+          vim.notify(string.format("Running make run for %s", country_code))
+        end,
+        desc = "Make run with country code",
+      },
     },
     config = function(_, opts)
       require("overseer").setup(opts)
