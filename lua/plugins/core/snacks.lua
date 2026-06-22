@@ -57,6 +57,8 @@ return {
   priority = 1000,
   lazy = false,
   opts = {
+    -- picker enabled for non-file operations (pomodoro, git, LSP, etc.)
+    -- file finding and grep handled by fff.nvim
     picker = {
       matcher = {
         sort_empty = false, -- sort results when the search string is empty
@@ -290,7 +292,8 @@ return {
     words = { enabled = true },
   },
   keys = {
-    -- files
+    -- files ──── file finding moved to fff.nvim
+    --[[
     {
       "<leader>ff",
       function()
@@ -333,6 +336,7 @@ return {
       end,
       desc = "Git files",
     },
+    --]]
     {
       "<leader>fr",
       function()
@@ -361,6 +365,7 @@ return {
       end,
       desc = "LSP Configs",
     },
+    --[[
     {
       "<leader>fp",
       function()
@@ -380,6 +385,7 @@ return {
       end,
       desc = "Config Files",
     },
+    --]]
 
     -- git
     {
@@ -440,7 +446,8 @@ return {
       mode = { "x" },
     },
 
-    -- search and grep
+    -- search and grep ──── content grep moved to fff.nvim
+    --[[
     {
       "<leader>sf",
       function()
@@ -463,6 +470,7 @@ return {
       end,
       desc = "Parent dir grep",
     },
+    --]]
     {
       "<leader>sb",
       function()
@@ -603,7 +611,6 @@ return {
       end,
       desc = "LSP Symbols",
     },
-
     -- Other
     {
       "<leader>bd",

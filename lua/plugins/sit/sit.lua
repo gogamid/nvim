@@ -49,6 +49,7 @@ local function domain_dir()
   return dir
 end
 
+--[[
 local git_options = {
   actions = {
     ["copy_pr_url"] = function(picker)
@@ -86,53 +87,61 @@ local git_options = {
     },
   },
 }
+--]]
 
 return {
   { "nvim-treesitter/nvim-treesitter" },
   {
     "folke/snacks.nvim",
-    opts = {
-      picker = {
-        sources = {
-          git_log = git_options,
-          git_log_file = git_options,
-          git_log_line = git_options,
-        },
-      },
-    },
+    -- picker sources and keys moved to fff.lua
+    config = function(_, opts)
+      require("snacks").setup(opts)
+    end,
+  },
+  {
+    "dmtrKovalenko/fff.nvim",
     keys = {
       {
         "<leader>fs",
         function()
-          Snacks.picker.files({ dirs = { service_dir() } })
+          local dir = service_dir()
+          if dir then
+            require("fff").find_files_in_dir(dir)
+          end
         end,
         desc = "Service files",
       },
       {
         "<leader>fd",
         function()
-          Snacks.picker.files({ dirs = { domain_dir() } })
+          local dir = domain_dir()
+          if dir then
+            require("fff").find_files_in_dir(dir)
+          end
         end,
         desc = "Domain files",
       },
       {
         "<leader>ss",
         function()
-          Snacks.picker.grep({ dirs = { service_dir() } })
+          local dir = service_dir()
+          if dir then
+            require("fff").live_grep({ cwd = dir })
+          end
         end,
         desc = "Service grep",
       },
       {
         "<leader>sd",
         function()
-          Snacks.picker.grep({ dirs = { domain_dir() } })
+          local dir = domain_dir()
+          if dir then
+            require("fff").live_grep({ cwd = dir })
+          end
         end,
         desc = "Domain grep",
       },
     },
-    config = function(_, opts)
-      require("snacks").setup(opts)
-    end,
   },
   {
     "stevearc/overseer.nvim",
