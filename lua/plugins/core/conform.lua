@@ -63,7 +63,7 @@ return {
         toml = { "taplo" },
         sh = { "shfmt" },
         xml = { "xmlformatter" },
-        terraform = { "terraform" },
+        terraform = { "terraform_fmt" },
         hcl = { "terragrunt" },
         sql = { "sql_formatter" },
       },
