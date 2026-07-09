@@ -112,16 +112,8 @@ local vibeproxy = {
 
   get_models = function()
     return {
-      {
-        id = "gpt-5.5",
-        name = "GPT-5.5",
-        max_output_tokens = 270000,
-        max_input_tokens = 270000,
-        streaming = true,
-        tools = true,
-        vision = true,
-        reasoning = true,
-      },
+      { id = "gpt-5.5", name = "GPT-5.5" },
+      { id = "gpt-5.4-mini", name = "GPT 5.4 mini" },
     }
   end,
 
@@ -249,10 +241,18 @@ return {
         -- openrouter = openrouter,
         vibeproxy = vibeproxy,
       },
-      model = "gpt-5.5",
+      model = "gpt-5.4-mini",
     },
     config = function(_, opts)
       require("CopilotChat").setup(opts)
+
+      -- Force redraw on each streaming append so local proxy appears progressive
+      local Chat = require("CopilotChat.ui.chat")
+      local orig_append = Chat.append
+      Chat.append = function(self, str)
+        orig_append(self, str)
+        vim.cmd("redraw")
+      end
 
       vim.api.nvim_create_autocmd("BufEnter", {
         pattern = "copilot-*",
