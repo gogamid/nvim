@@ -115,6 +115,7 @@ local vibeproxy = {
       {
         id = "gpt-5.5",
         name = "GPT-5.5",
+        max_output_tokens = 270000,
         max_input_tokens = 270000,
         streaming = true,
         tools = true,
