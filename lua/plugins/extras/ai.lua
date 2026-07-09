@@ -182,10 +182,7 @@ return {
           vim.ui.input({ prompt = "Quick Chat: " }, function(input)
             input = vim.trim(input or "")
             if input ~= "" then
-              require("CopilotChat").ask(
-                input,
-                { { selection = require("CopilotChat.select").visual or require("CopilotChat.select").line } }
-              )
+              require("CopilotChat").ask(input)
             else
               vim.notify("No input provided for Quick Chat.", vim.log.levels.WARN)
             end
@@ -205,10 +202,7 @@ return {
       {
         "<leader>ad",
         function()
-          require("CopilotChat").ask(
-            "Please assist with the following diagnostic issue in file #diagnostics:current",
-            { selection = require("CopilotChat.select").visual or require("CopilotChat.select").line }
-          )
+          require("CopilotChat").ask("Please assist with the following diagnostic issue in file #buffer:active")
         end,
         desc = "Diagnostics help",
         mode = { "n", "v" },
