@@ -95,6 +95,40 @@ local openrouter = {
   end,
 }
 
+local vibeproxy = {
+  prepare_input = function(inputs, opts)
+    return require("CopilotChat.config.providers").copilot.prepare_input(inputs, opts)
+  end,
+
+  prepare_output = function(output, opts)
+    return require("CopilotChat.config.providers").copilot.prepare_output(output, opts)
+  end,
+
+  get_headers = function()
+    return {
+      ["Content-Type"] = "application/json",
+    }
+  end,
+
+  get_models = function()
+    return {
+      {
+        id = "gpt-5.5",
+        name = "GPT-5.5",
+        max_input_tokens = 270000,
+        streaming = true,
+        tools = true,
+        vision = true,
+        reasoning = true,
+      },
+    }
+  end,
+
+  get_url = function()
+    return "http://localhost:8317/v1/chat/completions"
+  end,
+}
+
 return {
   {
     "supermaven-inc/supermaven-nvim",
@@ -217,9 +251,10 @@ return {
           disabled = true,
         },
         -- gemini = gemini_via_api_provider,
-        openrouter = openrouter,
+        -- openrouter = openrouter,
+        vibeproxy = vibeproxy,
       },
-      model = "nvidia/nemotron-3-nano-30b-a3b",
+      model = "gpt-5.5",
     },
     config = function(_, opts)
       require("CopilotChat").setup(opts)
