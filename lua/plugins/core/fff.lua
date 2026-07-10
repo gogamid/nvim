@@ -50,23 +50,6 @@ return {
       end,
       desc = "Find files (git repo)",
     },
-    {
-      "<leader>fp",
-      function()
-        local lazy_plugins_dir = require("lazy.core.config").options.root
-        require("fff").find_files_in_dir(lazy_plugins_dir)
-      end,
-      desc = "Plugin files",
-    },
-    {
-      "<leader>fc",
-      function()
-        local config_dir = os.getenv("HOME") .. "/.config"
-        require("fff").find_files_in_dir(config_dir)
-      end,
-      desc = "Config files",
-    },
-
     -- Grep (migrated from snacks picker)
     {
       "<leader>sf",
@@ -94,6 +77,5 @@ return {
       end,
       desc = "Parent dir grep",
     },
-
   },
 }

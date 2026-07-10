@@ -365,7 +365,6 @@ return {
       end,
       desc = "LSP Configs",
     },
-    --[[
     {
       "<leader>fp",
       function()
@@ -378,15 +377,48 @@ return {
     {
       "<leader>fc",
       function()
-        local config_dir = os.getenv("HOME") .. "/.config"
-        local pi_config_dir = os.getenv("HOME") .. "/.pi/agent"
-        local nexus_tools_dir = os.getenv("HOME") .. "/work/nexus-tools"
-        Snacks.picker.files({ dirs = { config_dir, pi_config_dir, nexus_tools_dir } })
+        local home = os.getenv("HOME")
+        local chezmoi_dir = home .. "/.local/share/chezmoi"
+
+        Snacks.picker.files({
+          dirs = {
+            home .. "/.config",
+            home .. "/.pi/agent",
+            home .. "/work/nexus-tools",
+            chezmoi_dir,
+          },
+          confirm = function(picker, item)
+            item = item or picker:current()
+            if not item then
+              return
+            end
+
+            local path = Snacks.picker.util.path(item)
+
+            if path and path:sub(1, #chezmoi_dir) == chezmoi_dir then
+              local target = require("chezmoi.commands").target_path({
+                targets = { path },
+              })[1]
+
+              if not target then
+                vim.notify("No chezmoi target for " .. path, vim.log.levels.ERROR)
+                return
+              end
+
+              picker:close()
+              require("chezmoi.commands").edit({
+                targets = { target },
+                args = { "--watch" },
+              })
+              return
+            end
+
+            picker:action("jump")
+          end,
+        })
       end,
       desc = "Config Files",
     },
-    --]]
-
     -- git
     {
       "<leader>gg",
