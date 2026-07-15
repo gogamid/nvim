@@ -149,10 +149,21 @@ return {
       {
         "<leader>ml",
         function()
-          require("overseer").run_task({ name = "make lint" })
-          vim.notify("Running make lint")
+          local dir = service_dir()
+          if dir == nil then
+            return
+          end
+          local service = vim.fs.basename(service_dir())
+          local name = string.format("lint[%s]", service)
+          local task = require("overseer").new_task({
+            cmd = { "sh", "-lc", "make fix && make lint" },
+            name = name,
+            cwd = dir,
+          })
+          task:start()
+          vim.notify(string.format("Running make fix and lint for %s", service))
         end,
-        desc = "Make lint",
+        desc = "Make fix and lint",
       },
       {
         "<leader>mt",

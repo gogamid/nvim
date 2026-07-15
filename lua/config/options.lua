@@ -73,10 +73,11 @@ vim.g.icons_enabled = true
 
 if vim.g.neovide then
   vim.g.transparency = 0.8
-  vim.g.neovide_opacity = 0.2
-  vim.g.neovide_normal_opacity = 0.6
+  vim.g.neovide_opacity = 0.85
+  vim.g.neovide_normal_opacity = 0.92
   vim.g.neovide_show_border = false
   vim.g.neovide_background_color = "#2A3035"
+  vim.g.neovide_window_blurred = true
 end
 
 vim.filetype.add({

@@ -387,6 +387,12 @@ return {
             home .. "/work/nexus-tools",
             chezmoi_dir,
           },
+          exclude = {
+            "raycast/extensions",
+            "raycast/public-extensions-fork",
+            "raycast-x/extensions",
+            "node_modules",
+          },
           confirm = function(picker, item)
             item = item or picker:current()
             if not item then

@@ -1,0 +1,1 @@
+- When configuring a plugin, if not sure, check the source of the plugin in ~/.local/share/nvim/
