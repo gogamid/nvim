@@ -49,7 +49,6 @@ local function domain_dir()
   return dir
 end
 
---[[
 local git_options = {
   actions = {
     ["copy_pr_url"] = function(picker)
@@ -87,13 +86,20 @@ local git_options = {
     },
   },
 }
---]]
 
 return {
   { "nvim-treesitter/nvim-treesitter" },
   {
     "folke/snacks.nvim",
-    -- picker sources and keys moved to fff.lua
+    opts = {
+      picker = {
+        sources = {
+          git_log = git_options,
+          git_log_file = git_options,
+          git_log_line = git_options,
+        },
+      },
+    },
     config = function(_, opts)
       require("snacks").setup(opts)
     end,
