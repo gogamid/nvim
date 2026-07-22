@@ -8,8 +8,9 @@ end
 
 return {
   "dmtrKovalenko/fff.nvim",
+  version = "v0.10.1",
   build = function()
-    require("fff.download").download_or_build_binary()
+    require("fff.download").download_binary()
   end,
   opts = {
     wrap_around = true,
