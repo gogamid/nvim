@@ -93,6 +93,10 @@ vim.keymap.set("n", "<leader>uI", function()
   vim.cmd("EditQuery")
 end, { desc = "Inspect and Edit Query" })
 
+vim.keymap.set("x", "<leader>.", function()
+  require("modules.quicknote").collect()
+end, { desc = "QuickNote: save selection as note" })
+
 -- create user command
 -- vim.keymap.set("n", "<leader>p", require("modules.pomodoro").menu, { desc = "Pomodoro Menu" })
 
