@@ -274,6 +274,30 @@ return {
       })
 
       overseer.register_template({
+        name = "gateway skaffold dev",
+        condition = {
+          dir = vim.fn.expand("$NEXUS_REPO"),
+        },
+        builder = function()
+          local domain = domain_dir()
+          if domain == nil then
+            return {}
+          end
+
+          return {
+            name = "api-rest-gateway[dev]",
+            cmd = {
+              "make",
+              "-C",
+              domain .. "/services/api-rest-gateway",
+              "skaffold-dev-remotedev",
+              "ALIAS=" .. (vim.env.USER or "user"),
+            },
+          }
+        end,
+      })
+
+      overseer.register_template({
         name = "generate all models",
         condition = {
           dir = vim.fn.expand("$NEXUS_REPO"),
