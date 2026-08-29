@@ -66,6 +66,7 @@ return {
         terraform = { "terraform_fmt" },
         hcl = { "terragrunt" },
         sql = { "sql_formatter" },
+        rust = { "rustfmt" },
       },
     },
     keys = {
