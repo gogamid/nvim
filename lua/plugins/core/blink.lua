@@ -7,7 +7,9 @@ return {
       "rafamadriz/friendly-snippets",
     },
     lazy = false,
-    -- version = "1.*",
+    build = function()
+      require("blink.cmp").build():pwait()
+    end,
     opts = {
       fuzzy = { implementation = "prefer_rust" },
       snippets = { preset = "luasnip" },

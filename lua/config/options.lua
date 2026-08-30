@@ -101,3 +101,21 @@ vim.filetype.add({
 })
 
 vim.treesitter.language.register("yaml", "buf-config")
+
+vim.filetype.add({
+  filename = {
+    ["docker-compose.yml"] = "yaml.docker-compose",
+    ["docker-compose.yaml"] = "yaml.docker-compose",
+    ["compose.yml"] = "yaml.docker-compose",
+    ["compose.yaml"] = "yaml.docker-compose",
+    [".gitlab-ci.yml"] = "yaml.gitlab",
+    [".gitlab-ci.yaml"] = "yaml.gitlab",
+  },
+  pattern = {
+    ["[^/]*%.helm%.ya?ml"] = "yaml.helm-values",
+  },
+})
+
+vim.treesitter.language.register("yaml", "yaml.docker-compose")
+vim.treesitter.language.register("yaml", "yaml.gitlab")
+vim.treesitter.language.register("yaml", "yaml.helm-values")
