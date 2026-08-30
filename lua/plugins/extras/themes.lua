@@ -25,27 +25,8 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
-      vim.g.zenbones = { italic_strings = true, transparent_background = true, darkness = "warm", lightness = "dim" }
-
-      vim.api.nvim_create_autocmd("ColorScheme", {
-        pattern = "zenbones",
-        callback = function()
-          local lush = require("lush")
-          local zb = require("zenbones")
-          local stringColor = vim.o.background == "light" and "#4F6C30" or "#819B69"
-          local specs = lush.parse(function()
-            return {
-              String({ zb.String, fg = stringColor }),
-              SnacksPicker({ bg = "NONE" }),
-              NormalFloat({ bg = "NONE" }),
-              FloatBorder({ zb.FloatBorder, bg = "NONE" }),
-              DebugPrintLine({ zb.DiagnosticHint, bg = "NONE" }),
-            }
-          end)
-          lush.apply(lush.compile(specs))
-        end,
-      })
-      vim.cmd.colorscheme("zenbones")
+      vim.g.flexoki = { italic_strings = true, transparent_background = true, darkness = "warm", lightness = "dim" }
+      vim.cmd.colorscheme("flexoki")
     end,
   },
 }
