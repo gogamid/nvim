@@ -31,7 +31,6 @@ end
 return {
   {
     "stevearc/overseer.nvim",
-    commit = "afbac6c612b12772591640d801fad65423af02b9", --slow performance
     opts = {
       dap = false,
       task_list = {

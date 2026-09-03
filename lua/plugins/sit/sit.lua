@@ -236,19 +236,26 @@ return {
           dir = vim.fn.expand("$NEXUS_REPO"),
         },
         builder = function()
-          local service = vim.fs.basename(service_dir())
-          if service == nil then
+          local service_path = service_dir()
+          if service_path == nil then
             return {}
           end
+          local service = vim.fs.basename(service_path)
 
           return {
             name = service .. "[dev]",
             cmd = {
               "make",
               "-C",
-              service_dir(),
+              service_path,
               "skaffold-dev-remotedev",
               "ALIAS=" .. (os.getenv("USER") or "user"),
+            },
+            components = {
+              -- Send Enter to the running task when a file in this service is saved,
+              -- so skaffold does a quick replace/rebuild instead of restarting.
+              { "send_enter_on_save", paths = { service_path } },
+              "default",
             },
           }
         end,
