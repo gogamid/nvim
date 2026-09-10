@@ -23,6 +23,7 @@ return {
     },
     layout = {
       prompt_position = "top",
+      preview_position = "top",
     },
     grep = {
       modes = { "plain", "regex", "fuzzy" },
@@ -31,7 +32,13 @@ return {
   },
   lazy = false,
   keys = {
-    -- Files (1:1 with snacks picker)
+    {
+      "<leader>fa",
+      function()
+        require("fff").find_files_in_dir(vim.fn.expand("~"))
+      end,
+      desc = "Find all in home",
+    },
     {
       "<leader>ff",
       function()
