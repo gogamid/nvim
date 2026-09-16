@@ -6,8 +6,11 @@ local function golang_adapter()
   local opts = {
     runner = "gotestsum",
     go_test_args = { "-v", "-count=1", "-tags=manual_test" },
-    gotestsum_args = { "--format=testname" }, -- NOTE: can also be a function
-    -- gotestsum_args = { "--format=testdox" }, -- NOTE: can also be a function
+    -- standard-verbose streams the full `go test -v` output, including t.Logf and stdout of passing tests.
+    -- Per session override for the compact output: `:let g:gotestsum_format = "testname"`.
+    gotestsum_args = function()
+      return { "--format=" .. (vim.g.gotestsum_format or "standard-verbose") }
+    end,
     warn_test_name_dupes = false,
   }
   local adapter = require("neotest-golang")(opts)
@@ -67,9 +70,14 @@ return {
           "unique",
           { "on_output_quickfix", close = true },
         },
+        -- Own list instead of extending "default", because open_output may only be declared once per task.
         default_neotest = {
-          "default",
+          "on_exit_set_status",
           { "on_complete_notify", system = "unfocused", on_change = true },
+          { "on_complete_dispose", require_view = { "SUCCESS", "FAILURE" } },
+          { "open_output", direction = "dock", on_start = "always", focus = false },
+          "unique",
+          { "on_output_quickfix", close = true },
         },
       },
     },
