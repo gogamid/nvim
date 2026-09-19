@@ -104,7 +104,7 @@ return {
         return gaf == nil or gaf
       end
 
-      local always_disabled_fts = { "sql" }
+      local always_disabled_fts = { "sql", "bigfile" }
 
       vim.api.nvim_create_autocmd("BufWritePre", {
         callback = function(event)

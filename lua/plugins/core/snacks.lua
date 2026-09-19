@@ -160,7 +160,10 @@ return {
       },
     },
     terminal = { enabled = false },
-    bigfile = { enabled = false },
+    bigfile = {
+      enabled = true,
+      size = 10 * 1024 * 1024, -- 10MB
+    },
     notifier = {
       enabled = true,
       timeout = 3000,
@@ -483,8 +486,8 @@ return {
         Snacks.toggle.dim():map("<leader>uD")
         Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
         Snacks.toggle.words():map("<leader>uW")
-        Snacks.toggle.zoom():map("<leader>uz")
-        Snacks.toggle.zen():map("<leader>uZ")
+        Snacks.toggle.zoom():map("<leader>uZ")
+        Snacks.toggle.zen():map("<leader>uz")
       end,
     })
 
