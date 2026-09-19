@@ -1,7 +1,3 @@
-local function parent_dir()
-  return vim.fs.dirname(vim.api.nvim_buf_get_name(0))
-end
-
 local git_options = {
   actions = {
     ["diffview"] = function(picker)
@@ -58,9 +54,6 @@ return {
         git_log = git_options,
         git_log_file = git_options,
         git_log_line = git_options,
-        -- select = {
-        --   frecency = true,
-        -- },
       },
       win = {
         input = {
@@ -263,13 +256,6 @@ return {
       desc = "Undo History",
     },
     {
-      "<leader>fL",
-      function()
-        Snacks.picker.lsp_config()
-      end,
-      desc = "LSP Configs",
-    },
-    {
       "<leader>fp",
       function()
         local lazy_plugins_dir = require("lazy.core.config").options.root
@@ -388,11 +374,11 @@ return {
       mode = { "x" },
     },
     {
-      "<leader>sA",
+      "<leader>sa",
       function()
-        Snacks.picker.autocmds()
+        Snacks.picker.pickers()
       end,
-      desc = "Autocommands",
+      desc = "Snacks All Pickers",
     },
     {
       "<leader>sc",
@@ -409,53 +395,11 @@ return {
       desc = "search command history",
     },
     {
-      "<leader>sT",
-      function()
-        Snacks.picker.colorschemes()
-      end,
-      desc = "Themes",
-    },
-    {
-      "<leader>se",
-      function()
-        Snacks.picker.diagnostics_buffer()
-      end,
-      desc = "search buffer diagnostics",
-    },
-    {
-      "<leader>sE",
-      function()
-        Snacks.picker.diagnostics()
-      end,
-      desc = "search all diagnostics",
-    },
-    {
-      "<leader>sw",
-      function()
-        Snacks.picker.grep_word()
-      end,
-      desc = "Word grep",
-    },
-    {
       "<leader>sh",
       function()
         Snacks.picker.help()
       end,
       desc = "search [h]elp pages",
-    },
-    {
-      "<leader>sH",
-      function()
-        Snacks.picker.highlights()
-      end,
-      desc = "search [H]ighlights",
-    },
-    {
-      "<leader>sI",
-      function()
-        Snacks.picker.icons()
-      end,
-      desc = "search [i]cons",
     },
     {
       "<leader>sk",
@@ -465,75 +409,25 @@ return {
       desc = "search neovim [k]eymaps",
     },
     {
-      "<leader>sM",
-      function()
-        Snacks.picker.man()
-      end,
-      desc = "Man Pages",
-    },
-    {
       "<leader>sm",
       function()
-        Snacks.picker.marks()
+        Snacks.picker.man()
       end,
       desc = "Marks",
     },
     {
-      "<leader>sN",
+      "<leader>sn",
       function()
         Snacks.picker.notifications()
       end,
       desc = "search notifications",
     },
     {
-      "<leader>sq",
-      function()
-        Snacks.picker.qflist()
-      end,
-      desc = "Quickfix List",
-    },
-    {
-      "<leader>s/",
-      function()
-        Snacks.picker.search_history()
-      end,
-      desc = "Search History",
-    },
-    {
-      "<leader>sL",
-      function()
-        Snacks.picker.lazy()
-      end,
-      desc = "Lazy Plugin Spec",
-    },
-    {
-      "<leader>sls",
-      function()
-        Snacks.picker.lsp_workspace_symbols()
-      end,
-      desc = "LSP Workspace Symbols",
-    },
-    {
-      "<leader>slS",
-      function()
-        Snacks.picker.lsp_workspace_symbols()
-      end,
-      desc = "LSP Symbols",
-    },
-    -- Other
-    {
       "<leader>bd",
       function()
         Snacks.bufdelete()
       end,
       desc = "Delete Buffer",
-    },
-    {
-      "<leader>cR",
-      function()
-        Snacks.rename.rename_file()
-      end,
-      desc = "Rename File",
     },
     {
       "<leader>un",
@@ -593,5 +487,13 @@ return {
         Snacks.toggle.zen():map("<leader>uZ")
       end,
     })
+
+    vim.api.nvim_create_user_command("LspConfigs", function()
+      Snacks.picker.lsp_config()
+    end, { desc = "Snacks LSP Configs" })
+
+    vim.api.nvim_create_user_command("Autocommands", function()
+      Snacks.picker.autocmds()
+    end, { desc = "Snacks Autocommands" })
   end,
 }
