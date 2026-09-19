@@ -23,30 +23,11 @@ local git_options = {
       prev = prev:match("[a-f0-9]+")
       vim.cmd(string.format("CodeDiff %s %s", prev, curr))
     end,
-    ["revert_commit"] = function(picker)
-      local commit = picker:current().commit
-      if not commit or commit == "" then
-        vim.notify("No commit selected", vim.log.levels.ERROR)
-        return
-      end
-
-      Snacks.picker.select({ "Yes", "No" }, { prompt = "Revert commit?" }, function(item)
-        if item == "Yes" then
-          local cmd = string.format("git revert %s", commit)
-          vim.fn.system(cmd)
-          vim.notify("Reverted commit", vim.log.levels.INFO)
-        else
-          vim.notify("Cancelled", vim.log.levels.INFO)
-        end
-        picker:close()
-      end)
-    end,
   },
   win = {
     input = {
       keys = {
-        ["<CR>"] = { "diffview", desc = "Diffview this commit", mode = { "n", "i" } },
-        ["<C-o>r"] = { "revert_commit", desc = "Revert commit", mode = { "n", "i" } },
+        ["<CR>"] = { "codediff", desc = "Codediff this commit", mode = { "n", "i" } },
       },
     },
   },
