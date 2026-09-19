@@ -168,29 +168,7 @@ return {
           },
         },
       },
-      layout = { preset = "custom" },
-      layouts = {
-        custom = {
-          layout = {
-            backdrop = false,
-            row = 1,
-            width = 0.8,
-            min_width = 80,
-            height = 0.95,
-            border = "none",
-            box = "vertical",
-            { win = "preview", height = 0.6, border = "rounded" },
-            {
-              box = "vertical",
-              border = "rounded",
-              title = "{source} {live} {flags}",
-              title_pos = "center",
-              { win = "input", height = 1, border = "bottom" },
-              { win = "list", border = "none" },
-            },
-          },
-        },
-      },
+      layout = { preset = "ivy" },
       formatters = {
         file = {
           filename_first = true,
@@ -510,13 +488,6 @@ return {
     },
     --]]
     {
-      "<leader>sb",
-      function()
-        Snacks.picker.grep_buffers()
-      end,
-      desc = "Buffers grep",
-    },
-    {
       "<leader>sA",
       function()
         Snacks.picker.autocmds()
@@ -524,7 +495,7 @@ return {
       desc = "Autocommands",
     },
     {
-      "<leader>sC",
+      "<leader>sc",
       function()
         Snacks.picker.commands()
       end,
