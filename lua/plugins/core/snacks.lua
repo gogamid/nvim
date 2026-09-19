@@ -241,51 +241,6 @@ return {
     words = { enabled = true },
   },
   keys = {
-    -- files ──── file finding moved to fff.nvim
-    --[[
-    {
-      "<leader>ff",
-      function()
-        local buf_dir = vim.fs.dirname(vim.api.nvim_buf_get_name(0))
-        local original_cwd
-        Snacks.picker.files({
-          actions = {
-            toggle_buf_dir = function(picker)
-              if not original_cwd then
-                original_cwd = picker:cwd()
-              end
-              if picker:cwd() == buf_dir then
-                picker:set_cwd(original_cwd)
-              else
-                picker:set_cwd(buf_dir)
-              end
-              picker:find()
-            end,
-          },
-          win = {
-            input = {
-              keys = {
-                ["<C-o>b"] = { "toggle_buf_dir", mode = { "i", "n" }, desc = "Toggle Buffer directory" },
-              },
-            },
-          },
-        })
-      end,
-      desc = "Files cwd or buf_dir",
-    },
-    {
-      "<leader>fg",
-      function()
-        -- Snacks.picker.git_files({ untracked = true })
-        Snacks.picker.files({
-          dirs = { vim.fs.root(0, { ".git" }) },
-          hidden = true,
-          ignored = true,
-        })
-      end,
-      desc = "Git files",
-    },
-    --]]
     {
       "<leader>fr",
       function()
@@ -432,32 +387,6 @@ return {
       desc = "Gitbrowse yank",
       mode = { "x" },
     },
-
-    -- search and grep ──── content grep moved to fff.nvim
-    --[[
-    {
-      "<leader>sf",
-      function()
-        Snacks.picker.grep({ cwd = vim.fn.getcwd() })
-      end,
-      desc = "Grep cwd",
-    },
-    {
-      "<leader>sg",
-      function()
-        -- Snacks.picker.git_grep()
-        Snacks.picker.grep({ cwd = vim.fs.root(0, { ".git" }) })
-      end,
-      desc = "Git grep",
-    },
-    {
-      "<leader>sp",
-      function()
-        Snacks.picker.grep({ cwd = parent_dir() })
-      end,
-      desc = "Parent dir grep",
-    },
-    --]]
     {
       "<leader>sA",
       function()
