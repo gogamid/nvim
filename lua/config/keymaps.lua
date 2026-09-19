@@ -9,6 +9,7 @@ vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Sav
 vim.keymap.set("n", "<leader>qq", "<cmd>wqall<cr>", { desc = "Save All and Quit All" })
 vim.keymap.set("n", "<leader>qr", function()
   local session = vim.fn.stdpath("state") .. "/restart_session.vim"
+  require("modules.overseer_restore").prepare_restart()
   vim.cmd("mksession! " .. vim.fn.fnameescape(session))
   vim.cmd("restart source " .. vim.fn.fnameescape(session))
 end, { desc = "Restart Neovim" })

@@ -1,5 +1,7 @@
 -- Buf autocommands in order BufReadPost, BufEnter, BufWritePre
 
+require("modules.overseer_restore").setup()
+
 vim.api.nvim_create_autocmd({ "BufReadPost", "BufEnter" }, {
   desc = "Change current directory to buffer's root",
   callback = function(args)
