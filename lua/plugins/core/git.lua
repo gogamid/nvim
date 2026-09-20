@@ -2,23 +2,7 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPre", "BufNewFile" },
-    opts = {
-      signs = {
-        add = { text = "▎" },
-        change = { text = "▎" },
-        delete = { text = "" },
-        topdelete = { text = "" },
-        changedelete = { text = "▎" },
-        untracked = { text = "▎" },
-      },
-      signs_staged = {
-        add = { text = "▎" },
-        change = { text = "▎" },
-        delete = { text = "" },
-        topdelete = { text = "" },
-        changedelete = { text = "▎" },
-      },
-    },
+    opts = {},
     keys = {
       -- Navigation
       {
@@ -103,28 +87,7 @@ return {
     },
   },
   {
-    "sindrets/diffview.nvim",
-    keys = {
-      {
-        "<leader>gdw",
-        ":DiffviewOpen<CR>",
-        desc = "Diff working tree vs staged/index",
-      },
-      {
-        "<leader>gds",
-        ":DiffviewOpen HEAD<CR>",
-        desc = "Diff staged changes (index) against the last commit (HEAD)",
-      },
-      {
-        "<leader>gdo",
-        ":DiffviewOpen origin/main..HEAD<CR>",
-        desc = "Diff origin/main",
-      },
-    },
-  },
-  {
     "esmuellert/codediff.nvim",
-    dependencies = { "MunifTanjim/nui.nvim" },
     cmd = "CodeDiff",
   },
 }
