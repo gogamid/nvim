@@ -1,14 +1,5 @@
 local git_options = {
   actions = {
-    ["diffview"] = function(picker)
-      local currentCommit = picker:current().commit
-      if currentCommit then
-        -- copy and open
-        vim.fn.setreg("+", currentCommit)
-        local args = { currentCommit .. "^" .. "!" }
-        require("diffview").open(args)
-      end
-    end,
     ["codediff"] = function(picker)
       local curr = picker:current().commit
       if not curr then
