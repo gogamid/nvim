@@ -20,8 +20,6 @@ return {
         },
       })
 
-      require("mini.surround").setup()
-
       require("mini.icons").setup({
         style = vim.g.icons_enabled and "glyph" or "ascii",
       })
@@ -42,9 +40,7 @@ return {
           reset = "<BS>",
           reveal_cwd = "@",
           show_help = "g?",
-          synchronize = "=",
-          trim_left = "<",
-          trim_right = ">",
+          synchronize = "ss",
         },
         windows = {
           max_number = 2,
@@ -66,7 +62,7 @@ return {
         return true
       end
 
-      local toggle_dotfiles = function()
+      local toggle_hidden = function()
         show_dotfiles = not show_dotfiles
         local new_filter = show_dotfiles and filter_show or filter_hide
         require("mini.files").refresh({ content = { filter = new_filter } })
@@ -91,22 +87,8 @@ return {
       end
 
       -- Open path with system default handler (useful for non-text files)
-      local ui_open = function()
+      local os_open = function()
         vim.ui.open(MiniFiles.get_fs_entry().path)
-      end
-
-      local untar = function()
-        local entry = MiniFiles.get_fs_entry()
-        if entry == nil then
-          return
-        end
-        local path = entry.path
-        if vim.fn.executable("tar") == 1 then
-          local path_dir = vim.fn.fnamemodify(path, ":h")
-          vim.fn.system({ "tar", "-xf", path, "-C", path_dir })
-          vim.notify("Untarred " .. path)
-          require("mini.files").refresh()
-        end
       end
 
       local show_in_finder = function()
@@ -117,12 +99,11 @@ return {
         pattern = "MiniFilesBufferCreate",
         callback = function(args)
           local buf = args.data.buf_id
-          vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf, desc = "Toggle hidden files" })
-          vim.keymap.set("n", "go", ui_open, { buffer = buf, desc = "OS open" })
+          vim.keymap.set("n", "g.", toggle_hidden, { buffer = buf, desc = "Toggle hidden files" })
+          vim.keymap.set("n", "go", os_open, { buffer = buf, desc = "OS open" })
           vim.keymap.set("n", "gf", show_in_finder, { buffer = buf, desc = "Show in finder" })
           vim.keymap.set("n", "gp", yank_relative_path, { buffer = buf, desc = "Yank relative path" })
           vim.keymap.set("n", "gy", yank_path, { buffer = buf, desc = "Yank absolute path" })
-          vim.keymap.set("n", "gt", untar, { buffer = buf, desc = "Untar" })
         end,
       })
     end,
