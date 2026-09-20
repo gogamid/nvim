@@ -8,11 +8,11 @@ end
 
 return {
   "dmtrKovalenko/fff.nvim",
-  version = "v0.10.1",
   build = function()
     require("fff.download").download_binary()
   end,
   opts = {
+    prompt_vim_mode = true,
     wrap_around = true,
     debug = {
       enabled = false,
@@ -22,8 +22,14 @@ return {
       status_text_color = true,
     },
     layout = {
+      -- ivy
+      width = 1.0,
+      height = 0.42,
+      anchor = "bottom",
       prompt_position = "top",
-      preview_position = "top",
+      preview_position = "right",
+      preview_size = 0.6,
+      min_list_height = 10,
     },
     grep = {
       modes = { "plain", "regex", "fuzzy" },

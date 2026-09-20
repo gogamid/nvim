@@ -94,7 +94,7 @@ return {
     },
     opts = {
       disable_inline_completion = false,
-      ignore_filetypes = { "copilot-chat", "opencode_ask", "snacks_picker_input", "bigfile" },
+      ignore_filetypes = { "copilot-chat", "opencode_ask", "snacks_picker_input", "bigfile", "fff_input" },
       keymaps = {
         accept_suggestion = "<C-y>",
         clear_suggestion = "<C-x>",
