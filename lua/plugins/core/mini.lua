@@ -95,6 +95,63 @@ return {
         vim.fn.system({ "open", "-R", MiniFiles.get_fs_entry().path })
       end
 
+      -- Sort toggles: first press sorts ascending, pressing the same key flips it
+      local sort_fields = {
+        sn = { field = "lower_name", label = "name" },
+        sm = { field = "mtime", label = "modified" },
+        sz = { field = "size", label = "size" },
+        sk = { field = "kind", label = "kind" },
+      }
+      local sort_field, sort_desc = "lower_name", false
+
+      local sort_by_field = function(fs_entries)
+        local uv = vim.uv or vim.loop
+        local entries = {}
+        for _, entry in ipairs(fs_entries) do
+          local stat = uv.fs_stat(entry.path)
+          entries[#entries + 1] = {
+            name = entry.name,
+            path = entry.path,
+            fs_type = entry.fs_type,
+            is_dir = entry.fs_type == "directory",
+            lower_name = entry.name:lower(),
+            mtime = stat and (stat.mtime.sec + stat.mtime.nsec * 1e-9) or 0,
+            size = stat and stat.size or 0,
+            kind = vim.fn.fnamemodify(entry.name, ":e"):lower(),
+          }
+        end
+
+        table.sort(entries, function(a, b)
+          -- drop this branch to sort files and directories together
+          if a.is_dir ~= b.is_dir then
+            return a.is_dir
+          end
+          local va, vb = a[sort_field], b[sort_field]
+          if va ~= vb then
+            if sort_desc then
+              return va > vb
+            end
+            return va < vb
+          end
+          return a.lower_name < b.lower_name
+        end)
+
+        return vim.tbl_map(function(entry)
+          return { name = entry.name, fs_type = entry.fs_type, path = entry.path }
+        end, entries)
+      end
+
+      local toggle_sort = function(key)
+        local cfg = sort_fields[key]
+        if sort_field ~= cfg.field then
+          sort_field, sort_desc = cfg.field, false
+        else
+          sort_desc = not sort_desc
+        end
+        require("mini.files").refresh({ content = { sort = sort_by_field } })
+        vim.notify("mini.files: sort by " .. cfg.label .. ", " .. (sort_desc and "descending" or "ascending"))
+      end
+
       vim.api.nvim_create_autocmd("User", {
         pattern = "MiniFilesBufferCreate",
         callback = function(args)
@@ -104,6 +161,14 @@ return {
           vim.keymap.set("n", "gf", show_in_finder, { buffer = buf, desc = "Show in finder" })
           vim.keymap.set("n", "gp", yank_relative_path, { buffer = buf, desc = "Yank relative path" })
           vim.keymap.set("n", "gy", yank_path, { buffer = buf, desc = "Yank absolute path" })
+          for key, cfg in pairs(sort_fields) do
+            vim.keymap.set("n", key, function()
+              toggle_sort(key)
+            end, {
+              buffer = buf,
+              desc = "Sort by " .. cfg.label .. " (toggle asc/desc)",
+            })
+          end
         end,
       })
     end,
