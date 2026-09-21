@@ -40,7 +40,7 @@ return {
           reset = "<BS>",
           reveal_cwd = "@",
           show_help = "g?",
-          synchronize = "ss",
+          synchronize = "w",
         },
         windows = {
           max_number = 2,
