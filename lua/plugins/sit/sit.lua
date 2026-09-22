@@ -102,6 +102,9 @@ return {
     },
     config = function(_, opts)
       require("snacks").setup(opts)
+      local task_env = require("modules.task_env")
+      task_env.setup()
+      vim.keymap.set("n", "<leader>ue", task_env.picker, { desc = "Env variables" })
     end,
   },
   {
