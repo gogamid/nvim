@@ -1,4 +1,10 @@
 {
+  "update snaphshot": {
+    "prefix": "updateSnapshot",
+    "scope": "go",
+    "description": "Updates the snapshot file for testing",
+    "body": ["t.Setenv(\"UPDATE_SNAPSHOTS\", \"true\")"]
+  },
   "Status Error with Code": {
     "prefix": "grpcerr",
     "scope": "go",
