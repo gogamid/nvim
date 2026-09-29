@@ -82,7 +82,7 @@ local vibeproxy = {
 return {
   {
     "supermaven-inc/supermaven-nvim",
-    enabled = true,
+    enabled = false,
     keys = {
       {
         "<leader>uC",

@@ -12,14 +12,16 @@ vim.api.nvim_create_autocmd("User", {
   callback = function()
     require("nvim-treesitter.parsers").go = {
       install_info = {
-        path = "~/personal/tree-sitter-go",
+        path = "~/work/tree-sitter-go",
+        generate = true,
+        queries = "queries",
       },
     }
     require("nvim-treesitter.parsers").gupta = {
       filetype = "gupta",
       install_info = {
-        path = "~/personal/tree-sitter-gupta",
-        generate = false,
+        path = "~/work/tree-sitter-gupta",
+        generate = true,
         queries = "queries",
       },
     }
