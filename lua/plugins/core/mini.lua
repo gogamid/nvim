@@ -152,10 +152,147 @@ return {
         vim.notify("mini.files: sort by " .. cfg.label .. ", " .. (sort_desc and "descending" or "ascending"))
       end
 
+      local uv = vim.uv or vim.loop
+
+      -- Collect all non-hidden files asynchronously
+      local function collect_files_async(src_path, on_done)
+        local files = {}
+
+        local function scan(path, cb)
+          uv.fs_stat(path, function(err, stat)
+            if err or not stat then
+              cb()
+              return
+            end
+
+            local basename = vim.fs.basename(path)
+
+            -- Ignore hidden files and directories (except if the user explicitly selected a hidden root)
+            if path ~= src_path and basename:sub(1, 1) == "." then
+              cb()
+              return
+            end
+
+            if stat.type == "file" then
+              table.insert(files, path)
+              cb()
+            elseif stat.type == "directory" then
+              uv.fs_scandir(path, function(scandir_err, handle)
+                if scandir_err or not handle then
+                  cb()
+                  return
+                end
+
+                local entries = {}
+                while true do
+                  local name, type = uv.fs_scandir_next(handle)
+                  if not name then
+                    break
+                  end
+                  -- Skip hidden entries
+                  if name:sub(1, 1) ~= "." then
+                    table.insert(entries, { name = name, type = type })
+                  end
+                end
+
+                if #entries == 0 then
+                  cb()
+                  return
+                end
+
+                local pending = #entries
+                local function child_done()
+                  pending = pending - 1
+                  if pending == 0 then
+                    cb()
+                  end
+                end
+
+                for _, entry in ipairs(entries) do
+                  scan(path .. "/" .. entry.name, child_done)
+                end
+              end)
+            else
+              cb()
+            end
+          end)
+        end
+
+        scan(src_path, function()
+          on_done(files)
+        end)
+      end
+
+      -- Export files flat into dest_dir with unique names
+      local function export_flat_txt_async(src_path, dest_dir, on_done)
+        uv.fs_mkdir(dest_dir, 493, function() -- 493 = 0755 permissions
+          collect_files_async(src_path, function(files)
+            if #files == 0 then
+              if on_done then
+                on_done(0)
+              end
+              return
+            end
+
+            local used_names = {}
+            local pending = #files
+            local copied_count = #files
+
+            local function file_done()
+              pending = pending - 1
+              if pending == 0 and on_done then
+                on_done(copied_count)
+              end
+            end
+
+            for _, file_path in ipairs(files) do
+              local basename = vim.fs.basename(file_path)
+              local base_out = basename:match("%.txt$") and basename or (basename .. ".txt")
+
+              -- Handle filename collisions by adding a numerical suffix
+              local final_name = base_out
+              if used_names[final_name] then
+                local stem, ext = base_out:match("^(.*)(%.txt)$")
+                stem = stem or base_out
+                ext = ext or ".txt"
+                local count = 1
+                repeat
+                  final_name = string.format("%s_%d%s", stem, count, ext)
+                  count = count + 1
+                until not used_names[final_name]
+              end
+              used_names[final_name] = true
+
+              local dest_file = dest_dir .. "/" .. final_name
+              uv.fs_copyfile(file_path, dest_file, function()
+                file_done()
+              end)
+            end
+          end)
+        end)
+      end
+
       vim.api.nvim_create_autocmd("User", {
         pattern = "MiniFilesBufferCreate",
         callback = function(args)
           local buf = args.data.buf_id
+          vim.keymap.set("n", "ge", function()
+            local entry = MiniFiles.get_fs_entry()
+            if not entry then
+              vim.notify("No entry selected in mini.files", vim.log.levels.WARN)
+              return
+            end
+
+            local src_path = entry.path
+            local dest_dir = src_path .. "_txt"
+
+            export_flat_txt_async(src_path, dest_dir, function(count)
+              vim.schedule(function()
+                MiniFiles.synchronize()
+                vim.notify(string.format("Exported %d file(s) to: %s", count, dest_dir), vim.log.levels.INFO)
+              end)
+            end)
+          end, { buffer = buf, desc = "MiniFiles: Async flat export to .txt directory" })
           vim.keymap.set("n", "g.", toggle_hidden, { buffer = buf, desc = "Toggle hidden files" })
           vim.keymap.set("n", "go", os_open, { buffer = buf, desc = "OS open" })
           vim.keymap.set("n", "gf", show_in_finder, { buffer = buf, desc = "Show in finder" })

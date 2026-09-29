@@ -267,7 +267,7 @@ return {
         Snacks.picker.files({
           dirs = {
             home .. "/.config",
-            home .. "/.pi/agent",
+            -- home .. "/.pi/agent",
             home .. "/work/nexus-tools",
             chezmoi_dir,
           },
