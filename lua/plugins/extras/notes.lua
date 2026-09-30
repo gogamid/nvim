@@ -16,7 +16,7 @@ return {
       workspaces = {
         {
           name = "general",
-          path = vim.env.OBSIDIAN_PATH,
+          path = os.getenv("HOME") .. "/work/notes",
         },
       },
       note_id_func = function(title)
@@ -44,16 +44,13 @@ return {
     },
     config = function(_, opts)
       require("obsidian").setup(opts)
-      if vim.env.OBSIDIAN_PATH == nil then
-        vim.notify("OBSIDIAN_PATH is not set", vim.log.levels.ERROR)
-      end
     end,
   },
   {
     "backdround/global-note.nvim",
     opts = {
       filename = "Scratchpad.md",
-      directory = vim.env.GLOBAL_NOTE_PATH,
+      directory = os.getenv("HOME") .. "/work/notes",
       title = "notes",
       window_config = function()
         local w = 100
@@ -80,9 +77,6 @@ return {
     },
     config = function(_, opts)
       require("global-note").setup(opts)
-      if vim.env.GLOBAL_NOTE_PATH == nil then
-        vim.notify("GLOBAL_NOTE_PATH is not set", vim.log.levels.ERROR)
-      end
     end,
   },
   {
