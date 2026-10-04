@@ -141,7 +141,20 @@ return {
         },
       },
     },
-    image = {},
+    image = {
+      enabled = true,
+      resolve = function(file, src)
+        return require("modules.image_data_uri").resolve(file, src)
+      end,
+      doc = {
+        enabled = true,
+        inline = true,
+        float = true,
+        max_width = 60,
+        max_height = 12,
+      },
+      convert = { notify = true },
+    },
     lazygit = {
       enabled = true,
       win = {
@@ -432,6 +445,20 @@ return {
     },
   },
   init = function()
+    -- Also attach scratch Markdown buffers when LSP hover windows open.
+    vim.api.nvim_create_autocmd("BufWinEnter", {
+      pattern = "*",
+      callback = function(args)
+        if vim.bo[args.buf].filetype == "markdown" then
+          vim.schedule(function()
+            if vim.api.nvim_buf_is_valid(args.buf) then
+              Snacks.image.doc.attach(args.buf)
+            end
+          end)
+        end
+      end,
+    })
+
     vim.api.nvim_create_autocmd("User", {
       pattern = "VeryLazy",
       callback = function()

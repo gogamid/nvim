@@ -98,6 +98,14 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  desc = "Highlight only the current wrapped row in Markdown",
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.cursorlineopt = "screenline"
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
   desc = "Close file with <q>",
   pattern = {
     "PlenaryTestPopup",
