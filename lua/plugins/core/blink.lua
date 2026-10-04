@@ -7,11 +7,9 @@ return {
       "rafamadriz/friendly-snippets",
     },
     lazy = false,
-    build = function()
-      require("blink.cmp").build():pwait()
-    end,
     opts = {
-      fuzzy = { implementation = "prefer_rust" },
+      -- Avoid native dylib loader failures on macOS.
+      fuzzy = { implementation = "lua" },
       snippets = { preset = "luasnip" },
       completion = {
         -- list = {

@@ -29,6 +29,7 @@ return {
         go = { "gofumpt", "goimports", lsp_format = "last" },
         yaml = { "prettier" },
         markdown = { "prettier" },
+        html = { "prettier" },
         json = { "prettier" },
         vue = jsFormatter,
         typescript = jsFormatter,
