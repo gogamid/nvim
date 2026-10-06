@@ -100,6 +100,7 @@ return {
       "vue_ls",
       "yamlls",
       "html",
+      "sqls",
     }
 
     --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
