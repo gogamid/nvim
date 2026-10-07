@@ -75,7 +75,7 @@ return {
           "on_exit_set_status",
           { "on_complete_notify", system = "unfocused", on_change = true },
           { "on_complete_dispose", require_view = { "SUCCESS", "FAILURE" } },
-          { "open_output", direction = "dock", on_start = "always", focus = false },
+          { "open_output", direction = "dock", on_start = "never", focus = false },
           "unique",
           { "on_output_quickfix", close = true },
         },
