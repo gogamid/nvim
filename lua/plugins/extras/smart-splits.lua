@@ -1,6 +1,7 @@
 return {
   {
     "mrjones2014/smart-splits.nvim",
+    version = "v2.1.1-final",
     config = function()
       vim.keymap.set("n", "<C-h>", require("smart-splits").move_cursor_left)
       vim.keymap.set("n", "<C-j>", require("smart-splits").move_cursor_down)
