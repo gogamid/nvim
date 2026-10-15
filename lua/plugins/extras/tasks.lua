@@ -36,7 +36,8 @@ local function golang_adapter()
     return parent_dir()
   end
 
-  return adapter
+  -- Keeps `go list` off the main loop and throttles per-chunk tree redraws.
+  return require("modules.neotest_perf").patch(adapter)
 end
 
 local function vitest_adapter()
@@ -94,7 +95,9 @@ return {
           { "on_complete_dispose", require_view = { "SUCCESS", "FAILURE" } },
           { "open_output", direction = "dock", on_start = "never", focus = false },
           "unique",
-          { "on_output_quickfix", close = true },
+          -- tail=false: build the quickfix once at the end instead of running
+          -- getqflist/setqflist (plus two lcd calls) on every chunk of `go test -v` output.
+          { "on_output_quickfix", close = true, tail = false },
         },
       },
     },
