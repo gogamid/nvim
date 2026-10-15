@@ -2,6 +2,22 @@ local function parent_dir()
   return vim.fs.dirname(vim.api.nvim_buf_get_name(0))
 end
 
+---Reverse of overseer's `sort_newest_first`: oldest task on top, so a newly started
+---task gets appended to the bottom of the list instead of jumping to the top.
+---@param a overseer.Task
+---@param b overseer.Task
+local function sort_oldest_first(a, b)
+  if a.time_start == nil then
+    if b.time_start == nil then
+      return a.name < b.name
+    end
+    return true
+  elseif b.time_start == nil then
+    return false
+  end
+  return a.time_start < b.time_start
+end
+
 local function golang_adapter()
   local opts = {
     runner = "gotestsum",
@@ -38,6 +54,7 @@ return {
       dap = false,
       task_list = {
         min_height = { 15, 0.3 },
+        sort = sort_oldest_first,
         keymaps = {
           ["<C-j>"] = false,
           ["<C-k>"] = false,
