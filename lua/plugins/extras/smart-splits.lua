@@ -1,17 +1,24 @@
 return {
   {
     "mrjones2014/smart-splits.nvim",
-    version = "v2.1.1-final",
     config = function()
-      vim.keymap.set("n", "<C-h>", require("smart-splits").move_cursor_left)
-      vim.keymap.set("n", "<C-j>", require("smart-splits").move_cursor_down)
-      vim.keymap.set("n", "<C-k>", require("smart-splits").move_cursor_up)
-      vim.keymap.set("n", "<C-l>", require("smart-splits").move_cursor_right)
+      -- Rex multiplexer backend for smart-splits v3.
+      local rex = require("modules.smart_splits_rex")
+      local smart_splits = require("smart-splits")
 
-      vim.keymap.set("v", "<C-h>", require("smart-splits").resize_left)
-      vim.keymap.set("v", "<C-j>", require("smart-splits").resize_down)
-      vim.keymap.set("v", "<C-k>", require("smart-splits").resize_up)
-      vim.keymap.set("v", "<C-l>", require("smart-splits").resize_right)
+      smart_splits.setup({
+        mux = { backend = rex.detect() and rex or nil },
+      })
+
+      local directions = { h = "left", j = "down", k = "up", l = "right" }
+      for key, direction in pairs(directions) do
+        vim.keymap.set("n", "<C-" .. key .. ">", smart_splits["move_cursor_" .. direction], {
+          desc = "Move to " .. direction .. " split",
+        })
+        vim.keymap.set("v", "<C-" .. key .. ">", smart_splits["resize_" .. direction], {
+          desc = "Resize split " .. direction,
+        })
+      end
     end,
   },
 }
