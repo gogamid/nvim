@@ -15,6 +15,7 @@ local function info(msg)
 end
 
 local default_opts = {
+  -- file name searched for, relative to the repository/ui/service directories
   translation_file = "en_DEV.json",
   highlight = "Comment",
   active = {
@@ -26,14 +27,18 @@ local default_opts = {
 
 local ns = vim.api.nvim_create_namespace("translations")
 
--- Cache for translations file data and line mappings
-local cache = {
-  json_file = nil,
-  data = nil,
-  key_lines = {}, -- key -> line number mapping
-}
+-- Parsed tree-sitter queries per language (static configuration, built in setup)
+local queries = {}
 
--- language: scheme
+-- "<repo>::<domain>" -> { translations = { [key] = value }, locations = { [key] = { file, line } } }
+-- Loaded once per project and refreshed on write/reload events, never on redraw.
+local datasets = {}
+
+-- Buffers that already have an on_lines callback scheduled
+local pending = {}
+
+local initialized = false
+
 local ts_translation_query = [[
 (
   (call_expression
@@ -43,9 +48,21 @@ local ts_translation_query = [[
         (string_fragment) @translation.key)))
   (#any-of? @ident "__" "m")
 )
+
+(
+  (call_expression
+    function: (identifier) @ident
+    arguments: (arguments
+      (object
+        (pair
+          key: (property_identifier) @prop
+          value: (string
+            (string_fragment) @translation.key)))))
+  (#any-of? @ident "__" "m")
+  (#eq? @prop "id")
+)
 ]]
 
--- language: scheme
 local go_translation_query = [[
 ((index_expression 
   operand: (identifier) @ident 
@@ -62,58 +79,178 @@ local go_translation_query = [[
   (#any-of? @ident "translations" "translation")) 
 ]]
 
-local query_by_lang = {
+local query_sources = {
   typescript = ts_translation_query,
   go = go_translation_query,
 }
 
-local function load_translations(json_file)
-  if not json_file then
+local function build_queries()
+  queries = {}
+  for lang, source in pairs(query_sources) do
+    local ok, query = pcall(vim.treesitter.query.parse, lang, source)
+    if ok then
+      queries[lang] = query
+    end
+  end
+end
+
+local function repo_root(buf)
+  local root = vim.fs.root(buf, ".git")
+  if root then
+    return vim.fs.normalize(root)
+  end
+
+  local env = vim.env.NEXUS_REPO
+  if env and env ~= "" and vim.uv.fs_stat(env) then
+    return vim.fs.normalize(env)
+  end
+
+  return vim.fs.normalize(vim.fn.getcwd())
+end
+
+local function domain_of(repo, buf)
+  local path = vim.fs.normalize(vim.api.nvim_buf_get_name(buf))
+  local relative = path:sub(1, #repo + 1) == repo .. "/" and path:sub(#repo + 2) or path
+  return relative:match("^domains/([^/]+)/")
+end
+
+--- Translation files of a project, resolved with globs instead of walking the tree.
+local function translation_files(repo, domain, name)
+  local patterns = {
+    "ui/components/i18n/" .. name,
+    "ui/libs/i18n/" .. name,
+  }
+
+  if domain then
+    patterns[#patterns + 1] = "domains/" .. domain .. "/translations/*/" .. name
+    patterns[#patterns + 1] = "domains/" .. domain .. "/services/*/src/i18n/" .. name
+    -- Note: domains/<domain>/services/*/main/translations/* is build output copied from
+    -- domains/<domain>/translations and is deliberately ignored; the domain file is the source
+  end
+
+  local files = {}
+  local seen = {}
+
+  for _, pattern in ipairs(patterns) do
+    for _, path in ipairs(vim.fn.globpath(repo, pattern, false, true)) do
+      if not seen[path] then
+        seen[path] = true
+        files[#files + 1] = path
+      end
+    end
+  end
+
+  return files
+end
+
+local function read_translations(files)
+  local translations = {}
+  local locations = {}
+
+  for _, path in ipairs(files) do
+    local read_ok, lines = pcall(vim.fn.readfile, path)
+    if read_ok then
+      local decode_ok, data = pcall(vim.json.decode, table.concat(lines, "\n"))
+      if decode_ok and type(data) == "table" then
+        local key_lines = {}
+        for line_num, line in ipairs(lines) do
+          local key = line:match('^%s*"([^"]+)"%s*:')
+          if key then
+            key_lines[key] = line_num
+          end
+        end
+
+        for key, value in pairs(data) do
+          if type(value) == "string" then
+            translations[key] = value
+            locations[key] = { file = path, line = key_lines[key] }
+          end
+        end
+      end
+    end
+  end
+
+  return translations, locations
+end
+
+local function project_key(buf)
+  local repo = repo_root(buf)
+  local domain = domain_of(repo, buf)
+  return repo, domain, repo .. "::" .. (domain or "")
+end
+
+local function load_dataset(repo, domain)
+  local files = translation_files(repo, domain, M.opts.translation_file)
+  if #files == 0 then
     return nil
   end
 
-  local ok, result = pcall(function()
-    local content = table.concat(vim.fn.readfile(json_file), "\n")
-    return vim.json.decode(content)
-  end)
-
-  return ok and result or nil
+  local translations, locations = read_translations(files)
+  return { translations = translations, locations = locations }
 end
 
-local function get_translation_value(key, translations)
-  if not key or key == "" then
-    return ""
+local function dataset_for(buf)
+  local repo, domain, key = project_key(buf)
+
+  local dataset = datasets[key]
+  if not dataset then
+    dataset = load_dataset(repo, domain)
+    if not dataset then
+      return nil
+    end
+    datasets[key] = dataset
   end
 
-  if not translations then
-    return "err"
-  end
-
-  local value = translations[key]
-  if value and type(value) == "string" then
-    return value
-  else
-    return ""
-  end
+  return dataset
 end
 
----@param trees table<integer, TSTree>
-local function handle_trees(trees, lang, buf, top, bottom, translations)
-  local query = vim.treesitter.query.parse(lang, query_by_lang[lang])
-  for _, node in pairs(trees) do
-    for _, match, _ in query:iter_matches(node:root(), buf, top, bottom + 1) do
-      for id, nodes in pairs(match) do
-        local capture_name = query.captures[id]
-        if capture_name == "translation.key" then
-          local key_node = nodes[1]
+--- Parse the buffer range and return trees we can query.
+--- The parser is parsed first: injected languages (Vue) only exist after that.
+local function parsed_trees(parser, first, last)
+  pcall(parser.parse, parser, { first, last })
+
+  local lang = parser:lang()
+  if queries[lang] then
+    return { [lang] = parser }
+  end
+
+  local trees = {}
+  local ok, children = pcall(parser.children, parser)
+  if ok and children then
+    for child_lang, child in pairs(children) do
+      if queries[child_lang] then
+        trees[child_lang] = child
+      end
+    end
+  end
+
+  return trees
+end
+
+local function decorate_tree(tree, lang, buf, dataset, first, last)
+  local query = queries[lang]
+  local ok, matches = pcall(query.iter_matches, query, tree:root(), buf, first, last)
+  if not ok then
+    return
+  end
+
+  for _, match in matches do
+    for id, nodes in pairs(match) do
+      if query.captures[id] == "translation.key" then
+        local key_node = nodes[1]
+        if key_node then
           local key_text = vim.treesitter.get_node_text(key_node, buf)
-          local start_row, start_col, end_row, end_col = key_node:range()
+          local _, _, end_row, end_col = key_node:range()
 
-          local value = get_translation_value(key_text, translations)
+          local value = dataset.translations[key_text]
+          local virt_text = value or ("⚠ " .. key_text)
+          local hl = value and M.opts.highlight or "DiagnosticWarn"
 
-          vim.api.nvim_buf_set_extmark(buf, ns, end_row, end_col + 1, {
-            virt_text = { { value, M.opts.highlight } },
-            -- virt_text_pos = "inline",
+          local line = vim.api.nvim_buf_get_lines(buf, end_row, end_row + 1, false)[1] or ""
+          local col = math.min(end_col + 1, #line)
+
+          vim.api.nvim_buf_set_extmark(buf, ns, end_row, col, {
+            virt_text = { { virt_text, hl } },
             hl_mode = "combine",
             spell = true,
           })
@@ -123,69 +260,109 @@ local function handle_trees(trees, lang, buf, top, bottom, translations)
   end
 end
 
-local function build_key_line_map(json_file)
-  local ok, lines = pcall(vim.fn.readfile, json_file)
-  if not ok then
-    return {}
+--- Recompute marks of a line range. Called on edits, never on redraw.
+--- Without a range the whole buffer is decorated (buffer attach, reload).
+local function decorate(buf, first, last)
+  if not vim.api.nvim_buf_is_valid(buf) or not vim.api.nvim_buf_is_loaded(buf) then
+    return
   end
 
-  local key_lines = {}
-  for line_num, line in ipairs(lines) do
-    -- Match pattern like "key": value
-    local key = line:match('"([^"]+)"%s*:')
-    if key then
-      key_lines[key] = line_num
-    end
-  end
-  return key_lines
-end
-
-local function on_win(_, win, buf, top, bottom)
-  local filetype = vim.bo[buf].filetype
-  if not M.opts.active[filetype] then
-    return false
+  if not M.opts.active[vim.bo[buf].filetype] then
+    return
   end
 
-  vim.api.nvim_buf_clear_namespace(buf, ns, top, bottom)
-
-  local lt = vim.treesitter.get_parser(buf)
-  if not lt then
-    return false
+  local line_count = vim.api.nvim_buf_line_count(buf)
+  first = math.max(first or 0, 0)
+  -- One line of margin: replacing a line can move its extmarks onto the next line
+  last = math.min((last or line_count) + 1, line_count)
+  if first >= last then
+    return
   end
 
-  --- @type table<string, vim.treesitter.LanguageTree>
-  local ltrees = {}
-  if query_by_lang[lt:lang()] ~= nil then
-    ltrees[lt:lang()] = lt
-  else
-    for lang, ltree in pairs(lt:children()) do
-      if query_by_lang[lang] ~= nil then
-        ltrees[lang] = ltree
+  -- Clear one more line than decorated: collapsed marks may end up one past the range
+  vim.api.nvim_buf_clear_namespace(buf, ns, first, math.min(last + 1, line_count + 1))
+
+  local dataset = dataset_for(buf)
+  if not dataset then
+    return
+  end
+
+  local parser_ok, parser = pcall(vim.treesitter.get_parser, buf)
+  if not parser_ok or not parser then
+    return
+  end
+
+  local trees = parsed_trees(parser, first, last)
+  if not next(trees) then
+    return
+  end
+
+  for lang, tree in pairs(trees) do
+    local parsed_ok, parsed = pcall(tree.parse, tree, { first, last })
+    if parsed_ok then
+      for _, tstree in ipairs(parsed) do
+        decorate_tree(tstree, lang, buf, dataset, first, last)
       end
     end
   end
-  if not next(ltrees) then
-    return false
+end
+
+local FULL_BUFFER = math.huge
+
+local function schedule_decorate(buf, first, last)
+  local range = pending[buf]
+  if range then
+    range.first = math.min(range.first, first or 0)
+    range.last = math.max(range.last, last or FULL_BUFFER)
+    return
   end
 
-  local json_file = vim.fn.findfile(M.opts.translation_file, vim.fn.getcwd() .. "/**")
-  local translations = load_translations(json_file)
+  pending[buf] = { first = first or 0, last = last or FULL_BUFFER }
+  vim.schedule(function()
+    local pending_range = pending[buf]
+    pending[buf] = nil
+    if pending_range then
+      decorate(buf, pending_range.first, pending_range.last)
+    end
+  end)
+end
 
-  -- Update cache
-  if json_file and translations then
-    cache.json_file = json_file
-    cache.data = translations
-    cache.key_lines = build_key_line_map(json_file)
+local function attach(buf)
+  if not vim.api.nvim_buf_is_loaded(buf) then
+    return
   end
 
-  for lang, ltree in pairs(ltrees) do
-    local tstrees = ltree:parse({ top, bottom + 1 })
-    if tstrees then
-      handle_trees(tstrees, lang, buf, top, bottom + 1, translations)
+  if not M.opts.active[vim.bo[buf].filetype] then
+    return
+  end
+
+  vim.api.nvim_buf_attach(buf, false, {
+    on_lines = function(_, _, _, first, last_old, last_new)
+      schedule_decorate(buf, first, math.max(last_old, last_new) + 1)
+    end,
+    on_reload = function()
+      schedule_decorate(buf)
+    end,
+    on_detach = function()
+      pending[buf] = nil
+    end,
+  })
+
+  decorate(buf)
+end
+
+local function reload(repo)
+  for key in pairs(datasets) do
+    if repo == nil or key:sub(1, #repo + 2) == repo .. "::" then
+      datasets[key] = nil
     end
   end
 
-  return true
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(buf) then
+      decorate(buf)
+    end
+  end
 end
 
 local function add_key_to_json(json_file, key, value)
@@ -222,14 +399,13 @@ local function add_key_to_json(json_file, key, value)
   end
 
   -- Format the new key-value pair with proper indentation
-  local indent = lines[insert_line + 1]:match("^(%s*)")
+  local indent = lines[insert_line + 1] and lines[insert_line + 1]:match("^(%s*)") or nil
   if indent == nil then
     indent = "  "
   end
 
   local new_line = indent .. '"' .. key .. '": ' .. vim.json.encode(value) .. ","
 
-  -- Insert the new key-value pair
   table.insert(lines, insert_line + 1, new_line)
 
   local write_ok = pcall(function()
@@ -245,6 +421,50 @@ local function add_key_to_json(json_file, key, value)
   end
 end
 
+local function makefile_ui(root)
+  local ok, lines = pcall(vim.fn.readfile, root .. "/Makefile")
+  if not ok then
+    return nil
+  end
+
+  for _, line in ipairs(lines) do
+    local ui = line:match("^UI=([%w%-%./]+)")
+    if ui then
+      return ui
+    end
+  end
+
+  return nil
+end
+
+--- Where a new key of this buffer should be added
+local function primary_file(buf)
+  local name = M.opts.translation_file
+
+  -- Regular service: <service>/src/i18n/en_DEV.json
+  local service = vim.fs.root(buf, "service.yaml")
+  if service then
+    local path = vim.fs.normalize(service) .. "/src/i18n/" .. name
+    if vim.uv.fs_stat(path) then
+      return path
+    end
+  end
+
+  -- System tests: derive the tested UI service from UI=... in the Makefile
+  local makefile_root = vim.fs.root(buf, "Makefile")
+  if makefile_root then
+    local ui = makefile_ui(makefile_root)
+    if ui then
+      local path = repo_root(buf) .. "/domains/" .. ui .. "/src/i18n/" .. name
+      if vim.uv.fs_stat(path) then
+        return path
+      end
+    end
+  end
+
+  return nil
+end
+
 local function get_key_at_cursor()
   local buf = vim.api.nvim_get_current_buf()
   local filetype = vim.bo[buf].filetype
@@ -257,23 +477,34 @@ local function get_key_at_cursor()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
   row = row - 1
 
-  local lt = vim.treesitter.get_parser(buf)
-  if not lt then
+  local parser_ok, parser = pcall(vim.treesitter.get_parser, buf)
+  if not parser_ok or not parser then
     error("No treesitter parser available")
     return nil
   end
 
-  local query = vim.treesitter.query.parse(lt:lang(), query_by_lang[lt:lang()] or "")
-  local root = lt:parse()[1]:root()
+  local line_count = vim.api.nvim_buf_line_count(buf)
 
-  for _, match in query:iter_matches(root, buf) do
-    for id, nodes in pairs(match) do
-      if query.captures[id] == "translation.key" then
-        local key_node = nodes[1]
-        local start_row, start_col, end_row, end_col = key_node:range()
-
-        if start_row == row and col >= start_col and col <= end_col then
-          return vim.treesitter.get_node_text(key_node, buf)
+  for lang, tree in pairs(parsed_trees(parser, 0, line_count)) do
+    local query = queries[lang]
+    local parsed_ok, parsed = pcall(tree.parse, tree, { 0, line_count })
+    if parsed_ok then
+      for _, tstree in ipairs(parsed) do
+        local matched, matches = pcall(query.iter_matches, query, tstree:root(), buf)
+        if matched then
+          for _, match in matches do
+            for id, nodes in pairs(match) do
+              if query.captures[id] == "translation.key" then
+                local key_node = nodes[1]
+                if key_node then
+                  local start_row, start_col, end_row, end_col = key_node:range()
+                  if start_row == row and col >= start_col and col <= end_col then
+                    return vim.treesitter.get_node_text(key_node, buf)
+                  end
+                end
+              end
+            end
+          end
         end
       end
     end
@@ -289,39 +520,73 @@ M.navigate_to_key = function()
     return
   end
 
-  -- Use cached json_file, fall back to finding it
-  local json_file = cache.json_file or vim.fn.findfile(M.opts.translation_file)
-  if not json_file or json_file == "" then
-    error("Translation file not configured")
+  local buf = vim.api.nvim_get_current_buf()
+  local dataset = dataset_for(buf)
+
+  local location = dataset and dataset.locations[key]
+  if location then
+    vim.cmd.edit(vim.fn.fnameescape(location.file))
+    vim.api.nvim_win_set_cursor(0, { location.line or 1, 0 })
     return
   end
 
-  -- Try cached line mapping first
-  local line_num = cache.key_lines[key]
-
-  if not line_num then
-    -- Key not found, ask user for value
-    vim.ui.input({ prompt = "Enter value for '" .. key .. "': " }, function(value)
-      if value then
-        if add_key_to_json(json_file, key, value) then
-          -- Invalidate cache
-          cache.json_file = nil
-          cache.data = nil
-          cache.key_lines = {}
-          -- Reload translations display
-          vim.api.nvim_exec_autocmds("User", { pattern = "TranslationsUpdated" })
-        end
-      end
-    end)
-  else
-    -- Open the JSON file at the key location
-    vim.cmd("edit " .. json_file)
-    vim.api.nvim_win_set_cursor(0, { line_num, 0 })
+  -- Key not found, ask user for value
+  local json_file = primary_file(buf)
+  if not json_file then
+    error("No writable translation file found for this buffer")
+    return
   end
+
+  vim.ui.input({ prompt = "Enter value for '" .. key .. "': " }, function(value)
+    if value and value ~= "" then
+      if add_key_to_json(json_file, key, value) then
+        reload(nil)
+      end
+    end
+  end)
+end
+
+local function active_filetypes()
+  local filetypes = {}
+  for filetype, enabled in pairs(M.opts.active) do
+    if enabled then
+      filetypes[#filetypes + 1] = filetype
+    end
+  end
+  return table.concat(filetypes, ",")
 end
 
 M.init = function()
-  vim.api.nvim_set_decoration_provider(ns, { on_win = on_win })
+  build_queries()
+
+  if not initialized then
+    initialized = true
+
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = active_filetypes(),
+      callback = function(args)
+        attach(args.buf)
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("BufWritePost", {
+      pattern = "*" .. M.opts.translation_file,
+      callback = function(args)
+        reload(repo_root(args.buf))
+      end,
+    })
+
+    vim.api.nvim_create_user_command("TranslationsReload", function()
+      reload(nil)
+    end, { desc = "Reload translation data and redraw marks" })
+  end
+
+  -- Buffers that were opened before setup (their FileType event is already gone)
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(buf) then
+      attach(buf)
+    end
+  end
 
   -- Translations navigation
   vim.keymap.set("n", "gj", function()
