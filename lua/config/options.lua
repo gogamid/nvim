@@ -10,6 +10,7 @@ vim.o.tabstop = 2
 vim.o.shiftwidth = 2
 vim.o.autoindent = true
 
+vim.g.clipboard = "osc52"
 vim.opt.clipboard = "unnamedplus"
 
 -------------------------------------------------- QOL --------------------------------------------------------------------------------
