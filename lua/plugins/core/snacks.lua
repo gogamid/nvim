@@ -459,6 +459,20 @@ return {
       end,
     })
 
+    -- Rex answers XTVERSION with "rex <version>" and Snacks only knows kitty/ghostty/wezterm,
+    -- yet Rex renders the kitty graphics protocol through libghostty.
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "VeryLazy",
+      callback = function()
+        table.insert(require("snacks.image.terminal").envs(), {
+          name = "rex",
+          terminal = "rex",
+          supported = true,
+          placeholders = true,
+        })
+      end,
+    })
+
     vim.api.nvim_create_autocmd("User", {
       pattern = "VeryLazy",
       callback = function()
