@@ -23,9 +23,13 @@ local stringColor = vim.o.background == "light" and "#4F6C30" or "#819B69"
 local surfaces = bg == "light"
     and { cursor = "#6F6E69", cursor_line = "#F2F0E5", code = "#F8F5EB" }
   or { cursor = "#878580", cursor_line = "#1C1B1A", code = "#161514" }
-local specs = lush.extends({ base_specs }).with(function()
+local specs = lush.extends({ base_specs }).with(function(injected_functions)
+  local sym = injected_functions.sym
   return {
     String({ base_specs.String, fg = stringColor }),
+    -- consts via LSP semantic tokens (gopls readonly/static modifiers) — link to zenbones @constant
+    sym "@lsp.typemod.variable.readonly"({ base_specs["@constant"] }),
+    sym "@lsp.typemod.variable.static"({ base_specs["@constant"] }),
     Cursor({ base_specs.Cursor, bg = surfaces.cursor }),
     CursorLine({ bg = surfaces.cursor_line }),
     CursorColumn({ bg = surfaces.cursor_line }),
