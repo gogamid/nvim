@@ -26,7 +26,7 @@ return {
         typst = { "typstyle" },
         lua = { "stylua" },
         proto = { "buf" },
-        go = { "gofumpt", "goimports", lsp_format = "last" },
+        go = { "goimports", "golangci-lint", lsp_format = "never" },
         yaml = { "prettier" },
         markdown = { "prettier" },
         html = { "prettier" },

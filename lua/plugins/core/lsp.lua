@@ -196,53 +196,14 @@ return {
     vim.lsp.config("gopls", {
       settings = {
         gopls = {
-          gofumpt = false,
           buildFlags = { "-tags=manual_test" },
-          ["local"] = os.getenv("GO_LOCAL_PKG"),
-          staticcheck = true,
-          analyses = {
-            shadow = true,
-            unusedvariable = true,
-            nilness = true,
-            unusedwrite = true,
-            useany = true,
-            ST1003 = false,
-          },
-          hints = {
-            compositeLiteralFields = false,
-            compositeLiteralTypes = false,
-            functionTypeParameters = false,
-            constantValues = true,
-            rangeVariableTypes = false,
-            ignoredError = true,
-            assignVariableTypes = false,
-            parameterNames = false,
-          },
+          hints = { constantValues = true, ignoredError = true },
           usePlaceholders = true,
           completeUnimported = true,
           directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
-          semanticTokens = false, -- overrides injections
           diagnosticsTrigger = "Save",
         },
       },
-      on_attach = function(client, _)
-        -- Set semantic tokens provider if not already set
-        if not client.server_capabilities.semanticTokensProvider then
-          local semantic = client.config.capabilities.textDocument.semanticTokens
-          if not semantic then
-            vim.notify("LSP server does not support semantic tokens")
-            return
-          end
-          client.server_capabilities.semanticTokensProvider = {
-            full = true,
-            legend = { tokenModifiers = semantic.tokenModifiers, tokenTypes = semantic.tokenTypes },
-            range = true,
-          }
-        end
-
-        -- Hide semantic highlights so Tree-sitter injections show through
-        vim.api.nvim_set_hl(0, "@lsp.type.string.go", { link = "" })
-      end,
     })
   end,
 }
